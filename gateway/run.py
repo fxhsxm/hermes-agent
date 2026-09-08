@@ -5008,8 +5008,124 @@ async def _start_gateway_start_control_socket(runner):
                 "pausing": accepted, "already_stopping": not accepted,
                 "pid": os.getpid(), "drain_timeout": _drain}
 
+        def _status_handler() -> dict:
+            from gateway.control_socket import build_status_payload
+
+            payload = build_status_payload()
+            blocking: list[str] = []
+            if not bool(getattr(runner, "_running", False)):
+                blocking.append("gateway_not_running")
+            if bool(getattr(runner, "_draining", False)):
+                blocking.append("gateway_draining")
+            if bool(getattr(runner, "_external_drain_active", False)):
+                blocking.append("external_drain_active")
+            payload["worker_readiness"] = {
+                "accepting_new_worker_sessions": not blocking,
+                "blocking_reasons": blocking,
+            }
+            return payload
+
+        def _enqueue_input_handler(request: dict) -> dict:
+            """Accept one exact-route bridge event and schedule it on the gateway loop."""
+            params = request.get("params") if isinstance(request, dict) else None
+            if not isinstance(params, dict):
+                return {"accepted": False, "reason": "invalid_params"}
+            session_key = params.get("session_key")
+            expected_session_id = params.get("expected_session_id")
+            text = params.get("text")
+            if (
+                not isinstance(session_key, str) or not session_key or len(session_key) > 1024
+                or not isinstance(expected_session_id, str) or not expected_session_id
+                or len(expected_session_id) > 256
+                or not isinstance(text, str) or not text or len(text) > 1_000_000
+            ):
+                return {"accepted": False, "reason": "invalid_params"}
+
+            entry = runner.session_store.lookup_by_session_key(session_key)
+            if entry is None:
+                return {"accepted": False, "reason": "unknown_session_key"}
+            if entry.session_id != expected_session_id:
+                return {"accepted": False, "reason": "session_id_mismatch"}
+            if entry.origin is None:
+                return {"accepted": False, "reason": "route_origin_missing"}
+
+            source = dataclasses.replace(entry.origin, message_id=None)
+            try:
+                derived_key = runner._session_key_for_source(source)
+            except Exception:
+                derived_key = ""
+            if derived_key != session_key:
+                return {"accepted": False, "reason": "route_key_mismatch"}
+
+            from gateway.platforms.base import MessageEvent, MessageType
+
+            event = MessageEvent(
+                text=text,
+                message_type=MessageType.TEXT,
+                user_id=source.user_id,
+                user_name=source.user_name,
+                source=source,
+                message_id=f"bridge:{time.time_ns()}",
+                internal=True,
+                metadata={
+                    "gateway_session_key": session_key,
+                    "gateway_session_id": expected_session_id,
+                    "gateway_session_strict": True,
+                },
+                allow_gateway_control=False,
+            )
+
+            def _launch() -> None:
+                try:
+                    task = asyncio.create_task(
+                        runner._handle_message(event), name=f"bridge:{session_key}"
+                    )
+                except Exception:
+                    logger.exception("Bridge event scheduling failed for session %s", session_key)
+                    return
+
+                def _observe(done: asyncio.Task) -> None:
+                    try:
+                        done.result()
+                    except Exception:
+                        logger.exception("Bridge event failed for session %s", session_key)
+
+                task.add_done_callback(_observe)
+
+            _main_loop.call_soon_threadsafe(_launch)
+            return {
+                "accepted": True,
+                "reason": "accepted",
+                "session_key": session_key,
+                "session_id": expected_session_id,
+            }
+
+        def _create_session_and_bind_telegram_handler(request: dict) -> dict:
+            params = request.get("params") if isinstance(request, dict) else None
+            topic_name = params.get("topic_name") if isinstance(params, dict) else None
+            if not isinstance(topic_name, str) or not topic_name.strip() or len(topic_name) > 128:
+                raise ValueError("invalid_topic_name")
+            from gateway.bridge_fresh import create_fresh_telegram_route
+
+            future = asyncio.run_coroutine_threadsafe(
+                create_fresh_telegram_route(runner, topic_name), _main_loop
+            )
+            try:
+                return future.result(timeout=120.0)
+            except TimeoutError:
+                future.cancel()
+                raise RuntimeError("fresh_route_timeout")
+
         _control_server = GatewayControlServer(
-            verb_handlers={"pause-for-update": _pause_for_update_handler})
+            verb_handlers={
+                "pause-for-update": _pause_for_update_handler,
+                "status": _status_handler,
+            },
+            request_handlers={
+                "enqueue-input": _enqueue_input_handler,
+                "create-session-and-bind-telegram": _create_session_and_bind_telegram_handler,
+            },
+        )
         if not await _control_server.start():
             _control_server = None
         else:

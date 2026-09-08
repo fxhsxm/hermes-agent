@@ -12,6 +12,7 @@ from gateway.control_socket import (
     CONTROL_PROTOCOL_VERSION,
     GatewayControlServer,
     identify_gateway,
+    request_gateway_control,
     query_gateway_control,
     resolve_client_socket_path,
     resolve_server_socket_path,
@@ -126,6 +127,38 @@ def test_server_answers_identify_and_status(home: Path):
     ident, status = _run(scenario())
     assert ident == {"pid": 4242, "code_sha": "abc123", "protocol": 1}
     assert status == {"gateway_state": "running"}
+
+
+def test_request_handler_receives_versioned_params(home: Path):
+    async def scenario():
+        server = GatewayControlServer(
+            home,
+            request_handlers={
+                "fresh-test": lambda request: {
+                    "params": request.get("params"),
+                    "handled": True,
+                }
+            },
+        )
+        assert await server.start()
+        try:
+            loop = asyncio.get_running_loop()
+            return await loop.run_in_executor(
+                None,
+                lambda: request_gateway_control(
+                    home, "fresh-test", {"topic_name": "bounded"}
+                ),
+            )
+        finally:
+            await server.stop()
+
+    response = _run(scenario())
+    assert response is not None
+    assert response["ok"] is True
+    assert response["result"] == {
+        "params": {"topic_name": "bounded"},
+        "handled": True,
+    }
 
 
 def test_unknown_verb_and_malformed_request(home: Path):

@@ -124,7 +124,8 @@ class GatewayControlServer:
     because its control socket couldn't bind; consumers fall back to the scan layer."""
 
     def __init__(self, home: Optional[Path] = None, *,
-                 verb_handlers: Optional[dict[str, Callable[[], dict[str, Any]]]] = None) -> None:
+                 verb_handlers: Optional[dict[str, Callable[[], dict[str, Any]]]] = None,
+                 request_handlers: Optional[dict[str, Callable[[dict[str, Any]], dict[str, Any]]]] = None) -> None:
         if home is None:
             from gateway.status import _get_process_hermes_home
             home = _get_process_hermes_home()
@@ -135,6 +136,7 @@ class GatewayControlServer:
         self._pointer_file: Optional[Path] = None
         self._handlers: dict[str, Callable[[], dict[str, Any]]] = {
             "identify": build_identify_payload, "status": build_status_payload, **(verb_handlers or {})}
+        self._request_handlers = dict(request_handlers or {})
 
     async def start(self) -> bool:
         """Bind and start serving. Returns True on success, False otherwise."""
@@ -206,11 +208,14 @@ class GatewayControlServer:
                 raise ValueError("request must be a JSON object")
             request_id, verb = request.get("id"), request.get("verb")
             handler = self._handlers.get(verb) if isinstance(verb, str) else None
-            if handler is None:
+            request_handler = self._request_handlers.get(verb) if isinstance(verb, str) else None
+            if handler is None and request_handler is None:
+                supported = sorted(set(self._handlers) | set(self._request_handlers))
                 response: dict[str, Any] = {"ok": False, "error": f"unknown verb: {verb!r}",
-                                            "protocol": CONTROL_PROTOCOL_VERSION, "supported_verbs": sorted(self._handlers)}
+                                            "protocol": CONTROL_PROTOCOL_VERSION, "supported_verbs": supported}
             else:
-                response = {"ok": True, "protocol": CONTROL_PROTOCOL_VERSION, "result": handler()}
+                result = request_handler(request) if request_handler is not None else handler()
+                response = {"ok": True, "protocol": CONTROL_PROTOCOL_VERSION, "result": result}
         except Exception as exc:
             response = {"ok": False, "error": f"{type(exc).__name__}: {exc}", "protocol": CONTROL_PROTOCOL_VERSION}
         if request_id is not None:
@@ -245,38 +250,107 @@ class GatewayControlServer:
 
 class _PipeControlProtocol(asyncio.Protocol):
     """One-shot request/response protocol for the Windows named pipe."""
-    def __init__(self, server: GatewayControlServer) -> None:
+    def __init__(self, server: GatewayControlServer):
         self._server = server
         self._transport: Any = None
         self._buffer = bytearray()
+        self._finished = False
 
     def connection_made(self, transport) -> None:  # pragma: no cover - windows
         self._transport = transport
 
     def data_received(self, data: bytes) -> None:  # pragma: no cover - windows
+        if self._finished:
+            return
         self._buffer.extend(data)
         if len(self._buffer) > _MAX_REQUEST_BYTES:
             self._transport.close()
         elif b"\n" in self._buffer:
-            try:
-                self._transport.write(self._server.handle_request_line(bytes(self._buffer).partition(b"\n")[0]))
-            finally:
+            self._finished = True
+            raw = bytes(self._buffer).partition(b"\n")[0]
+            asyncio.create_task(self._respond_from_executor(raw))
+
+    async def _respond_from_executor(self, raw: bytes) -> None:  # pragma: no cover - windows
+        """Keep synchronous request handlers off the proactor event loop.
+
+        In particular, fresh-route creation schedules work back onto the Gateway
+        loop and waits for its coherent result; running it inline here would
+        deadlock the named-pipe event loop.
+        """
+        try:
+            response = await asyncio.get_running_loop().run_in_executor(
+                None, self._server.handle_request_line, raw
+            )
+            if self._transport is not None:
+                self._transport.write(response)
+        except Exception:
+            logger.debug("Gateway named-pipe request handler failed", exc_info=True)
+        finally:
+            if self._transport is not None:
                 self._transport.close()
 
 
-def query_gateway_control(home: Path, verb: str, *, timeout: float = _DEFAULT_CLIENT_TIMEOUT) -> Optional[dict[str, Any]]:
-    """Ask the gateway serving ``home`` a control verb; returns its ``result`` payload. Any failure (no/stale
-    socket, timeout, malformed answer, ``ok: false``) returns None so callers fall back to the scan layer.
-    Never raises."""
-    request = json.dumps({"verb": verb, "id": 1, "protocol": CONTROL_PROTOCOL_VERSION}).encode("utf-8") + b"\n"
+def request_gateway_control(
+    home: Path, verb: str, params: Optional[dict[str, Any]] = None,
+    *, timeout: float = _DEFAULT_CLIENT_TIMEOUT,
+) -> Optional[dict[str, Any]]:
+    """Send one versioned control request and return its full response envelope.
+
+    ``params`` is reserved for authenticated local request handlers.  The named-pipe/
+    Unix-socket boundary remains the authorization boundary; callers still validate
+    route identity inside the gateway process before accepting stateful work.
+    """
+    request_obj: dict[str, Any] = {"verb": verb, "id": 1, "protocol": CONTROL_PROTOCOL_VERSION}
+    if params is not None:
+        request_obj["params"] = params
+    request = json.dumps(request_obj).encode("utf-8") + b"\n"
     query = _query_windows_pipe if _IS_WINDOWS else _query_unix_socket
     try:
         raw = query(Path(home), request, timeout)
         response = json.loads(raw.decode("utf-8")) if raw else None
     except Exception:
         return None
+    return response if isinstance(response, dict) else None
+
+
+def query_gateway_control(home: Path, verb: str, *, timeout: float = _DEFAULT_CLIENT_TIMEOUT) -> Optional[dict[str, Any]]:
+    """Ask the gateway serving ``home`` a control verb; returns its ``result`` payload. Any failure (no/stale
+    socket, timeout, malformed answer, ``ok: false``) returns None so callers fall back to the scan layer.
+    Never raises."""
+    response = request_gateway_control(home, verb, timeout=timeout)
     result = response.get("result") if isinstance(response, dict) and response.get("ok") is True else None
     return result if isinstance(result, dict) else None
+
+
+def query_gateway_control_detailed(
+    home: Path, verb: str, *, timeout: float = _DEFAULT_CLIENT_TIMEOUT,
+) -> dict[str, Any]:
+    """Return the full response envelope for bridge-style gateway readiness checks."""
+    return request_gateway_control(home, verb, timeout=timeout) or {
+        "ok": False, "error": {"type": "gateway_unavailable"}, "protocol": CONTROL_PROTOCOL_VERSION,
+    }
+
+
+def enqueue_input(
+    home: Path, *, session_key: str, text: str, expected_session_id: str,
+    timeout: float = _DEFAULT_CLIENT_TIMEOUT,
+) -> dict[str, Any]:
+    """Enqueue one exact-route bridge event into the live gateway."""
+    return request_gateway_control(
+        home,
+        "enqueue-input",
+        {"session_key": session_key, "text": text, "expected_session_id": expected_session_id},
+        timeout=timeout,
+    ) or {"ok": False, "error": {"type": "gateway_unavailable"}, "protocol": CONTROL_PROTOCOL_VERSION}
+
+
+def create_session_and_bind_telegram(
+    home: Path, *, topic_name: str, timeout: float = _DEFAULT_CLIENT_TIMEOUT,
+) -> dict[str, Any]:
+    """Request a fresh Telegram route when a gateway implements that optional verb."""
+    return request_gateway_control(
+        home, "create-session-and-bind-telegram", {"topic_name": topic_name}, timeout=timeout,
+    ) or {"ok": False, "error": {"type": "gateway_unavailable"}, "protocol": CONTROL_PROTOCOL_VERSION}
 
 
 def _read_response_line(read: Callable[[], bytes], deadline: float) -> Optional[bytes]:
