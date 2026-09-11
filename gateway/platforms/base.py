@@ -139,6 +139,26 @@ def _mark_notify_metadata(metadata: dict | None) -> dict:
     return notify_metadata
 
 
+def _is_platform_message_id(value) -> bool:
+    """True when ``value`` can be a real platform message id (plain digits only).
+
+    Transport-injected turns carry synthetic event ids — the bridge control socket
+    injects ``message_id="bridge:<ns>"`` — which are valid *event identity* but are
+    not platform ids. Passing one through as a Telegram reply anchor/thread id made
+    every send of that turn fail (``int()`` in the Telegram adapter), so a
+    bridge-bound topic showed no Main output at all while GitHub showed progress
+    (Bridge v0.4.1 Telegram observability).
+    """
+    if value is None or isinstance(value, bool):
+        return False
+    if isinstance(value, int):
+        return value > 0
+    text = str(value).strip()
+    if not text:
+        return False
+    return text.isdigit() and int(text) > 0
+
+
 def _reply_anchor_for_event(event) -> str | None:
     """Return reply_to id for platforms that need reply semantics."""
     source = getattr(event, "source", None)
@@ -155,7 +175,10 @@ def _reply_anchor_for_event(event) -> str | None:
         # message — replying to the topic seed/anchor can render outside the active lane.
         if getattr(source, "chat_type", None) != "dm":
             return None
-        return getattr(event, "message_id", None) or getattr(event, "reply_to_message_id", None)
+        candidate = getattr(event, "message_id", None) or getattr(event, "reply_to_message_id", None)
+        # Only a real Telegram message id may become a reply anchor. A synthetic event id must
+        # degrade to "no anchor" so the DM-topic lane still receives the message via its thread id.
+        return candidate if _is_platform_message_id(candidate) else None
     if platform == "feishu" and thread_id and getattr(event, "reply_to_message_id", None):
         return getattr(event, "reply_to_message_id", None)
     return getattr(event, "message_id", None)

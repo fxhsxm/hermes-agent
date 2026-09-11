@@ -916,10 +916,35 @@ class TelegramAdapter(BasePlatformAdapter):
         topic_id = (metadata or {}).get("direct_messages_topic_id") or (metadata or {}).get("telegram_direct_messages_topic_id")
         return str(topic_id) if topic_id is not None else None
 
+    @staticmethod
+    def _coerce_message_id(value: Any, *, what: str = "message id") -> Optional[int]:
+        """Tolerant ``int`` for externally supplied Telegram ids.
+
+        An id that is not a plain integer is not a Telegram id at all: transport-
+        injected turns carry synthetic event ids (e.g. the bridge control socket
+        injects ``message_id="bridge:<ns>"``). Such an id must degrade to "no id"
+        instead of raising, because a raise here fails the ENTIRE send of that
+        turn — which is how a bridge-bound topic ended up with no visible messages
+        while GitHub showed progress (Bridge v0.4.1 Telegram observability).
+        """
+        if value is None or isinstance(value, bool):
+            return None
+        if isinstance(value, int):
+            return value
+        text = str(value).strip()
+        if not text:
+            return None
+        try:
+            return int(text)
+        except (TypeError, ValueError):
+            logger.warning(
+                "[Telegram] ignoring non-numeric Telegram %s %r; treating it as absent", what, _redact_telegram_error_text(text))
+            return None
+
     @classmethod
     def _metadata_reply_to_message_id(cls, metadata: Optional[Dict[str, Any]]) -> Optional[int]:
         reply_to = (metadata or {}).get("telegram_reply_to_message_id")
-        return int(reply_to) if reply_to is not None else None
+        return None if reply_to is None else cls._coerce_message_id(reply_to, what="reply anchor")
 
     @staticmethod
     def _dm_topic_fallback(metadata: Optional[Dict[str, Any]]) -> bool:
@@ -942,7 +967,7 @@ class TelegramAdapter(BasePlatformAdapter):
     def _reply_to_message_id_for_send(
         cls, reply_to: Optional[str], metadata: Optional[Dict[str, Any]] = None, reply_to_mode: Optional[str] = None) -> Optional[int]:
         if reply_to:
-            return int(reply_to)
+            return cls._coerce_message_id(reply_to, what="reply anchor")
         if cls._dm_topic_fallback(metadata) and reply_to_mode != "off":
             return cls._metadata_reply_to_message_id(metadata)
         return None
@@ -991,7 +1016,7 @@ class TelegramAdapter(BasePlatformAdapter):
         direct_topic_id = cls._metadata_direct_messages_topic_id(metadata)
         if direct_topic_id is None:
             return None
-        return {"message_thread_id": None, "direct_messages_topic_id": int(direct_topic_id)}
+        return {"message_thread_id": None, "direct_messages_topic_id": cls._coerce_message_id(direct_topic_id, what="DM topic id")}
 
     def _thread_kwargs_for_draft(self, chat_id: str, metadata: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """Routing kwargs for ``sendMessageDraft`` / ``sendRichMessageDraft`` (integer
@@ -1005,13 +1030,13 @@ class TelegramAdapter(BasePlatformAdapter):
     def _message_thread_id_for_send(cls, thread_id: Optional[str]) -> Optional[int]:
         if not thread_id or str(thread_id) == cls._GENERAL_TOPIC_THREAD_ID:
             return None
-        return int(thread_id)
+        return cls._coerce_message_id(thread_id, what="message thread id")
 
     @classmethod
     def _message_thread_id_for_typing(cls, thread_id: Optional[str]) -> Optional[int]:
         # Deliberately asymmetric with _message_thread_id_for_send: sendMessage rejects message_thread_id=1
         # (forum General), but sendChatAction NEEDS it to place the typing bubble in General.
-        return int(thread_id) if thread_id else None
+        return cls._coerce_message_id(thread_id, what="typing thread id") if thread_id else None
 
     @staticmethod
     def _is_thread_not_found_error(error: Exception) -> bool:
@@ -1353,7 +1378,7 @@ class TelegramAdapter(BasePlatformAdapter):
             should_thread = reply_to_source is not None and self._reply_to_mode != "off"
         else:
             should_thread = self._should_thread_reply(reply_to_source, index)
-        reply_to_id = int(reply_to_source) if should_thread and reply_to_source else None
+        reply_to_id = self._coerce_message_id(reply_to_source, what="reply anchor") if should_thread and reply_to_source else None
         return private_dm_topic_send, dm_topic_reply_to_off, reply_to_id
 
     def _compute_single_send_routing(

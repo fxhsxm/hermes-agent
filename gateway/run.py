@@ -5059,18 +5059,26 @@ async def _start_gateway_start_control_socket(runner):
 
             from gateway.platforms.base import MessageEvent, MessageType
 
+            # The synthetic event id must NOT look like a platform message id: a
+            # Telegram reply anchor/thread id is parsed with int(), so injecting
+            # "bridge:<ns>" as message_id made every send of this turn fail (the
+            # title-only bridge topic of Bridge v0.4.1). Follow the same convention
+            # as the other synthetic injections (wake/goal/heartbeat): no message_id,
+            # with the transport identity carried in metadata instead.
             event = MessageEvent(
                 text=text,
                 message_type=MessageType.TEXT,
                 user_id=source.user_id,
                 user_name=source.user_name,
                 source=source,
-                message_id=f"bridge:{time.time_ns()}",
+                message_id=None,
                 internal=True,
                 metadata={
                     "gateway_session_key": session_key,
                     "gateway_session_id": expected_session_id,
                     "gateway_session_strict": True,
+                    "bridge_injected": True,
+                    "bridge_event_id": f"bridge:{time.time_ns()}",
                 },
                 allow_gateway_control=False,
             )
@@ -5116,6 +5124,43 @@ async def _start_gateway_start_control_socket(runner):
                 future.cancel()
                 raise RuntimeError("fresh_route_timeout")
 
+        def _post_telegram_topic_message_handler(request: dict) -> dict:
+            """Post one deterministic transport message into an exact Telegram topic lane.
+
+            Bridge v0.4.1 observability: the forward dispatcher uses this to put a real
+            ``ROLE: MAIN`` identity banner into a freshly bound bridge topic, so the topic
+            is never a title-only surface. Non-LLM transport; no reply anchor is used —
+            the message is addressed by the topic's own thread id.
+            """
+            params = request.get("params") if isinstance(request, dict) else None
+            if not isinstance(params, dict):
+                raise ValueError("invalid_params")
+            text = params.get("text")
+            thread_id = params.get("thread_id")
+            chat_id = params.get("chat_id")
+            if not isinstance(text, str) or not text.strip() or len(text) > 20000:
+                raise ValueError("invalid_text")
+            if not isinstance(thread_id, str) or not thread_id.isdigit() or len(thread_id) > 32:
+                raise ValueError("invalid_thread_id")
+            if chat_id is not None and (
+                not isinstance(chat_id, str) or not chat_id.strip() or len(chat_id) > 64
+            ):
+                raise ValueError("invalid_chat_id")
+
+            from gateway.bridge_fresh import post_telegram_topic_message
+
+            future = asyncio.run_coroutine_threadsafe(
+                post_telegram_topic_message(
+                    runner, text=text, thread_id=thread_id, chat_id=chat_id
+                ),
+                _main_loop,
+            )
+            try:
+                return future.result(timeout=60.0)
+            except TimeoutError:
+                future.cancel()
+                raise RuntimeError("topic_message_timeout")
+
         _control_server = GatewayControlServer(
             verb_handlers={
                 "pause-for-update": _pause_for_update_handler,
@@ -5124,6 +5169,7 @@ async def _start_gateway_start_control_socket(runner):
             request_handlers={
                 "enqueue-input": _enqueue_input_handler,
                 "create-session-and-bind-telegram": _create_session_and_bind_telegram_handler,
+                "post-telegram-topic-message": _post_telegram_topic_message_handler,
             },
         )
         if not await _control_server.start():

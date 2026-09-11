@@ -133,3 +133,65 @@ async def create_fresh_telegram_route(runner: Any, topic_name: str) -> dict[str,
         "thread_id": thread_id,
         "created_new": created_new,
     }
+
+
+async def post_telegram_topic_message(
+    runner: Any,
+    *,
+    text: str,
+    thread_id: str,
+    chat_id: str | None = None,
+) -> dict[str, Any]:
+    """Send one deterministic (non-LLM) message into an exact Telegram topic lane.
+
+    Bridge v0.4.1 observability: a bridge-created topic must never be a title-only
+    surface. The forward dispatcher calls this immediately after a fresh Main route
+    is created/bound so the topic carries a real ``ROLE: MAIN`` identity banner even
+    before — or without — the Main turn producing any output. This is transport, not
+    a narrator: it adds no LLM, no supervisor and no second worker.
+
+    The lane is addressed by the topic's own ``thread_id`` with no reply anchor, the
+    documented synthetic-send route for a DM topic lane.
+    """
+    body = str(text or "")
+    if not body.strip():
+        raise FreshRouteError("empty_topic_message")
+    tid = str(thread_id or "").strip()
+    if not tid.isdigit():
+        raise FreshRouteError("invalid_thread_id")
+
+    if chat_id is None:
+        home = runner.config.get_home_channel(Platform.TELEGRAM)
+        if home is None or not str(getattr(home, "chat_id", "") or "").strip():
+            raise FreshRouteError("telegram_home_channel_unavailable")
+        chat_id = str(home.chat_id)
+    target_chat = str(chat_id)
+
+    profile_name = str(getattr(runner, "_primary_profile_name", None) or "default")
+    source = SessionSource(
+        platform=Platform.TELEGRAM,
+        chat_id=target_chat,
+        chat_type="dm",
+        user_id=target_chat,
+        thread_id=tid,
+        profile=profile_name,
+    )
+    adapter = runner._adapter_for_source(source)
+    if adapter is None or not callable(getattr(adapter, "send", None)):
+        raise FreshRouteError("telegram_adapter_unavailable")
+
+    metadata = runner._thread_metadata_for_target(
+        Platform.TELEGRAM, target_chat, tid, chat_type="dm", adapter=adapter,
+    ) or {"thread_id": tid}
+
+    result = await adapter.send(target_chat, body, reply_to=None, metadata=metadata)
+    if not getattr(result, "success", False):
+        raise FreshRouteError(
+            f"topic_message_send_failed: {getattr(result, 'error', None) or 'unknown'}"
+        )
+    return {
+        "chat_id": target_chat,
+        "thread_id": tid,
+        "message_id": str(getattr(result, "message_id", "") or ""),
+        "profile": profile_name,
+    }

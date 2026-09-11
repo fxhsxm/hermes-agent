@@ -353,6 +353,23 @@ def create_session_and_bind_telegram(
     ) or {"ok": False, "error": {"type": "gateway_unavailable"}, "protocol": CONTROL_PROTOCOL_VERSION}
 
 
+def post_telegram_topic_message(
+    home: Path, *, text: str, thread_id: str, chat_id: str | None = None,
+    timeout: float = _DEFAULT_CLIENT_TIMEOUT,
+) -> dict[str, Any]:
+    """Post one deterministic transport message into an exact Telegram topic lane.
+
+    Used by the bridge forward dispatcher for the ``ROLE: MAIN`` identity banner of a
+    freshly bound Main topic (Bridge v0.4.1 observability). No LLM, no narrator.
+    """
+    params: dict[str, Any] = {"text": text, "thread_id": thread_id}
+    if chat_id is not None:
+        params["chat_id"] = chat_id
+    return request_gateway_control(
+        home, "post-telegram-topic-message", params, timeout=timeout,
+    ) or {"ok": False, "error": {"type": "gateway_unavailable"}, "protocol": CONTROL_PROTOCOL_VERSION}
+
+
 def _read_response_line(read: Callable[[], bytes], deadline: float) -> Optional[bytes]:
     """Read chunks until a newline, EOF, deadline, or the size cap (-> None)."""
     chunks: list[bytes] = []
