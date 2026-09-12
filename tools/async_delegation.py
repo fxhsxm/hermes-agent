@@ -454,8 +454,17 @@ def _new_delegation_id() -> str:
 
 
 def _prune_completed_locked() -> None:
-    """Drop the oldest completed records beyond the cap. Caller holds ``_records_lock``."""
-    completed = [(rid, r) for rid, r in _records.items() if r.get("status") != "running"]
+    """Drop the oldest TERMINAL records beyond the cap. Caller holds ``_records_lock``.
+
+    Terminal means ``status not in _LIVE_STATES`` — NOT ``!= "running"``. A ``stalling`` record
+    (stale monitor tripped, waiting out its grace window) or a ``finalizing`` one still owes the
+    parent a terminal event and has no ``completed_at`` yet, so it sorted to the front with
+    ``dispatched_at`` and was evicted first: ``_finalize`` then bailed out on the missing record,
+    the stalled/real result never reached the completion queue, ``interrupt_all`` /
+    ``interrupt_for_session`` could no longer find the runaway child, and the freed slot let a
+    later dispatch exceed ``max_concurrent_children``.
+    """
+    completed = [(rid, r) for rid, r in _records.items() if r.get("status") not in _LIVE_STATES]
     completed.sort(key=lambda kv: kv[1].get("completed_at") or kv[1].get("dispatched_at") or 0)
     for rid, _ in completed[: max(0, len(completed) - _MAX_RETAINED_COMPLETED)]:
         _records.pop(rid, None)
@@ -520,9 +529,24 @@ def _dispatch(
     with _records_lock:
         running = sum(1 for r in _records.values() if r.get("status") in _ACTIVE_STATES)
         if running >= max_async_children:
-            return {"status": "rejected", "error": capacity_error}
+            return {"status": "rejected", "reason": "at_capacity", "error": capacity_error}
         _records[delegation_id] = record
-    _persist_dispatch(record)
+    # The record is registered BEFORE the durable row exists, so a failure here must undo the
+    # registration: a `running` entry whose worker was never submitted would consume a capacity
+    # slot for the life of the process (a few of those and NO background delegation can ever be
+    # dispatched again), and the caller's already-built children would never run or be closed.
+    # Rejecting sends the caller down the inline fallback, which runs them.
+    try:
+        _persist_dispatch(record)
+    except Exception as exc:  # noqa: BLE001 — state.db lock/disk/durability failure
+        with _records_lock:
+            _records.pop(delegation_id, None)
+        with _DB_LOCK, _transaction() as conn:
+            conn.execute("DELETE FROM async_delegations WHERE delegation_id=?", (delegation_id,))
+        logger.warning("Async delegation%s %s could not be persisted; not scheduled: %s",
+                       label, delegation_id, exc, exc_info=True)
+        return {"status": "rejected", "reason": "not_scheduled",
+                "error": f"Failed to persist async delegation{label}: {exc}"}
     executor = _get_executor(max_async_children)
 
     def _worker() -> None:
@@ -545,7 +569,10 @@ def _dispatch(
             _records.pop(delegation_id, None)
         with _DB_LOCK, _transaction() as conn:
             conn.execute("DELETE FROM async_delegations WHERE delegation_id=?", (delegation_id,))
-        return {"status": "rejected", "error": f"Failed to schedule async delegation{label}: {exc}"}
+        logger.warning("Async delegation%s %s could not be scheduled on the pool: %s",
+                       label, delegation_id, exc, exc_info=True)
+        return {"status": "rejected", "reason": "not_scheduled",
+                "error": f"Failed to schedule async delegation{label}: {exc}"}
     if progress_fn is not None:
         _ensure_stale_monitor()
     return {"status": "dispatched", "delegation_id": delegation_id}
@@ -618,7 +645,14 @@ def _finalize(delegation_id: str, result: Any, status: str) -> None:
     A second call for the same id (late runner return after a forced stall) is a no-op."""
     with _records_lock:
         record = _records.get(delegation_id)
-        if record is None or record.get("status") not in _ACTIVE_STATES:
+        if record is None:
+            # Evicted by _prune_completed_locked (or never registered): the caller's result has
+            # nowhere to go, so say so loudly instead of dropping it silently.
+            logger.warning("Async delegation %s: no registry record at finalize — terminal event "
+                           "dropped (status=%s)", delegation_id, status)
+            return
+        if record.get("status") not in _ACTIVE_STATES:
+            # Second finalize for the same id (late runner return after a forced stall): no-op.
             return
         record["status"] = "finalizing"
         record["completed_at"] = time.time()

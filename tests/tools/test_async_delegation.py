@@ -6,6 +6,7 @@ formatting, capacity rejection, and crash handling.
 """
 
 import json
+import logging
 import os
 import queue
 import sqlite3
@@ -946,3 +947,101 @@ def test_batch_model_rejection_notice_requires_configured_model_in_text(monkeypa
     text = format_process_notification(evt)
     assert text is not None
     assert "SUBAGENT MODEL REJECTED" not in text
+
+
+def test_persist_failure_rejects_instead_of_leaking_a_capacity_slot(monkeypatch, caplog):
+    """A state.db failure at registration must not strand a phantom `running` record.
+
+    `_dispatch` registers the record BEFORE the durable row exists, so a throwing
+    `_persist_dispatch` (state.db locked by another writer past the 10s busy timeout, disk full,
+    a failed durability barrier) used to escape the dispatch: the phantom entry stayed `running`
+    and kept consuming a capacity slot for the life of the process — after
+    `max_async_children` of them NO background delegation could ever be dispatched again — while
+    the caller's already-built children were neither run nor closed and nothing was logged.
+    The rejection now hands the batch to the caller's synchronous fallback and leaves capacity
+    intact.
+    """
+    ids = iter(["deleg_persist_fail", "deleg_after_fail"])
+    monkeypatch.setattr(ad, "_new_delegation_id", lambda: next(ids))
+
+    real_persist = ad._persist_dispatch
+    calls = {"n": 0}
+
+    def persist_that_fails_once(record):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RuntimeError("database is locked")
+        return real_persist(record)
+
+    monkeypatch.setattr(ad, "_persist_dispatch", persist_that_fails_once)
+
+    caplog.set_level(logging.WARNING, logger="tools.async_delegation")
+    res = ad.dispatch_async_delegation(
+        goal="never registered", context=None, toolsets=None, role="leaf", model="m",
+        session_key="", runner=lambda: {"status": "completed", "summary": "x"},
+        max_async_children=1,
+    )
+
+    assert res["status"] == "rejected"
+    assert res["reason"] == "not_scheduled"
+    assert "database is locked" in res["error"]
+    assert ad.active_count() == 0, "the unschedulable record must not keep a capacity slot"
+    assert ad.get_durable_delegation("deleg_persist_fail") is None, "no durable row may outlive it"
+    assert any("could not be persisted" in r.getMessage() for r in caplog.records), (
+        "a dropped background dispatch must be diagnosable from the log"
+    )
+
+    # The freed slot is real: the same cap accepts the next dispatch and it still delivers.
+    ok = ad.dispatch_async_delegation(
+        goal="after the failure", context=None, toolsets=None, role="leaf", model="m",
+        session_key="", runner=lambda: {"status": "completed", "summary": "x"},
+        max_async_children=1,
+    )
+    assert ok["status"] == "dispatched"
+    evt = _drain_for("deleg_after_fail", timeout=5.0)
+    assert evt is not None and evt["status"] == "completed"
+
+
+def test_completed_cap_never_evicts_a_stalling_delegation():
+    """The retention cap counts TERMINAL records only — `not in _LIVE_STATES`, not `!= running`.
+
+    A `stalling` record (stale monitor tripped, grace window still running) has no
+    `completed_at`, so under the old predicate it sorted to the FRONT by `dispatched_at` and was
+    the first record evicted. `_finalize` then bailed out on the missing record: the parent never
+    received the terminal event, the delegation vanished from the listing, and
+    `interrupt_all` / `interrupt_for_session` could no longer reach the runaway child.
+    """
+    now = time.time()
+    stalling_id = "deleg_stalling_victim"
+    with ad._records_lock:
+        ad._records.clear()
+        # Oldest dispatch, no completed_at: exactly the shape that got evicted first.
+        ad._records[stalling_id] = {
+            "delegation_id": stalling_id, "status": "stalling", "dispatched_at": now - 10_000.0,
+            "completed_at": None, "session_key": "", "origin_ui_session_id": "",
+            "_interrupted_at": now,
+        }
+        for i in range(ad._MAX_RETAINED_COMPLETED):
+            rid = f"deleg_done_{i}"
+            completed_at = now - 5_000.0 + i
+            ad._records[rid] = {
+                "delegation_id": rid, "status": "completed", "dispatched_at": completed_at,
+                "completed_at": completed_at,
+            }
+        ad._records["deleg_live"] = {
+            "delegation_id": "deleg_live", "status": "running", "dispatched_at": now,
+            "completed_at": None, "session_key": "", "origin_ui_session_id": "",
+        }
+
+    # One terminal finalize is what triggers the prune.
+    ad._finalize("deleg_live", {"status": "completed", "summary": "done"}, "completed")
+    assert _drain_for("deleg_live", timeout=5.0) is not None
+
+    with ad._records_lock:
+        assert stalling_id in ad._records, "a stalling delegation must survive the retention cap"
+
+    # ... and the monitor's force-finalize still reaches it, delivering the terminal event.
+    ad._finalize(stalling_id, {"status": "stalled", "exit_reason": "stalled", "error": "stalled"}, "stalled")
+    stalled_evt = _drain_for(stalling_id, timeout=5.0)
+    assert stalled_evt is not None, "the stalled terminal event must not be dropped"
+    assert stalled_evt["status"] == "stalled"

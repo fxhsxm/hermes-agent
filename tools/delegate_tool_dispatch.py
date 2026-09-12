@@ -12,7 +12,7 @@ from concurrent.futures import FIRST_COMPLETED, wait as _cf_wait
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
-from tools.delegate_tool_child_run import _detach_child, _fabricated_entry, _signal_child_stop
+from tools.delegate_tool_child_run import _attach_child, _detach_child, _fabricated_entry, _signal_child_stop
 from tools.delegate_tool_progress import (
     SUBAGENT_FAILURE_STATUSES, _clean_error_text, _print_completion_line, _quiet, format_batch_tag,
 )
@@ -168,13 +168,17 @@ _SYNC_FALLBACK_NOTES = {
         "SYNCHRONOUSLY and the result is included above. Raise "
         "delegation.max_concurrent_children in config.yaml to allow more concurrent background delegations."
     ),
+    "not_scheduled": (
+        "The background delegation could not be registered for detached delivery ({detail}), so the subagent(s) "
+        "ran SYNCHRONOUSLY and the result is included above."
+    ),
 }
 
-def _run_sync_with_note(batch: _Batch, reason: str) -> str:
+def _run_sync_with_note(batch: _Batch, reason: str, detail: str = "") -> str:
     """Inline fallback: run the batch now and explain why it was not detached."""
     result = _execute_and_aggregate(batch)
     if isinstance(result, dict):
-        result["note"] = _SYNC_FALLBACK_NOTES[reason]
+        result["note"] = _SYNC_FALLBACK_NOTES[reason].format(detail=detail)
     return json.dumps(result, ensure_ascii=False)
 
 def _resolve_async_wake_sid(origin_wake_sid: str) -> Optional[str]:
@@ -328,13 +332,22 @@ def _dispatch_background(batch: _Batch) -> str:
     )
     if dispatch.get("status") == "dispatched":
         return json.dumps(_dispatched_payload(dispatch, goals, child_agents, batch.live_paths), ensure_ascii=False)
-    # Pool at capacity / schedule failure: the async unit was never accepted, so just run inline (re-attaching to the
-    # parent list is not needed).
+    # The async unit was never accepted (pool at capacity, or registration failed), so the batch
+    # runs INLINE on this thread right now: the children must go back on the parent's interrupt
+    # list first. _run_children_parallel reports pending children as "interrupted" the moment the
+    # parent is interrupted and relies on that fan-out list to actually stop them; with the
+    # children detached, the entry claimed "interrupted" while the children kept running tools
+    # and writing files (the model then re-dispatches the work → duplicated side effects).
+    for c in child_agents:
+        _attach_child(parent_agent, c)
+    reason = str(dispatch.get("reason") or "at_capacity")
+    if reason not in _SYNC_FALLBACK_NOTES:
+        reason = "at_capacity"
     logger.info(
-        "delegate_task: async pool at capacity (%s); running the whole batch synchronously instead.",
+        "delegate_task: async dispatch not accepted (%s); running the whole batch synchronously instead.",
         dispatch.get("error", "rejected"),
     )
-    return _run_sync_with_note(batch, "at_capacity")
+    return _run_sync_with_note(batch, reason, detail=str(dispatch.get("error") or reason))
 
 def _run_batch(batch: _Batch, background: bool) -> str:
     """Tool result JSON: a dispatch handle (background) or the joined combined results."""
