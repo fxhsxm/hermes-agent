@@ -1,0 +1,332 @@
+{
+  "repository": "NousResearch/hermes-agent",
+  "branch": "docs/execution-architecture-map-20260912",
+  "baseline_sha": "fa24c030a5e48af63eb152a0b3b344a99e991244",
+  "final_sha": "27f392e6f8",
+  "origin_session": "agent:main:telegram:dm:5611439557:25530",
+  "origin_session_id": "20260912_114629_a77d1329",
+  "window_start": "2026-09-12T03:46:29+00:00",
+  "window_end": "2026-09-12T04:14:35+00:00",
+  "main_model": "deepseek-flash",
+  "child_model": "deepseek-flash",
+  "delegations": [
+    {
+      "delegation_id": "deleg_6409b63b",
+      "origin_session": "agent:main:telegram:dm:5611439557:25530",
+      "state": "completed",
+      "dispatched_at": 1789184904.212157,
+      "completed_at": 1789185811.7895677,
+      "parent_session_id": "20260912_114629_a77d1329",
+      "dispatched_iso": "2026-09-12T03:48:24+00:00",
+      "completed_iso": "2026-09-12T04:03:31+00:00",
+      "duration_s": 907.6,
+      "transcripts": {
+        "task-0.log": {
+          "tool_calls": 113,
+          "tool_counts": {
+            "terminal": 84,
+            "delegate_task": 1,
+            "write_file": 1,
+            "execute_code": 25,
+            "read_file": 2
+          },
+          "first_tool_at": "11:48:27",
+          "last_tool_at": "12:03:22"
+        }
+      },
+      "tool_calls": 113,
+      "tool_counts": {
+        "terminal": 84,
+        "delegate_task": 1,
+        "write_file": 1,
+        "execute_code": 25,
+        "read_file": 2
+      }
+    },
+    {
+      "delegation_id": "deleg_fa3eda9d",
+      "origin_session": "agent:main:telegram:dm:5611439557:25530",
+      "state": "completed",
+      "dispatched_at": 1789184904.2781868,
+      "completed_at": 1789185534.8056393,
+      "parent_session_id": "20260912_114629_a77d1329",
+      "dispatched_iso": "2026-09-12T03:48:24+00:00",
+      "completed_iso": "2026-09-12T03:58:54+00:00",
+      "duration_s": 630.5,
+      "transcripts": {
+        "task-0.log": {
+          "tool_calls": 87,
+          "tool_counts": {
+            "terminal": 43,
+            "read_file": 32,
+            "delegate_task": 1,
+            "write_file": 1,
+            "patch": 6,
+            "execute_code": 4
+          },
+          "first_tool_at": "11:48:27",
+          "last_tool_at": "11:58:44"
+        }
+      },
+      "tool_calls": 87,
+      "tool_counts": {
+        "terminal": 43,
+        "read_file": 32,
+        "delegate_task": 1,
+        "write_file": 1,
+        "patch": 6,
+        "execute_code": 4
+      }
+    },
+    {
+      "delegation_id": "deleg_d4aef69e",
+      "origin_session": "agent:main:telegram:dm:5611439557:25530",
+      "state": "completed",
+      "dispatched_at": 1789184904.345185,
+      "completed_at": 1789185404.0972357,
+      "parent_session_id": "20260912_114629_a77d1329",
+      "dispatched_iso": "2026-09-12T03:48:24+00:00",
+      "completed_iso": "2026-09-12T03:56:44+00:00",
+      "duration_s": 499.8,
+      "transcripts": {
+        "task-0.log": {
+          "tool_calls": 41,
+          "tool_counts": {
+            "terminal": 17,
+            "delegate_task": 1,
+            "read_file": 17,
+            "execute_code": 4,
+            "write_file": 1,
+            "patch": 1
+          },
+          "first_tool_at": "11:48:27",
+          "last_tool_at": "11:56:37"
+        }
+      },
+      "tool_calls": 41,
+      "tool_counts": {
+        "terminal": 17,
+        "delegate_task": 1,
+        "read_file": 17,
+        "execute_code": 4,
+        "write_file": 1,
+        "patch": 1
+      }
+    },
+    {
+      "delegation_id": "deleg_dcf2dc0b",
+      "origin_session": "agent:main:telegram:dm:5611439557:25530",
+      "state": "completed",
+      "dispatched_at": 1789184904.4117017,
+      "completed_at": 1789185613.6651976,
+      "parent_session_id": "20260912_114629_a77d1329",
+      "dispatched_iso": "2026-09-12T03:48:24+00:00",
+      "completed_iso": "2026-09-12T04:00:13+00:00",
+      "duration_s": 709.3,
+      "transcripts": {
+        "task-0.log": {
+          "tool_calls": 82,
+          "tool_counts": {
+            "terminal": 29,
+            "search_files": 1,
+            "delegate_task": 1,
+            "read_file": 29,
+            "execute_code": 12,
+            "write_file": 1,
+            "patch": 9
+          },
+          "first_tool_at": "11:48:26",
+          "last_tool_at": "12:00:05"
+        }
+      },
+      "tool_calls": 82,
+      "tool_counts": {
+        "terminal": 29,
+        "search_files": 1,
+        "delegate_task": 1,
+        "read_file": 29,
+        "execute_code": 12,
+        "write_file": 1,
+        "patch": 9
+      }
+    },
+    {
+      "delegation_id": "deleg_25292619",
+      "origin_session": "agent:main:telegram:dm:5611439557:25530",
+      "state": "completed",
+      "dispatched_at": 1789184915.0742195,
+      "completed_at": 1789185432.0381536,
+      "parent_session_id": "20260912_114629_a77d1329",
+      "dispatched_iso": "2026-09-12T03:48:35+00:00",
+      "completed_iso": "2026-09-12T03:57:12+00:00",
+      "duration_s": 517.0,
+      "transcripts": {
+        "task-0.log": {
+          "tool_calls": 52,
+          "tool_counts": {
+            "terminal": 18,
+            "search_files": 1,
+            "read_file": 19,
+            "delegate_task": 1,
+            "execute_code": 9,
+            "write_file": 1,
+            "patch": 3
+          },
+          "first_tool_at": "11:48:38",
+          "last_tool_at": "11:57:03"
+        }
+      },
+      "tool_calls": 52,
+      "tool_counts": {
+        "terminal": 18,
+        "search_files": 1,
+        "read_file": 19,
+        "delegate_task": 1,
+        "execute_code": 9,
+        "write_file": 1,
+        "patch": 3
+      }
+    },
+    {
+      "delegation_id": "deleg_0ae34388",
+      "origin_session": "agent:main:telegram:dm:5611439557:25530",
+      "state": "completed",
+      "dispatched_at": 1789184915.164758,
+      "completed_at": 1789186311.918032,
+      "parent_session_id": "20260912_114629_a77d1329",
+      "dispatched_iso": "2026-09-12T03:48:35+00:00",
+      "completed_iso": "2026-09-12T04:11:51+00:00",
+      "duration_s": 1396.8,
+      "transcripts": {
+        "task-0.log": {
+          "tool_calls": 45,
+          "tool_counts": {
+            "terminal": 35,
+            "read_file": 3,
+            "delegate_task": 3,
+            "execute_code": 3,
+            "write_file": 1
+          },
+          "first_tool_at": "11:48:38",
+          "last_tool_at": "12:11:44"
+        }
+      },
+      "tool_calls": 45,
+      "tool_counts": {
+        "terminal": 35,
+        "read_file": 3,
+        "delegate_task": 3,
+        "execute_code": 3,
+        "write_file": 1
+      }
+    }
+  ],
+  "max_parallel_delegations": 6,
+  "delegation_overlaps": [
+    {
+      "a": "deleg_6409b63b",
+      "b": "deleg_fa3eda9d",
+      "overlap_s": 630.5
+    },
+    {
+      "a": "deleg_6409b63b",
+      "b": "deleg_d4aef69e",
+      "overlap_s": 499.8
+    },
+    {
+      "a": "deleg_6409b63b",
+      "b": "deleg_dcf2dc0b",
+      "overlap_s": 709.3
+    },
+    {
+      "a": "deleg_6409b63b",
+      "b": "deleg_25292619",
+      "overlap_s": 517.0
+    },
+    {
+      "a": "deleg_6409b63b",
+      "b": "deleg_0ae34388",
+      "overlap_s": 896.6
+    },
+    {
+      "a": "deleg_fa3eda9d",
+      "b": "deleg_d4aef69e",
+      "overlap_s": 499.8
+    },
+    {
+      "a": "deleg_fa3eda9d",
+      "b": "deleg_dcf2dc0b",
+      "overlap_s": 630.4
+    },
+    {
+      "a": "deleg_fa3eda9d",
+      "b": "deleg_25292619",
+      "overlap_s": 517.0
+    },
+    {
+      "a": "deleg_fa3eda9d",
+      "b": "deleg_0ae34388",
+      "overlap_s": 619.6
+    },
+    {
+      "a": "deleg_d4aef69e",
+      "b": "deleg_dcf2dc0b",
+      "overlap_s": 499.7
+    },
+    {
+      "a": "deleg_d4aef69e",
+      "b": "deleg_25292619",
+      "overlap_s": 489.0
+    },
+    {
+      "a": "deleg_d4aef69e",
+      "b": "deleg_0ae34388",
+      "overlap_s": 488.9
+    },
+    {
+      "a": "deleg_dcf2dc0b",
+      "b": "deleg_25292619",
+      "overlap_s": 517.0
+    },
+    {
+      "a": "deleg_dcf2dc0b",
+      "b": "deleg_0ae34388",
+      "overlap_s": 698.5
+    },
+    {
+      "a": "deleg_25292619",
+      "b": "deleg_0ae34388",
+      "overlap_s": 516.9
+    }
+  ],
+  "turns": [
+    {
+      "started_at": 1789184788.0,
+      "assistant_msgs": 159,
+      "tool_results": 209,
+      "tools": {
+        "terminal": 136,
+        "skill_view": 3,
+        "search_files": 1,
+        "delegate_task": 10,
+        "write_file": 12,
+        "read_file": 1,
+        "patch": 43,
+        "execute_code": 3
+      },
+      "ended_at": 1789186475.96683,
+      "started_iso": "2026-09-12T03:46:28+00:00",
+      "ended_iso": "2026-09-12T04:14:35+00:00",
+      "duration_s": 1688.0
+    }
+  ],
+  "sources": {
+    "db": "C:\\Users\\Fwhne\\AppData\\Local\\hermes\\state.db",
+    "live_dir": "C:\\Users\\Fwhne\\AppData\\Local\\hermes\\cache\\delegation\\live",
+    "tables": [
+      "sessions",
+      "messages",
+      "async_delegations"
+    ]
+  }
+}
