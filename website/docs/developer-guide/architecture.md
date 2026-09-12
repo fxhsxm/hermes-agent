@@ -6,7 +6,14 @@ description: "Hermes Agent internals — major subsystems, execution paths, data
 
 # Architecture
 
-This page is the top-level map of Hermes Agent internals. Use it to orient yourself in the codebase, then dive into subsystem-specific docs for implementation details.
+This page is the top-level map of Hermes Agent internals. Use this to orient yourself in the codebase, then dive into subsystem-specific docs for implementation details.
+
+For the **end-to-end request execution path** — a user request entering the gateway, model
+inference, tool execution, state writes, and delivery back to the user — with line-level anchors
+verified against a pinned commit, read the runtime-verified map in
+[`docs/architecture/execution-map.md`](https://github.com/NousResearch/hermes-agent/blob/main/docs/architecture/execution-map.md)
+(companion: [`doc-runtime-deltas.md`](https://github.com/NousResearch/hermes-agent/blob/main/docs/architecture/doc-runtime-deltas.md)
+for documentation that had drifted from the runtime).
 
 ## System Overview
 
