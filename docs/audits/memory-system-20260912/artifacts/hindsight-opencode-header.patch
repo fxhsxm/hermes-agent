@@ -1,0 +1,43 @@
+--- a/engine\llm_wrapper.py
++++ b/engine\llm_wrapper.py
+@@ -571,6 +571,7 @@
+             groq_service_tier=groq_service_tier,
+             openai_service_tier=openai_service_tier,
+             extra_body=extra_body,
++            default_headers=default_headers,
+             ollama_num_ctx=ollama_num_ctx,
+             timeout=timeout,
+         )
+--- a/engine\providers\openai_compatible_llm.py
++++ b/engine\providers\openai_compatible_llm.py
+@@ -530,6 +530,7 @@
+         timeout: float | None = None,
+         groq_service_tier: str | None = None,
+         extra_body: dict[str, Any] | None = None,
++        default_headers: dict[str, Any] | None = None,
+         *,
+         ollama_num_ctx: int | None = None,
+         **kwargs: Any,
+--- a/engine\providers\openai_compatible_llm.py
++++ b/engine\providers\openai_compatible_llm.py
+@@ -640,6 +640,9 @@
+         self.ollama_num_ctx = _validate_ollama_num_ctx(ollama_num_ctx)
+         # User-configured extra body params (merged into every API call)
+         self._config_extra_body = extra_body or {}
++        # Operator-configured headers (llm_default_headers) applied to the SDK client,
++        # so header-gated relays (e.g. opencode-go's x-opencode-session) receive them.
++        self._default_headers: dict[str, Any] = dict(default_headers or {})
+ 
+         # Get timeout config
+         self.timeout = timeout or float(os.getenv(ENV_LLM_TIMEOUT, str(DEFAULT_LLM_TIMEOUT)))
+--- a/engine\providers\openai_compatible_llm.py
++++ b/engine\providers\openai_compatible_llm.py
+@@ -661,6 +661,8 @@
+                 client_kwargs["base_url"] = self.base_url
+         if self.timeout:
+             client_kwargs["timeout"] = self.timeout
++        if self._default_headers:
++            client_kwargs["default_headers"] = dict(self._default_headers)
+ 
+         self._client = AsyncOpenAI(**client_kwargs)
+         logger.info(

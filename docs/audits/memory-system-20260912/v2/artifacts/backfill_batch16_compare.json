@@ -1,0 +1,656 @@
+{
+ "tool": "compare_retrieval_runs",
+ "version": "1.0",
+ "min_margin": 0.05,
+ "dup_tolerance": 0.02,
+ "harness_versions": {
+  "before": "1.1",
+  "after": "1.1"
+ },
+ "before_file": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\batch16_before.json",
+ "after_file": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\batch16_after.json",
+ "before": {
+  "tag": "batch16_before",
+  "harness_version": "1.1",
+  "min_margin": 0.05,
+  "n_questions": 10,
+  "n_answered": 10,
+  "recall@1": 0.625,
+  "recall@3": 0.75,
+  "recall@10": 0.875,
+  "recall_n_scored": 8,
+  "dup_item_rate": 0.2084,
+  "dup_total_items": 403,
+  "decided_ids": [],
+  "unstable_ids": [
+   "q01-txt-encoding",
+   "q02-hindsight-port",
+   "q03-pg0-port",
+   "q04-reranker",
+   "q05-worker-id",
+   "q06-delivery-dir",
+   "q07-delegation-policy",
+   "q08-hindsight-llm",
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "no_ground_truth_ids": [
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "failed_questions": [],
+  "staleness_proxy_strict": 8,
+  "recall_without_backfill": {
+   "n_scored": 8,
+   "recall@1": {
+    "hits": 4,
+    "n": 8,
+    "rate": 0.5
+   },
+   "recall@3": {
+    "hits": 5,
+    "n": 8,
+    "rate": 0.625
+   },
+   "recall@10": {
+    "hits": 6,
+    "n": 8,
+    "rate": 0.75
+   },
+   "method": "identical responses, backfill-sourced items removed and the remaining items re-ranked; isolates the backfill's effect on answer rank without deleting any document"
+  },
+  "backfill_effect": {
+   "n_questions_with_backfill_items": 7,
+   "questions_where_backfill_changed_answer_rank": [
+    "q06-delivery-dir",
+    "q07-delegation-policy"
+   ],
+   "questions_top1_is_backfilled": [
+    "q07-delegation-policy"
+   ],
+   "total_backfilled_items_in_responses": 93,
+   "detail": {
+    "q01-txt-encoding": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 5
+    },
+    "q02-hindsight-port": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 3
+    },
+    "q03-pg0-port": {
+     "rank": 2,
+     "rank_without_backfill": 2,
+     "backfilled_items_in_response": 8
+    },
+    "q04-reranker": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 0
+    },
+    "q05-worker-id": {
+     "rank": null,
+     "rank_without_backfill": null,
+     "backfilled_items_in_response": 7
+    },
+    "q06-delivery-dir": {
+     "rank": 4,
+     "rank_without_backfill": 7,
+     "backfilled_items_in_response": 12
+    },
+    "q07-delegation-policy": {
+     "rank": 1,
+     "rank_without_backfill": null,
+     "backfilled_items_in_response": 48
+    },
+    "q08-hindsight-llm": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 0
+    }
+   }
+  },
+  "limitations": [],
+  "per_question": {
+   "q01-txt-encoding": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 34,
+    "margin_top1_top2": 0.0484,
+    "class": "unstable",
+    "answer_gap": 0.0484,
+    "answer_class": "unstable",
+    "top1_id": "8cad8944-ae92-45ce-99be-ade6cfc3ce7d"
+   },
+   "q02-hindsight-port": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 43,
+    "margin_top1_top2": 0.0086,
+    "class": "unstable",
+    "answer_gap": 0.0086,
+    "answer_class": "unstable",
+    "top1_id": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c"
+   },
+   "q03-pg0-port": {
+    "rank": 2,
+    "present": true,
+    "hit@1": false,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 43,
+    "margin_top1_top2": 0.0432,
+    "class": "unstable",
+    "answer_gap": 0.0086,
+    "answer_class": "unstable",
+    "top1_id": "33ea0688-c00f-473d-a052-b1d4c154a641"
+   },
+   "q04-reranker": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 38,
+    "margin_top1_top2": 0.0166,
+    "class": "unstable",
+    "answer_gap": 0.0166,
+    "answer_class": "unstable",
+    "top1_id": "ea39aa73-9a0a-4109-be44-e15850002fbe"
+   },
+   "q05-worker-id": {
+    "rank": null,
+    "present": false,
+    "hit@1": false,
+    "hit@3": false,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 36,
+    "margin_top1_top2": 0.0063,
+    "class": "unstable",
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": "1576f576-ff8f-4298-a300-efff333c6b03"
+   },
+   "q06-delivery-dir": {
+    "rank": 4,
+    "present": true,
+    "hit@1": false,
+    "hit@3": false,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 40,
+    "margin_top1_top2": 0.0041,
+    "class": "unstable",
+    "answer_gap": 0.0256,
+    "answer_class": "unstable",
+    "top1_id": "f5ced405-a8eb-4a98-9e75-50993bf7c3f9"
+   },
+   "q07-delegation-policy": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 51,
+    "margin_top1_top2": 0.0259,
+    "class": "unstable",
+    "answer_gap": 0.026,
+    "answer_class": "unstable",
+    "top1_id": "f7e3b4ff-97ea-4e58-bc6f-4b886d07f69b"
+   },
+   "q08-hindsight-llm": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 43,
+    "margin_top1_top2": 0.0469,
+    "class": "unstable",
+    "answer_gap": 0.0469,
+    "answer_class": "unstable",
+    "top1_id": "ea39aa73-9a0a-4109-be44-e15850002fbe"
+   },
+   "q09-liveness-user-pref": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 47,
+    "margin_top1_top2": 0.0151,
+    "class": "unstable",
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": "6c51507f-7f98-4e00-a641-b0e3bf3d1ce9"
+   },
+   "q10-liveness-memory": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 28,
+    "margin_top1_top2": 0.0296,
+    "class": "unstable",
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": "fef3206d-892b-4857-b1f0-f94a231b48ce"
+   }
+  }
+ },
+ "after": {
+  "tag": "batch16_after",
+  "harness_version": "1.1",
+  "min_margin": 0.05,
+  "n_questions": 10,
+  "n_answered": 10,
+  "recall@1": 0.625,
+  "recall@3": 0.75,
+  "recall@10": 0.875,
+  "recall_n_scored": 8,
+  "dup_item_rate": 0.2084,
+  "dup_total_items": 403,
+  "decided_ids": [],
+  "unstable_ids": [
+   "q01-txt-encoding",
+   "q02-hindsight-port",
+   "q03-pg0-port",
+   "q04-reranker",
+   "q05-worker-id",
+   "q06-delivery-dir",
+   "q07-delegation-policy",
+   "q08-hindsight-llm",
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "no_ground_truth_ids": [
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "failed_questions": [],
+  "staleness_proxy_strict": 8,
+  "recall_without_backfill": {
+   "n_scored": 8,
+   "recall@1": {
+    "hits": 4,
+    "n": 8,
+    "rate": 0.5
+   },
+   "recall@3": {
+    "hits": 5,
+    "n": 8,
+    "rate": 0.625
+   },
+   "recall@10": {
+    "hits": 6,
+    "n": 8,
+    "rate": 0.75
+   },
+   "method": "identical responses, backfill-sourced items removed and the remaining items re-ranked; isolates the backfill's effect on answer rank without deleting any document"
+  },
+  "backfill_effect": {
+   "n_questions_with_backfill_items": 7,
+   "questions_where_backfill_changed_answer_rank": [
+    "q06-delivery-dir",
+    "q07-delegation-policy"
+   ],
+   "questions_top1_is_backfilled": [
+    "q07-delegation-policy"
+   ],
+   "total_backfilled_items_in_responses": 97,
+   "detail": {
+    "q01-txt-encoding": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 6
+    },
+    "q02-hindsight-port": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 3
+    },
+    "q03-pg0-port": {
+     "rank": 2,
+     "rank_without_backfill": 2,
+     "backfilled_items_in_response": 8
+    },
+    "q04-reranker": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 0
+    },
+    "q05-worker-id": {
+     "rank": null,
+     "rank_without_backfill": null,
+     "backfilled_items_in_response": 9
+    },
+    "q06-delivery-dir": {
+     "rank": 4,
+     "rank_without_backfill": 7,
+     "backfilled_items_in_response": 15
+    },
+    "q07-delegation-policy": {
+     "rank": 1,
+     "rank_without_backfill": null,
+     "backfilled_items_in_response": 48
+    },
+    "q08-hindsight-llm": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 0
+    }
+   }
+  },
+  "limitations": [],
+  "per_question": {
+   "q01-txt-encoding": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 36,
+    "margin_top1_top2": 0.0484,
+    "class": "unstable",
+    "answer_gap": 0.0484,
+    "answer_class": "unstable",
+    "top1_id": "8cad8944-ae92-45ce-99be-ade6cfc3ce7d"
+   },
+   "q02-hindsight-port": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 43,
+    "margin_top1_top2": 0.0086,
+    "class": "unstable",
+    "answer_gap": 0.0086,
+    "answer_class": "unstable",
+    "top1_id": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c"
+   },
+   "q03-pg0-port": {
+    "rank": 2,
+    "present": true,
+    "hit@1": false,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 43,
+    "margin_top1_top2": 0.0432,
+    "class": "unstable",
+    "answer_gap": 0.0086,
+    "answer_class": "unstable",
+    "top1_id": "33ea0688-c00f-473d-a052-b1d4c154a641"
+   },
+   "q04-reranker": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 38,
+    "margin_top1_top2": 0.0166,
+    "class": "unstable",
+    "answer_gap": 0.0166,
+    "answer_class": "unstable",
+    "top1_id": "ea39aa73-9a0a-4109-be44-e15850002fbe"
+   },
+   "q05-worker-id": {
+    "rank": null,
+    "present": false,
+    "hit@1": false,
+    "hit@3": false,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 35,
+    "margin_top1_top2": 0.0063,
+    "class": "unstable",
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": "1576f576-ff8f-4298-a300-efff333c6b03"
+   },
+   "q06-delivery-dir": {
+    "rank": 4,
+    "present": true,
+    "hit@1": false,
+    "hit@3": false,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 42,
+    "margin_top1_top2": 0.0041,
+    "class": "unstable",
+    "answer_gap": 0.0256,
+    "answer_class": "unstable",
+    "top1_id": "f5ced405-a8eb-4a98-9e75-50993bf7c3f9"
+   },
+   "q07-delegation-policy": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 52,
+    "margin_top1_top2": 0.0259,
+    "class": "unstable",
+    "answer_gap": 0.026,
+    "answer_class": "unstable",
+    "top1_id": "f7e3b4ff-97ea-4e58-bc6f-4b886d07f69b"
+   },
+   "q08-hindsight-llm": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 43,
+    "margin_top1_top2": 0.0469,
+    "class": "unstable",
+    "answer_gap": 0.0469,
+    "answer_class": "unstable",
+    "top1_id": "ea39aa73-9a0a-4109-be44-e15850002fbe"
+   },
+   "q09-liveness-user-pref": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 43,
+    "margin_top1_top2": 0.0151,
+    "class": "unstable",
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": "6c51507f-7f98-4e00-a641-b0e3bf3d1ce9"
+   },
+   "q10-liveness-memory": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 28,
+    "margin_top1_top2": 0.0296,
+    "class": "unstable",
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": "fef3206d-892b-4857-b1f0-f94a231b48ce"
+   }
+  }
+ },
+ "per_question": [
+  {
+   "id": "q01-txt-encoding",
+   "rank_before": 1,
+   "rank_after": 1,
+   "delta": 0,
+   "class_before": "unstable",
+   "class_after": "unstable",
+   "answer_gap_before": 0.0484,
+   "answer_gap_after": 0.0484,
+   "decided": false,
+   "verdict": "SAME",
+   "note": "rank 1 unchanged"
+  },
+  {
+   "id": "q02-hindsight-port",
+   "rank_before": 1,
+   "rank_after": 1,
+   "delta": 0,
+   "class_before": "unstable",
+   "class_after": "unstable",
+   "answer_gap_before": 0.0086,
+   "answer_gap_after": 0.0086,
+   "decided": false,
+   "verdict": "SAME",
+   "note": "rank 1 unchanged"
+  },
+  {
+   "id": "q03-pg0-port",
+   "rank_before": 2,
+   "rank_after": 2,
+   "delta": 0,
+   "class_before": "unstable",
+   "class_after": "unstable",
+   "answer_gap_before": 0.0086,
+   "answer_gap_after": 0.0086,
+   "decided": false,
+   "verdict": "SAME",
+   "note": "rank 2 unchanged"
+  },
+  {
+   "id": "q04-reranker",
+   "rank_before": 1,
+   "rank_after": 1,
+   "delta": 0,
+   "class_before": "unstable",
+   "class_after": "unstable",
+   "answer_gap_before": 0.0166,
+   "answer_gap_after": 0.0166,
+   "decided": false,
+   "verdict": "SAME",
+   "note": "rank 1 unchanged"
+  },
+  {
+   "id": "q05-worker-id",
+   "rank_before": null,
+   "rank_after": null,
+   "delta": null,
+   "class_before": "unstable",
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": null,
+   "decided": false,
+   "verdict": "SAME_ABSENT",
+   "note": "answer absent in both runs (a coverage gap, not a ranking change)"
+  },
+  {
+   "id": "q06-delivery-dir",
+   "rank_before": 4,
+   "rank_after": 4,
+   "delta": 0,
+   "class_before": "unstable",
+   "class_after": "unstable",
+   "answer_gap_before": 0.0256,
+   "answer_gap_after": 0.0256,
+   "decided": false,
+   "verdict": "SAME",
+   "note": "rank 4 unchanged"
+  },
+  {
+   "id": "q07-delegation-policy",
+   "rank_before": 1,
+   "rank_after": 1,
+   "delta": 0,
+   "class_before": "unstable",
+   "class_after": "unstable",
+   "answer_gap_before": 0.026,
+   "answer_gap_after": 0.026,
+   "decided": false,
+   "verdict": "SAME",
+   "note": "rank 1 unchanged"
+  },
+  {
+   "id": "q08-hindsight-llm",
+   "rank_before": 1,
+   "rank_after": 1,
+   "delta": 0,
+   "class_before": "unstable",
+   "class_after": "unstable",
+   "answer_gap_before": 0.0469,
+   "answer_gap_after": 0.0469,
+   "decided": false,
+   "verdict": "SAME",
+   "note": "rank 1 unchanged"
+  },
+  {
+   "id": "q09-liveness-user-pref",
+   "rank_before": null,
+   "rank_after": null,
+   "delta": null,
+   "class_before": "unstable",
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": null,
+   "decided": false,
+   "verdict": "no_ground_truth",
+   "note": "question carries no expect/expected list (liveness check)"
+  },
+  {
+   "id": "q10-liveness-memory",
+   "rank_before": null,
+   "rank_after": null,
+   "delta": null,
+   "class_before": "unstable",
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": null,
+   "decided": false,
+   "verdict": "no_ground_truth",
+   "note": "question carries no expect/expected list (liveness check)"
+  }
+ ],
+ "flipped": [],
+ "regressions": [],
+ "unstable_flips": [],
+ "improved": [],
+ "counts": {
+  "SAME": 7,
+  "SAME_ABSENT": 1,
+  "no_ground_truth": 2
+ },
+ "checks": {
+  "recall@3_not_worse": true,
+  "no_answer_lost": true,
+  "no_decided_rank_regression": true,
+  "all_questions_answered": true,
+  "dup_within_tolerance": true
+ },
+ "all_ok": true,
+ "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."
+}

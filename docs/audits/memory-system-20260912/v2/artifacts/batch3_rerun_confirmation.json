@@ -1,0 +1,2689 @@
+{
+ "harness_version": "1.0",
+ "run": {
+  "started_at": "2026-09-12T17:08:39.577132+00:00",
+  "finished_at": "2026-09-12T17:08:48.081087+00:00",
+  "duration_s": 8.5,
+  "api": "http://127.0.0.1:8888",
+  "api_version": "0.9.2",
+  "features": {
+   "observations": true,
+   "mcp": true,
+   "worker": true,
+   "bank_config_api": true,
+   "bank_llm_health": false,
+   "file_upload_api": true,
+   "document_export_api": true,
+   "document_import_api": true,
+   "audit_log": false,
+   "llm_trace": true,
+   "store_document_text": true
+  },
+  "bank": "fwh-main",
+  "questions_file": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\wt\\docs\\audits\\memory-system-20260912\\v2\\retrieval_questions.json",
+  "question_count": 10,
+  "repeat": 1,
+  "reflect_flag": false,
+  "tag": "noise-check",
+  "recall_request_body_shape": {
+   "query": "<string>"
+  },
+  "recall_endpoint": "/v1/default/banks/fwh-main/memories/recall",
+  "text_redacted": true,
+  "redacted_text_fields": 202,
+  "redaction_note": "memory text removed before this artifact was committed to a public repository; numbers, ids and classes are unchanged"
+ },
+ "bank_snapshot": {
+  "stats": {
+   "bank_id": "fwh-main",
+   "total_nodes": 5998,
+   "total_links": 86732,
+   "total_documents": 295,
+   "nodes_by_fact_type": {
+    "world": 2068,
+    "experience": 1869,
+    "observation": 2061
+   },
+   "links_by_link_type": {
+    "entity": 4859,
+    "semantic": 21911,
+    "temporal": 59175,
+    "caused_by": 787
+   },
+   "links_by_fact_type": {},
+   "links_breakdown": {},
+   "pending_operations": 1,
+   "failed_operations": 332,
+   "operations_by_status": {
+    "failed": 332,
+    "pending": 1,
+    "completed": 1879,
+    "processing": 1
+   },
+   "last_consolidated_at": "2026-09-12T17:08:06.578361+00:00",
+   "last_memory_write_at": "2026-09-12T17:08:06.567245+00:00",
+   "pending_consolidation": 230,
+   "failed_consolidation": 1,
+   "total_observations": 2061
+  },
+  "config": {
+   "llm_gemini_safety_settings": null,
+   "mcp_enabled_tools": null,
+   "retain_chunk_size": 3000,
+   "retain_structured_chunk_size": null,
+   "retain_extraction_mode": "concise",
+   "retain_mission": null,
+   "retain_custom_instructions": null,
+   "retain_default_strategy": null,
+   "retain_strategies": null,
+   "retain_chunk_batch_size": 100,
+   "store_document_text": true,
+   "enable_observations": true,
+   "enable_auto_consolidation": true,
+   "mental_model_min_refresh_interval_seconds": 0,
+   "consolidation_max_memories_per_round": 100,
+   "consolidation_llm_batch_size": 8,
+   "consolidation_llm_parallelism": 4,
+   "consolidation_source_facts_max_tokens": 4096,
+   "consolidation_source_facts_max_tokens_per_observation": 256,
+   "observations_mission": null,
+   "max_observations_per_scope": -1,
+   "observation_scope_limits": null,
+   "entity_labels": null,
+   "entities_allow_free_form": true,
+   "memory_defense": null,
+   "reflect_mission": null,
+   "reflect_source_facts_max_tokens": -1,
+   "enable_temporal_retrieval": true,
+   "enable_graph_retrieval": true,
+   "enable_reranking": true,
+   "recall_include_chunks": true,
+   "recall_max_tokens": 2048,
+   "recall_chunks_max_tokens": 1000,
+   "recall_budget_function": "fixed",
+   "recall_budget_fixed_low": 100,
+   "recall_budget_fixed_mid": 300,
+   "recall_budget_fixed_high": 1000,
+   "recall_budget_adaptive_low": 0.025,
+   "recall_budget_adaptive_mid": 0.075,
+   "recall_budget_adaptive_high": 0.25,
+   "recall_budget_min": 20,
+   "recall_budget_max": 2000,
+   "disposition_skepticism": null,
+   "disposition_literalism": null,
+   "disposition_empathy": null,
+   "audit_log_enabled": false
+  },
+  "banks": [
+   {
+    "bank_id": "fwh-main",
+    "name": "fwh-main",
+    "disposition": {
+     "skepticism": 3,
+     "literalism": 3,
+     "empathy": 3
+    },
+    "mission": "",
+    "created_at": "2026-08-12T22:29:54.142220+00:00",
+    "updated_at": "2026-08-12T22:29:54.142220+00:00",
+    "fact_count": 6006,
+    "last_document_at": "2026-09-12T17:07:52.732861+00:00",
+    "last_write_at": "2026-09-12T17:08:29.427098+00:00"
+   },
+   {
+    "bank_id": "fwh-audit-sandbox",
+    "name": "fwh-audit-sandbox",
+    "disposition": {
+     "skepticism": 3,
+     "literalism": 3,
+     "empathy": 3
+    },
+    "mission": "",
+    "created_at": "2026-09-12T04:47:49.310582+00:00",
+    "updated_at": "2026-09-12T04:48:56.337431+00:00",
+    "fact_count": 182,
+    "last_document_at": "2026-09-12T16:41:15.686811+00:00",
+    "last_write_at": "2026-09-12T16:42:42.274938+00:00"
+   }
+  ]
+ },
+ "aggregate": {
+  "bank": "fwh-main",
+  "n_questions": 10,
+  "n_answered": 10,
+  "duplication": {
+   "total_duplicate_pairs": 41,
+   "identical_pairs": 19,
+   "fuzzy_pairs": 22,
+   "observation_vs_raw_twin_pairs": 41,
+   "items_in_a_duplicate_pair": 82,
+   "total_items_returned": 372,
+   "overall_duplicate_item_rate": 0.2204,
+   "mean_per_question_duplicate_item_rate": 0.2195,
+   "questions_with_any_duplicate": 10,
+   "questions_with_observation_vs_raw_twin": 10
+  },
+  "staleness_proxy": {
+   "questions_top1_superseded_proxy_strict": 9,
+   "questions_top1_superseded_proxy_strict_ids": [
+    "q01-txt-encoding",
+    "q02-hindsight-port",
+    "q03-pg0-port",
+    "q04-reranker",
+    "q05-worker-id",
+    "q06-delivery-dir",
+    "q07-delegation-policy",
+    "q08-hindsight-llm",
+    "q10-liveness-memory"
+   ],
+   "questions_top1_superseded_proxy_loose": 0,
+   "rate_strict": 0.9,
+   "rate_loose": 0.0,
+   "questions_top1_is_raw": 3
+  },
+  "latency": {
+   "mean_s": 0.7142,
+   "median_s": 0.6624,
+   "p95_s": 0.9484,
+   "min_s": 0.6338,
+   "max_s": 0.9484,
+   "total_retries": 0
+  },
+  "reranker": {
+   "questions_with_reranker_engaged": 10,
+   "mean_reranker_engagement_fraction": 1.0,
+   "questions_reranker_changed_top1_vs_semantic": 7,
+   "mean_top1_final": 0.7332
+  },
+  "failed_questions": []
+ },
+ "questions": [
+  {
+   "id": "q01-txt-encoding",
+   "lang": "yue",
+   "query": "TXT 檔案交付預設用咩編碼？",
+   "runs": [
+    {
+     "repeat": 1,
+     "latency_s": 0.7549,
+     "retries": 0,
+     "n_results": 35,
+     "duplication": {
+      "duplicate_pairs": 5,
+      "identical_pairs": 0,
+      "fuzzy_pairs": 5,
+      "observation_vs_raw_twin_pairs": 5,
+      "items_in_duplicate_pair": 10,
+      "duplicate_item_rate": 0.2857,
+      "pairs": [
+       {
+        "i": 3,
+        "j": 4,
+        "a_id": "9f00cb9f-99c1-4783-991f-576f358a5e76",
+        "a_type": "observation",
+        "b_id": "e6179110-6f5d-4f61-ba63-bd589c7e7323",
+        "b_type": "world",
+        "similarity": 0.9848,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "strict",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 84 chars]",
+        "b_text": "[redacted 81 chars]"
+       },
+       {
+        "i": 10,
+        "j": 11,
+        "a_id": "97a10f4d-83a0-45a8-93bc-9718e2836724",
+        "a_type": "experience",
+        "b_id": "9c6a2d3e-335e-42a3-9943-39ffc2aeaa38",
+        "b_type": "observation",
+        "similarity": 0.9252,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 123 chars]",
+        "b_text": "[redacted 91 chars]"
+       },
+       {
+        "i": 12,
+        "j": 13,
+        "a_id": "7307beaa-a505-4ac1-96d1-1ce8f34798bc",
+        "a_type": "experience",
+        "b_id": "bb5b4bff-2ebd-4008-bd2b-4cf7d3241726",
+        "b_type": "observation",
+        "similarity": 0.913,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 17,
+        "j": 18,
+        "a_id": "cc09ddc4-e9c9-4a6e-a489-f259a3cd75a3",
+        "a_type": "world",
+        "b_id": "3a88c1f0-da1a-4dae-8a03-f6bad0646e33",
+        "b_type": "observation",
+        "similarity": 0.9032,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 113 chars]",
+        "b_text": "[redacted 88 chars]"
+       },
+       {
+        "i": 24,
+        "j": 25,
+        "a_id": "0c9b8d68-220f-4785-8981-45d7008d99b1",
+        "a_type": "observation",
+        "b_id": "c5bb51c2-b135-4ed4-af61-5329528c360a",
+        "b_type": "world",
+        "similarity": 0.987,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 44 chars]",
+        "b_text": "[redacted 74 chars]"
+       }
+      ]
+     },
+     "reranker": {
+      "n_items": 35,
+      "n_with_scores": 35,
+      "n_with_reranker_score": 35,
+      "reranker_engaged": true,
+      "mean_reranker": 0.5077,
+      "mean_semantic": 0.3741,
+      "mean_final": 0.553,
+      "top1_id_final": "8cad8944-ae92-45ce-99be-ade6cfc3ce7d",
+      "top1_id_by_reranker": "8cad8944-ae92-45ce-99be-ade6cfc3ce7d",
+      "top1_id_by_semantic": "4f790579-401e-435e-b45f-8ac3ec769cb5",
+      "reranker_changed_top1_vs_semantic": true,
+      "top3_final": [
+       0.8269,
+       0.7785,
+       0.7754
+      ]
+     },
+     "ranking_proxy": {
+      "triggered_strict": true,
+      "triggered_loose": false,
+      "n_newer_siblings_flagged": 16,
+      "evidence": {
+       "sibling_rank": 14,
+       "sibling_id": "35ffc3b7-a9bc-4aef-92e4-77b6ae11e090",
+       "sibling_type": "observation",
+       "sibling_mentioned_at": "2026-08-14T10:07:12.484207+00:00",
+       "shared_entities": [
+        "hermes agent"
+       ],
+       "token_overlap": 0.034,
+       "differing_value_tokens": [
+        "10",
+        "100llm",
+        "15k",
+        "1758",
+        "33564",
+        "33kb",
+        "34kb",
+        "6"
+       ],
+       "supersede_verb": false,
+       "sibling_text": "[redacted 220 chars]"
+      }
+     },
+     "top1": {
+      "id": "8cad8944-ae92-45ce-99be-ade6cfc3ce7d",
+      "type": "observation",
+      "mentioned_at": "2026-08-13T00:49:56.015897+00:00",
+      "final": 0.826944414152822,
+      "text": "[redacted 240 chars]"
+     },
+     "top1_is_raw": false,
+     "newer_siblings_in_response": 25
+    }
+   ],
+   "ok": true,
+   "n_results": 35,
+   "duplication": {
+    "duplicate_pairs": 5,
+    "identical_pairs": 0,
+    "fuzzy_pairs": 5,
+    "observation_vs_raw_twin_pairs": 5,
+    "items_in_duplicate_pair": 10,
+    "duplicate_item_rate": 0.2857,
+    "pairs": [
+     {
+      "i": 3,
+      "j": 4,
+      "a_id": "9f00cb9f-99c1-4783-991f-576f358a5e76",
+      "a_type": "observation",
+      "b_id": "e6179110-6f5d-4f61-ba63-bd589c7e7323",
+      "b_type": "world",
+      "similarity": 0.9848,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "strict",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 84 chars]",
+      "b_text": "[redacted 81 chars]"
+     },
+     {
+      "i": 10,
+      "j": 11,
+      "a_id": "97a10f4d-83a0-45a8-93bc-9718e2836724",
+      "a_type": "experience",
+      "b_id": "9c6a2d3e-335e-42a3-9943-39ffc2aeaa38",
+      "b_type": "observation",
+      "similarity": 0.9252,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 123 chars]",
+      "b_text": "[redacted 91 chars]"
+     },
+     {
+      "i": 12,
+      "j": 13,
+      "a_id": "7307beaa-a505-4ac1-96d1-1ce8f34798bc",
+      "a_type": "experience",
+      "b_id": "bb5b4bff-2ebd-4008-bd2b-4cf7d3241726",
+      "b_type": "observation",
+      "similarity": 0.913,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 17,
+      "j": 18,
+      "a_id": "cc09ddc4-e9c9-4a6e-a489-f259a3cd75a3",
+      "a_type": "world",
+      "b_id": "3a88c1f0-da1a-4dae-8a03-f6bad0646e33",
+      "b_type": "observation",
+      "similarity": 0.9032,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 113 chars]",
+      "b_text": "[redacted 88 chars]"
+     },
+     {
+      "i": 24,
+      "j": 25,
+      "a_id": "0c9b8d68-220f-4785-8981-45d7008d99b1",
+      "a_type": "observation",
+      "b_id": "c5bb51c2-b135-4ed4-af61-5329528c360a",
+      "b_type": "world",
+      "similarity": 0.987,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 44 chars]",
+      "b_text": "[redacted 74 chars]"
+     }
+    ]
+   },
+   "reranker": {
+    "n_items": 35,
+    "n_with_scores": 35,
+    "n_with_reranker_score": 35,
+    "reranker_engaged": true,
+    "mean_reranker": 0.5077,
+    "mean_semantic": 0.3741,
+    "mean_final": 0.553,
+    "top1_id_final": "8cad8944-ae92-45ce-99be-ade6cfc3ce7d",
+    "top1_id_by_reranker": "8cad8944-ae92-45ce-99be-ade6cfc3ce7d",
+    "top1_id_by_semantic": "4f790579-401e-435e-b45f-8ac3ec769cb5",
+    "reranker_changed_top1_vs_semantic": true,
+    "top3_final": [
+     0.8269,
+     0.7785,
+     0.7754
+    ]
+   },
+   "ranking_proxy": {
+    "triggered_strict": true,
+    "triggered_loose": false,
+    "n_newer_siblings_flagged": 16,
+    "evidence": {
+     "sibling_rank": 14,
+     "sibling_id": "35ffc3b7-a9bc-4aef-92e4-77b6ae11e090",
+     "sibling_type": "observation",
+     "sibling_mentioned_at": "2026-08-14T10:07:12.484207+00:00",
+     "shared_entities": [
+      "hermes agent"
+     ],
+     "token_overlap": 0.034,
+     "differing_value_tokens": [
+      "10",
+      "100llm",
+      "15k",
+      "1758",
+      "33564",
+      "33kb",
+      "34kb",
+      "6"
+     ],
+     "supersede_verb": false,
+     "sibling_text": "[redacted 220 chars]"
+    }
+   },
+   "top1": {
+    "id": "8cad8944-ae92-45ce-99be-ade6cfc3ce7d",
+    "type": "observation",
+    "mentioned_at": "2026-08-13T00:49:56.015897+00:00",
+    "final": 0.826944414152822,
+    "text": "[redacted 240 chars]"
+   },
+   "top1_is_raw": false,
+   "latency_s": 0.7549
+  },
+  {
+   "id": "q02-hindsight-port",
+   "lang": "zh-Hant",
+   "query": "[REDACTED:c54e56b18744]",
+   "runs": [
+    {
+     "repeat": 1,
+     "latency_s": 0.9484,
+     "retries": 0,
+     "n_results": 44,
+     "duplication": {
+      "duplicate_pairs": 3,
+      "identical_pairs": 1,
+      "fuzzy_pairs": 2,
+      "observation_vs_raw_twin_pairs": 3,
+      "items_in_duplicate_pair": 6,
+      "duplicate_item_rate": 0.1364,
+      "pairs": [
+       {
+        "i": 1,
+        "j": 2,
+        "a_id": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+        "a_type": "observation",
+        "b_id": "0de49923-677c-4e3f-bfe8-649d92172841",
+        "b_type": "world",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "strict",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 6,
+        "j": 7,
+        "a_id": "87d3a544-7c93-4376-8259-ace7b52491fa",
+        "a_type": "observation",
+        "b_id": "7a19bf6e-52d4-404c-8a2a-6c9e621454f5",
+        "b_type": "experience",
+        "similarity": 0.9313,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 10,
+        "j": 11,
+        "a_id": "8042844e-e849-4893-be2e-5a2518d86089",
+        "a_type": "world",
+        "b_id": "349c39ff-a740-4d27-bf26-1787234f4f7c",
+        "b_type": "observation",
+        "similarity": 0.994,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "strict",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 104 chars]",
+        "b_text": "[redacted 105 chars]"
+       }
+      ]
+     },
+     "reranker": {
+      "n_items": 44,
+      "n_with_scores": 44,
+      "n_with_reranker_score": 44,
+      "reranker_engaged": true,
+      "mean_reranker": 0.5095,
+      "mean_semantic": 0.4503,
+      "mean_final": 0.5576,
+      "top1_id_final": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+      "top1_id_by_reranker": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+      "top1_id_by_semantic": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+      "reranker_changed_top1_vs_semantic": false,
+      "top3_final": [
+       0.8465,
+       0.8379,
+       0.7529
+      ]
+     },
+     "ranking_proxy": {
+      "triggered_strict": true,
+      "triggered_loose": false,
+      "n_newer_siblings_flagged": 3,
+      "evidence": {
+       "sibling_rank": 38,
+       "sibling_id": "aaaa9882-e1c4-478b-9a06-16e0451576df",
+       "sibling_type": "observation",
+       "sibling_mentioned_at": "2026-09-12T16:49:41.080000+00:00",
+       "shared_entities": [
+        "hindsight"
+       ],
+       "token_overlap": 0.048,
+       "differing_value_tokens": [
+        "8888hindsightmcp"
+       ],
+       "supersede_verb": false,
+       "sibling_text": "[redacted 149 chars]"
+      }
+     },
+     "top1": {
+      "id": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+      "type": "observation",
+      "mentioned_at": "2026-09-12T16:49:41.040000+00:00",
+      "final": 0.8464788092392828,
+      "text": "[redacted 179 chars]"
+     },
+     "top1_is_raw": false,
+     "newer_siblings_in_response": 3
+    }
+   ],
+   "ok": true,
+   "n_results": 44,
+   "duplication": {
+    "duplicate_pairs": 3,
+    "identical_pairs": 1,
+    "fuzzy_pairs": 2,
+    "observation_vs_raw_twin_pairs": 3,
+    "items_in_duplicate_pair": 6,
+    "duplicate_item_rate": 0.1364,
+    "pairs": [
+     {
+      "i": 1,
+      "j": 2,
+      "a_id": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+      "a_type": "observation",
+      "b_id": "0de49923-677c-4e3f-bfe8-649d92172841",
+      "b_type": "world",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "strict",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 6,
+      "j": 7,
+      "a_id": "87d3a544-7c93-4376-8259-ace7b52491fa",
+      "a_type": "observation",
+      "b_id": "7a19bf6e-52d4-404c-8a2a-6c9e621454f5",
+      "b_type": "experience",
+      "similarity": 0.9313,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 10,
+      "j": 11,
+      "a_id": "8042844e-e849-4893-be2e-5a2518d86089",
+      "a_type": "world",
+      "b_id": "349c39ff-a740-4d27-bf26-1787234f4f7c",
+      "b_type": "observation",
+      "similarity": 0.994,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "strict",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 104 chars]",
+      "b_text": "[redacted 105 chars]"
+     }
+    ]
+   },
+   "reranker": {
+    "n_items": 44,
+    "n_with_scores": 44,
+    "n_with_reranker_score": 44,
+    "reranker_engaged": true,
+    "mean_reranker": 0.5095,
+    "mean_semantic": 0.4503,
+    "mean_final": 0.5576,
+    "top1_id_final": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+    "top1_id_by_reranker": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+    "top1_id_by_semantic": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+    "reranker_changed_top1_vs_semantic": false,
+    "top3_final": [
+     0.8465,
+     0.8379,
+     0.7529
+    ]
+   },
+   "ranking_proxy": {
+    "triggered_strict": true,
+    "triggered_loose": false,
+    "n_newer_siblings_flagged": 3,
+    "evidence": {
+     "sibling_rank": 38,
+     "sibling_id": "aaaa9882-e1c4-478b-9a06-16e0451576df",
+     "sibling_type": "observation",
+     "sibling_mentioned_at": "2026-09-12T16:49:41.080000+00:00",
+     "shared_entities": [
+      "hindsight"
+     ],
+     "token_overlap": 0.048,
+     "differing_value_tokens": [
+      "8888hindsightmcp"
+     ],
+     "supersede_verb": false,
+     "sibling_text": "[redacted 149 chars]"
+    }
+   },
+   "top1": {
+    "id": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+    "type": "observation",
+    "mentioned_at": "2026-09-12T16:49:41.040000+00:00",
+    "final": 0.8464788092392828,
+    "text": "[redacted 179 chars]"
+   },
+   "top1_is_raw": false,
+   "latency_s": 0.9484
+  },
+  {
+   "id": "q03-pg0-port",
+   "lang": "zh-Hant",
+   "query": "[REDACTED:0659f1f1eb4f]",
+   "runs": [
+    {
+     "repeat": 1,
+     "latency_s": 0.665,
+     "retries": 0,
+     "n_results": 41,
+     "duplication": {
+      "duplicate_pairs": 5,
+      "identical_pairs": 1,
+      "fuzzy_pairs": 4,
+      "observation_vs_raw_twin_pairs": 5,
+      "items_in_duplicate_pair": 10,
+      "duplicate_item_rate": 0.2439,
+      "pairs": [
+       {
+        "i": 2,
+        "j": 3,
+        "a_id": "7a19bf6e-52d4-404c-8a2a-6c9e621454f5",
+        "a_type": "experience",
+        "b_id": "87d3a544-7c93-4376-8259-ace7b52491fa",
+        "b_type": "observation",
+        "similarity": 0.9313,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 5,
+        "j": 6,
+        "a_id": "8a753d3a-e3dd-4f59-889c-bd73c60449e7",
+        "a_type": "observation",
+        "b_id": "1deca9f1-19bd-43f3-8c57-9d059879d0b8",
+        "b_type": "experience",
+        "similarity": 0.9009,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 135 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 10,
+        "j": 13,
+        "a_id": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+        "a_type": "observation",
+        "b_id": "0de49923-677c-4e3f-bfe8-649d92172841",
+        "b_type": "world",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "strict",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 18,
+        "j": 24,
+        "a_id": "ac9f511f-53ba-47ee-8232-9b35c8734643",
+        "a_type": "observation",
+        "b_id": "4bdd6ff3-0a73-4f98-8b18-83e847243124",
+        "b_type": "world",
+        "similarity": 0.9808,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "strict",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 69 chars]",
+        "b_text": "[redacted 66 chars]"
+       },
+       {
+        "i": 30,
+        "j": 32,
+        "a_id": "d03c8796-5033-4fa6-a139-53f65ab17053",
+        "a_type": "experience",
+        "b_id": "4883d2cb-6df9-45a9-be0f-9fa3d12fbc6d",
+        "b_type": "observation",
+        "similarity": 0.9276,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       }
+      ]
+     },
+     "reranker": {
+      "n_items": 41,
+      "n_with_scores": 41,
+      "n_with_reranker_score": 41,
+      "reranker_engaged": true,
+      "mean_reranker": 0.4025,
+      "mean_semantic": 0.3749,
+      "mean_final": 0.4394,
+      "top1_id_final": "33ea0688-c00f-473d-a052-b1d4c154a641",
+      "top1_id_by_reranker": "33ea0688-c00f-473d-a052-b1d4c154a641",
+      "top1_id_by_semantic": "7a19bf6e-52d4-404c-8a2a-6c9e621454f5",
+      "reranker_changed_top1_vs_semantic": true,
+      "top3_final": [
+       0.7745,
+       0.7312,
+       0.7227
+      ]
+     },
+     "ranking_proxy": {
+      "triggered_strict": true,
+      "triggered_loose": false,
+      "n_newer_siblings_flagged": 1,
+      "evidence": {
+       "sibling_rank": 33,
+       "sibling_id": "8a0ea383-8907-4a44-994a-75211d41a71e",
+       "sibling_type": "observation",
+       "sibling_mentioned_at": "2026-09-12T16:49:41.070000+00:00",
+       "shared_entities": [
+        "hermes",
+        "hindsight",
+        "postgres"
+       ],
+       "token_overlap": 0.017,
+       "differing_value_tokens": [
+        "1turn",
+        "postv1defaultbanksfwhmainmemoriesbatchretain"
+       ],
+       "supersede_verb": false,
+       "sibling_text": "[redacted 220 chars]"
+      }
+     },
+     "top1": {
+      "id": "33ea0688-c00f-473d-a052-b1d4c154a641",
+      "type": "observation",
+      "mentioned_at": "2026-09-12T16:49:41.040000+00:00",
+      "final": 0.7744668056248578,
+      "text": "[redacted 240 chars]"
+     },
+     "top1_is_raw": false,
+     "newer_siblings_in_response": 1
+    }
+   ],
+   "ok": true,
+   "n_results": 41,
+   "duplication": {
+    "duplicate_pairs": 5,
+    "identical_pairs": 1,
+    "fuzzy_pairs": 4,
+    "observation_vs_raw_twin_pairs": 5,
+    "items_in_duplicate_pair": 10,
+    "duplicate_item_rate": 0.2439,
+    "pairs": [
+     {
+      "i": 2,
+      "j": 3,
+      "a_id": "7a19bf6e-52d4-404c-8a2a-6c9e621454f5",
+      "a_type": "experience",
+      "b_id": "87d3a544-7c93-4376-8259-ace7b52491fa",
+      "b_type": "observation",
+      "similarity": 0.9313,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 5,
+      "j": 6,
+      "a_id": "8a753d3a-e3dd-4f59-889c-bd73c60449e7",
+      "a_type": "observation",
+      "b_id": "1deca9f1-19bd-43f3-8c57-9d059879d0b8",
+      "b_type": "experience",
+      "similarity": 0.9009,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 135 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 10,
+      "j": 13,
+      "a_id": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c",
+      "a_type": "observation",
+      "b_id": "0de49923-677c-4e3f-bfe8-649d92172841",
+      "b_type": "world",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "strict",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 18,
+      "j": 24,
+      "a_id": "ac9f511f-53ba-47ee-8232-9b35c8734643",
+      "a_type": "observation",
+      "b_id": "4bdd6ff3-0a73-4f98-8b18-83e847243124",
+      "b_type": "world",
+      "similarity": 0.9808,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "strict",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 69 chars]",
+      "b_text": "[redacted 66 chars]"
+     },
+     {
+      "i": 30,
+      "j": 32,
+      "a_id": "d03c8796-5033-4fa6-a139-53f65ab17053",
+      "a_type": "experience",
+      "b_id": "4883d2cb-6df9-45a9-be0f-9fa3d12fbc6d",
+      "b_type": "observation",
+      "similarity": 0.9276,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     }
+    ]
+   },
+   "reranker": {
+    "n_items": 41,
+    "n_with_scores": 41,
+    "n_with_reranker_score": 41,
+    "reranker_engaged": true,
+    "mean_reranker": 0.4025,
+    "mean_semantic": 0.3749,
+    "mean_final": 0.4394,
+    "top1_id_final": "33ea0688-c00f-473d-a052-b1d4c154a641",
+    "top1_id_by_reranker": "33ea0688-c00f-473d-a052-b1d4c154a641",
+    "top1_id_by_semantic": "7a19bf6e-52d4-404c-8a2a-6c9e621454f5",
+    "reranker_changed_top1_vs_semantic": true,
+    "top3_final": [
+     0.7745,
+     0.7312,
+     0.7227
+    ]
+   },
+   "ranking_proxy": {
+    "triggered_strict": true,
+    "triggered_loose": false,
+    "n_newer_siblings_flagged": 1,
+    "evidence": {
+     "sibling_rank": 33,
+     "sibling_id": "8a0ea383-8907-4a44-994a-75211d41a71e",
+     "sibling_type": "observation",
+     "sibling_mentioned_at": "2026-09-12T16:49:41.070000+00:00",
+     "shared_entities": [
+      "hermes",
+      "hindsight",
+      "postgres"
+     ],
+     "token_overlap": 0.017,
+     "differing_value_tokens": [
+      "1turn",
+      "postv1defaultbanksfwhmainmemoriesbatchretain"
+     ],
+     "supersede_verb": false,
+     "sibling_text": "[redacted 220 chars]"
+    }
+   },
+   "top1": {
+    "id": "33ea0688-c00f-473d-a052-b1d4c154a641",
+    "type": "observation",
+    "mentioned_at": "2026-09-12T16:49:41.040000+00:00",
+    "final": 0.7744668056248578,
+    "text": "[redacted 240 chars]"
+   },
+   "top1_is_raw": false,
+   "latency_s": 0.665
+  },
+  {
+   "id": "q04-reranker",
+   "lang": "en",
+   "query": "[REDACTED:5da56a1e6234]",
+   "runs": [
+    {
+     "repeat": 1,
+     "latency_s": 0.7986,
+     "retries": 0,
+     "n_results": 41,
+     "duplication": {
+      "duplicate_pairs": 5,
+      "identical_pairs": 4,
+      "fuzzy_pairs": 1,
+      "observation_vs_raw_twin_pairs": 5,
+      "items_in_duplicate_pair": 10,
+      "duplicate_item_rate": 0.2439,
+      "pairs": [
+       {
+        "i": 3,
+        "j": 4,
+        "a_id": "cb1be481-ca1b-46b8-99bf-7b3dec88b639",
+        "a_type": "world",
+        "b_id": "05796fbc-5c13-4380-a3d2-aa876e5a2a10",
+        "b_type": "observation",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 157 chars]"
+       },
+       {
+        "i": 5,
+        "j": 6,
+        "a_id": "5ed4a593-8a5b-4c8e-a3b9-a89521e6a964",
+        "a_type": "world",
+        "b_id": "37a5a5aa-a323-4418-8336-aa3f1184a680",
+        "b_type": "observation",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 7,
+        "j": 11,
+        "a_id": "4c949172-1728-4910-bbbc-2745f74c1d4d",
+        "a_type": "observation",
+        "b_id": "ff5e5ad2-ed32-4255-84cc-698854f0fe6c",
+        "b_type": "world",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 144 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 9,
+        "j": 13,
+        "a_id": "8389b3fa-e7ed-4721-b24e-868d548967c7",
+        "a_type": "world",
+        "b_id": "255ccd26-c8c2-49a5-8e4f-063bf2f7cfc5",
+        "b_type": "observation",
+        "similarity": 0.9684,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "strict",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 25,
+        "j": 26,
+        "a_id": "6ec782c1-dfbb-4035-9d1b-13af78e1155e",
+        "a_type": "world",
+        "b_id": "818ab55a-3bea-4183-8460-12ce47f6f799",
+        "b_type": "observation",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       }
+      ]
+     },
+     "reranker": {
+      "n_items": 41,
+      "n_with_scores": 41,
+      "n_with_reranker_score": 41,
+      "reranker_engaged": true,
+      "mean_reranker": 0.5338,
+      "mean_semantic": 0.4005,
+      "mean_final": 0.5833,
+      "top1_id_final": "9373fce4-c2e3-4ac8-bfa6-be589b2867fc",
+      "top1_id_by_reranker": "9373fce4-c2e3-4ac8-bfa6-be589b2867fc",
+      "top1_id_by_semantic": "cb1be481-ca1b-46b8-99bf-7b3dec88b639",
+      "reranker_changed_top1_vs_semantic": true,
+      "top3_final": [
+       0.7611,
+       0.7483,
+       0.7405
+      ]
+     },
+     "ranking_proxy": {
+      "triggered_strict": true,
+      "triggered_loose": false,
+      "n_newer_siblings_flagged": 1,
+      "evidence": {
+       "sibling_rank": 15,
+       "sibling_id": "5868fa97-3501-4de6-b3bb-c00419fdd987",
+       "sibling_type": "experience",
+       "sibling_mentioned_at": "2026-08-22T17:20:43.880380+00:00",
+       "shared_entities": [
+        "deepseek-v4-flash",
+        "hindsight",
+        "mimo-v2"
+       ],
+       "token_overlap": 0.0,
+       "differing_value_tokens": [
+        "deepseekv4flash",
+        "mimov25"
+       ],
+       "supersede_verb": true,
+       "sibling_text": "[redacted 216 chars]"
+      }
+     },
+     "top1": {
+      "id": "9373fce4-c2e3-4ac8-bfa6-be589b2867fc",
+      "type": "observation",
+      "mentioned_at": "2026-08-22T17:17:55.779881+00:00",
+      "final": 0.7610972704569787,
+      "text": "[redacted 164 chars]"
+     },
+     "top1_is_raw": false,
+     "newer_siblings_in_response": 21
+    }
+   ],
+   "ok": true,
+   "n_results": 41,
+   "duplication": {
+    "duplicate_pairs": 5,
+    "identical_pairs": 4,
+    "fuzzy_pairs": 1,
+    "observation_vs_raw_twin_pairs": 5,
+    "items_in_duplicate_pair": 10,
+    "duplicate_item_rate": 0.2439,
+    "pairs": [
+     {
+      "i": 3,
+      "j": 4,
+      "a_id": "cb1be481-ca1b-46b8-99bf-7b3dec88b639",
+      "a_type": "world",
+      "b_id": "05796fbc-5c13-4380-a3d2-aa876e5a2a10",
+      "b_type": "observation",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 157 chars]"
+     },
+     {
+      "i": 5,
+      "j": 6,
+      "a_id": "5ed4a593-8a5b-4c8e-a3b9-a89521e6a964",
+      "a_type": "world",
+      "b_id": "37a5a5aa-a323-4418-8336-aa3f1184a680",
+      "b_type": "observation",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 7,
+      "j": 11,
+      "a_id": "4c949172-1728-4910-bbbc-2745f74c1d4d",
+      "a_type": "observation",
+      "b_id": "ff5e5ad2-ed32-4255-84cc-698854f0fe6c",
+      "b_type": "world",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 144 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 9,
+      "j": 13,
+      "a_id": "8389b3fa-e7ed-4721-b24e-868d548967c7",
+      "a_type": "world",
+      "b_id": "255ccd26-c8c2-49a5-8e4f-063bf2f7cfc5",
+      "b_type": "observation",
+      "similarity": 0.9684,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "strict",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 25,
+      "j": 26,
+      "a_id": "6ec782c1-dfbb-4035-9d1b-13af78e1155e",
+      "a_type": "world",
+      "b_id": "818ab55a-3bea-4183-8460-12ce47f6f799",
+      "b_type": "observation",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     }
+    ]
+   },
+   "reranker": {
+    "n_items": 41,
+    "n_with_scores": 41,
+    "n_with_reranker_score": 41,
+    "reranker_engaged": true,
+    "mean_reranker": 0.5338,
+    "mean_semantic": 0.4005,
+    "mean_final": 0.5833,
+    "top1_id_final": "9373fce4-c2e3-4ac8-bfa6-be589b2867fc",
+    "top1_id_by_reranker": "9373fce4-c2e3-4ac8-bfa6-be589b2867fc",
+    "top1_id_by_semantic": "cb1be481-ca1b-46b8-99bf-7b3dec88b639",
+    "reranker_changed_top1_vs_semantic": true,
+    "top3_final": [
+     0.7611,
+     0.7483,
+     0.7405
+    ]
+   },
+   "ranking_proxy": {
+    "triggered_strict": true,
+    "triggered_loose": false,
+    "n_newer_siblings_flagged": 1,
+    "evidence": {
+     "sibling_rank": 15,
+     "sibling_id": "5868fa97-3501-4de6-b3bb-c00419fdd987",
+     "sibling_type": "experience",
+     "sibling_mentioned_at": "2026-08-22T17:20:43.880380+00:00",
+     "shared_entities": [
+      "deepseek-v4-flash",
+      "hindsight",
+      "mimo-v2"
+     ],
+     "token_overlap": 0.0,
+     "differing_value_tokens": [
+      "deepseekv4flash",
+      "mimov25"
+     ],
+     "supersede_verb": true,
+     "sibling_text": "[redacted 216 chars]"
+    }
+   },
+   "top1": {
+    "id": "9373fce4-c2e3-4ac8-bfa6-be589b2867fc",
+    "type": "observation",
+    "mentioned_at": "2026-08-22T17:17:55.779881+00:00",
+    "final": 0.7610972704569787,
+    "text": "[redacted 164 chars]"
+   },
+   "top1_is_raw": false,
+   "latency_s": 0.7986
+  },
+  {
+   "id": "q05-worker-id",
+   "lang": "zh-Hant",
+   "query": "Hindsight background worker 用邊個 worker id？",
+   "runs": [
+    {
+     "repeat": 1,
+     "latency_s": 0.6579,
+     "retries": 0,
+     "n_results": 33,
+     "duplication": {
+      "duplicate_pairs": 2,
+      "identical_pairs": 0,
+      "fuzzy_pairs": 2,
+      "observation_vs_raw_twin_pairs": 2,
+      "items_in_duplicate_pair": 4,
+      "duplicate_item_rate": 0.1212,
+      "pairs": [
+       {
+        "i": 10,
+        "j": 18,
+        "a_id": "a329271c-1702-469a-8714-c5fdcd1f6f65",
+        "a_type": "world",
+        "b_id": "b3c1ab5e-6ccb-4922-9885-6d0484e0ab48",
+        "b_type": "observation",
+        "similarity": 0.9679,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "strict",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 17,
+        "j": 20,
+        "a_id": "3fd1dedc-ad33-487f-bf39-23407156c11f",
+        "a_type": "observation",
+        "b_id": "052159b7-2488-420a-9205-22ce1c152d75",
+        "b_type": "world",
+        "similarity": 0.9558,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 144 chars]",
+        "b_text": "[redacted 160 chars]"
+       }
+      ]
+     },
+     "reranker": {
+      "n_items": 33,
+      "n_with_scores": 33,
+      "n_with_reranker_score": 33,
+      "reranker_engaged": true,
+      "mean_reranker": 0.3809,
+      "mean_semantic": 0.362,
+      "mean_final": 0.4167,
+      "top1_id_final": "69e4ba0d-1eec-40bd-9037-05bdac369889",
+      "top1_id_by_reranker": "69e4ba0d-1eec-40bd-9037-05bdac369889",
+      "top1_id_by_semantic": "6c5bc447-f84f-4784-bd5c-602d89d50e05",
+      "reranker_changed_top1_vs_semantic": true,
+      "top3_final": [
+       0.4986,
+       0.4673,
+       0.4636
+      ]
+     },
+     "ranking_proxy": {
+      "triggered_strict": true,
+      "triggered_loose": false,
+      "n_newer_siblings_flagged": 7,
+      "evidence": {
+       "sibling_rank": 4,
+       "sibling_id": "4e4355ac-a928-4db8-8c58-a4c7b1a876ff",
+       "sibling_type": "observation",
+       "sibling_mentioned_at": "2026-08-14T04:00:11.280230+00:00",
+       "shared_entities": [
+        "hermes agent",
+        "hindsight",
+        "memory",
+        "retain"
+       ],
+       "token_overlap": 0.0,
+       "differing_value_tokens": [
+        "retaineverynturns1"
+       ],
+       "supersede_verb": false,
+       "sibling_text": "[redacted 220 chars]"
+      }
+     },
+     "top1": {
+      "id": "69e4ba0d-1eec-40bd-9037-05bdac369889",
+      "type": "observation",
+      "mentioned_at": "2026-08-14T04:00:11.170230+00:00",
+      "final": 0.4986365637380095,
+      "text": "[redacted 240 chars]"
+     },
+     "top1_is_raw": false,
+     "newer_siblings_in_response": 19
+    }
+   ],
+   "ok": true,
+   "n_results": 33,
+   "duplication": {
+    "duplicate_pairs": 2,
+    "identical_pairs": 0,
+    "fuzzy_pairs": 2,
+    "observation_vs_raw_twin_pairs": 2,
+    "items_in_duplicate_pair": 4,
+    "duplicate_item_rate": 0.1212,
+    "pairs": [
+     {
+      "i": 10,
+      "j": 18,
+      "a_id": "a329271c-1702-469a-8714-c5fdcd1f6f65",
+      "a_type": "world",
+      "b_id": "b3c1ab5e-6ccb-4922-9885-6d0484e0ab48",
+      "b_type": "observation",
+      "similarity": 0.9679,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "strict",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 17,
+      "j": 20,
+      "a_id": "3fd1dedc-ad33-487f-bf39-23407156c11f",
+      "a_type": "observation",
+      "b_id": "052159b7-2488-420a-9205-22ce1c152d75",
+      "b_type": "world",
+      "similarity": 0.9558,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 144 chars]",
+      "b_text": "[redacted 160 chars]"
+     }
+    ]
+   },
+   "reranker": {
+    "n_items": 33,
+    "n_with_scores": 33,
+    "n_with_reranker_score": 33,
+    "reranker_engaged": true,
+    "mean_reranker": 0.3809,
+    "mean_semantic": 0.362,
+    "mean_final": 0.4167,
+    "top1_id_final": "69e4ba0d-1eec-40bd-9037-05bdac369889",
+    "top1_id_by_reranker": "69e4ba0d-1eec-40bd-9037-05bdac369889",
+    "top1_id_by_semantic": "6c5bc447-f84f-4784-bd5c-602d89d50e05",
+    "reranker_changed_top1_vs_semantic": true,
+    "top3_final": [
+     0.4986,
+     0.4673,
+     0.4636
+    ]
+   },
+   "ranking_proxy": {
+    "triggered_strict": true,
+    "triggered_loose": false,
+    "n_newer_siblings_flagged": 7,
+    "evidence": {
+     "sibling_rank": 4,
+     "sibling_id": "4e4355ac-a928-4db8-8c58-a4c7b1a876ff",
+     "sibling_type": "observation",
+     "sibling_mentioned_at": "2026-08-14T04:00:11.280230+00:00",
+     "shared_entities": [
+      "hermes agent",
+      "hindsight",
+      "memory",
+      "retain"
+     ],
+     "token_overlap": 0.0,
+     "differing_value_tokens": [
+      "retaineverynturns1"
+     ],
+     "supersede_verb": false,
+     "sibling_text": "[redacted 220 chars]"
+    }
+   },
+   "top1": {
+    "id": "69e4ba0d-1eec-40bd-9037-05bdac369889",
+    "type": "observation",
+    "mentioned_at": "2026-08-14T04:00:11.170230+00:00",
+    "final": 0.4986365637380095,
+    "text": "[redacted 240 chars]"
+   },
+   "top1_is_raw": false,
+   "latency_s": 0.6579
+  },
+  {
+   "id": "q06-delivery-dir",
+   "lang": "zh-Hant",
+   "query": "一般交付檔案應該寫入邊個目錄？",
+   "runs": [
+    {
+     "repeat": 1,
+     "latency_s": 0.6599,
+     "retries": 0,
+     "n_results": 35,
+     "duplication": {
+      "duplicate_pairs": 7,
+      "identical_pairs": 4,
+      "fuzzy_pairs": 3,
+      "observation_vs_raw_twin_pairs": 7,
+      "items_in_duplicate_pair": 14,
+      "duplicate_item_rate": 0.4,
+      "pairs": [
+       {
+        "i": 1,
+        "j": 3,
+        "a_id": "f5ced405-a8eb-4a98-9e75-50993bf7c3f9",
+        "a_type": "observation",
+        "b_id": "cfeeacaf-9e45-462c-a46d-454a7df0e2aa",
+        "b_type": "experience",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "strict",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 5,
+        "j": 7,
+        "a_id": "b1f364d0-e7a0-45f8-8454-6199b78e6bde",
+        "a_type": "experience",
+        "b_id": "c60d7f56-358a-4aed-8410-2e4aa18b909a",
+        "b_type": "observation",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 9,
+        "j": 10,
+        "a_id": "4c6cfbaa-26b2-414e-a020-816a3785ba2b",
+        "a_type": "observation",
+        "b_id": "c6b0db44-a0bd-4b9a-b626-dc09544c612f",
+        "b_type": "experience",
+        "similarity": 0.9429,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 11,
+        "j": 18,
+        "a_id": "ddb03ecb-cc66-42fe-9cc7-775f4b2f869b",
+        "a_type": "experience",
+        "b_id": "03809974-3ea9-45a8-b1f6-1ffc280b56d4",
+        "b_type": "observation",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 14,
+        "j": 19,
+        "a_id": "15def547-6275-44b5-b445-bab41ffb21fe",
+        "a_type": "observation",
+        "b_id": "12a8bc3c-3dde-4976-ac4f-1e641981f64f",
+        "b_type": "experience",
+        "similarity": 0.9453,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 129 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 26,
+        "j": 29,
+        "a_id": "1dfe8d3b-fae2-41a5-9c3a-636a5f6a8894",
+        "a_type": "observation",
+        "b_id": "709207c8-d54d-46d9-96ab-d912e6f31dec",
+        "b_type": "experience",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 28,
+        "j": 35,
+        "a_id": "99537b8e-6404-4bfb-a215-c9e60e3cea83",
+        "a_type": "world",
+        "b_id": "084d7cc5-1939-4dc1-9e71-f030504b5127",
+        "b_type": "observation",
+        "similarity": 0.9918,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       }
+      ]
+     },
+     "reranker": {
+      "n_items": 35,
+      "n_with_scores": 35,
+      "n_with_reranker_score": 35,
+      "reranker_engaged": true,
+      "mean_reranker": 0.4819,
+      "mean_semantic": 0.3494,
+      "mean_final": 0.5235,
+      "top1_id_final": "f5ced405-a8eb-4a98-9e75-50993bf7c3f9",
+      "top1_id_by_reranker": "f5ced405-a8eb-4a98-9e75-50993bf7c3f9",
+      "top1_id_by_semantic": "1dfe8d3b-fae2-41a5-9c3a-636a5f6a8894",
+      "reranker_changed_top1_vs_semantic": true,
+      "top3_final": [
+       0.6307,
+       0.6267,
+       0.6264
+      ]
+     },
+     "ranking_proxy": {
+      "triggered_strict": true,
+      "triggered_loose": false,
+      "n_newer_siblings_flagged": 4,
+      "evidence": {
+       "sibling_rank": 11,
+       "sibling_id": "ddb03ecb-cc66-42fe-9cc7-775f4b2f869b",
+       "sibling_type": "experience",
+       "sibling_mentioned_at": "2026-08-13T18:01:55.202156+00:00",
+       "shared_entities": [
+        "cloakbrowser_provider.py"
+       ],
+       "token_overlap": 0.1,
+       "differing_value_tokens": [
+        "4",
+        "cusersfwhneappdatalocalhermeskanbanworkspacest853f1029finalcloakbrowserhermesintegrationreportmd"
+       ],
+       "supersede_verb": false,
+       "sibling_text": "[redacted 219 chars]"
+      }
+     },
+     "top1": {
+      "id": "f5ced405-a8eb-4a98-9e75-50993bf7c3f9",
+      "type": "observation",
+      "mentioned_at": "2026-08-13T17:34:59.766353+00:00",
+      "final": 0.6306725515084599,
+      "text": "[redacted 240 chars]"
+     },
+     "top1_is_raw": false,
+     "newer_siblings_in_response": 20
+    }
+   ],
+   "ok": true,
+   "n_results": 35,
+   "duplication": {
+    "duplicate_pairs": 7,
+    "identical_pairs": 4,
+    "fuzzy_pairs": 3,
+    "observation_vs_raw_twin_pairs": 7,
+    "items_in_duplicate_pair": 14,
+    "duplicate_item_rate": 0.4,
+    "pairs": [
+     {
+      "i": 1,
+      "j": 3,
+      "a_id": "f5ced405-a8eb-4a98-9e75-50993bf7c3f9",
+      "a_type": "observation",
+      "b_id": "cfeeacaf-9e45-462c-a46d-454a7df0e2aa",
+      "b_type": "experience",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "strict",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 5,
+      "j": 7,
+      "a_id": "b1f364d0-e7a0-45f8-8454-6199b78e6bde",
+      "a_type": "experience",
+      "b_id": "c60d7f56-358a-4aed-8410-2e4aa18b909a",
+      "b_type": "observation",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 9,
+      "j": 10,
+      "a_id": "4c6cfbaa-26b2-414e-a020-816a3785ba2b",
+      "a_type": "observation",
+      "b_id": "c6b0db44-a0bd-4b9a-b626-dc09544c612f",
+      "b_type": "experience",
+      "similarity": 0.9429,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 11,
+      "j": 18,
+      "a_id": "ddb03ecb-cc66-42fe-9cc7-775f4b2f869b",
+      "a_type": "experience",
+      "b_id": "03809974-3ea9-45a8-b1f6-1ffc280b56d4",
+      "b_type": "observation",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 14,
+      "j": 19,
+      "a_id": "15def547-6275-44b5-b445-bab41ffb21fe",
+      "a_type": "observation",
+      "b_id": "12a8bc3c-3dde-4976-ac4f-1e641981f64f",
+      "b_type": "experience",
+      "similarity": 0.9453,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 129 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 26,
+      "j": 29,
+      "a_id": "1dfe8d3b-fae2-41a5-9c3a-636a5f6a8894",
+      "a_type": "observation",
+      "b_id": "709207c8-d54d-46d9-96ab-d912e6f31dec",
+      "b_type": "experience",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 28,
+      "j": 35,
+      "a_id": "99537b8e-6404-4bfb-a215-c9e60e3cea83",
+      "a_type": "world",
+      "b_id": "084d7cc5-1939-4dc1-9e71-f030504b5127",
+      "b_type": "observation",
+      "similarity": 0.9918,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     }
+    ]
+   },
+   "reranker": {
+    "n_items": 35,
+    "n_with_scores": 35,
+    "n_with_reranker_score": 35,
+    "reranker_engaged": true,
+    "mean_reranker": 0.4819,
+    "mean_semantic": 0.3494,
+    "mean_final": 0.5235,
+    "top1_id_final": "f5ced405-a8eb-4a98-9e75-50993bf7c3f9",
+    "top1_id_by_reranker": "f5ced405-a8eb-4a98-9e75-50993bf7c3f9",
+    "top1_id_by_semantic": "1dfe8d3b-fae2-41a5-9c3a-636a5f6a8894",
+    "reranker_changed_top1_vs_semantic": true,
+    "top3_final": [
+     0.6307,
+     0.6267,
+     0.6264
+    ]
+   },
+   "ranking_proxy": {
+    "triggered_strict": true,
+    "triggered_loose": false,
+    "n_newer_siblings_flagged": 4,
+    "evidence": {
+     "sibling_rank": 11,
+     "sibling_id": "ddb03ecb-cc66-42fe-9cc7-775f4b2f869b",
+     "sibling_type": "experience",
+     "sibling_mentioned_at": "2026-08-13T18:01:55.202156+00:00",
+     "shared_entities": [
+      "cloakbrowser_provider.py"
+     ],
+     "token_overlap": 0.1,
+     "differing_value_tokens": [
+      "4",
+      "cusersfwhneappdatalocalhermeskanbanworkspacest853f1029finalcloakbrowserhermesintegrationreportmd"
+     ],
+     "supersede_verb": false,
+     "sibling_text": "[redacted 219 chars]"
+    }
+   },
+   "top1": {
+    "id": "f5ced405-a8eb-4a98-9e75-50993bf7c3f9",
+    "type": "observation",
+    "mentioned_at": "2026-08-13T17:34:59.766353+00:00",
+    "final": 0.6306725515084599,
+    "text": "[redacted 240 chars]"
+   },
+   "top1_is_raw": false,
+   "latency_s": 0.6599
+  },
+  {
+   "id": "q07-delegation-policy",
+   "lang": "zh-Hant",
+   "query": "delegation 嘅 timeout 同 max_iterations 最後點定？",
+   "runs": [
+    {
+     "repeat": 1,
+     "latency_s": 0.653,
+     "retries": 0,
+     "n_results": 31,
+     "duplication": {
+      "duplicate_pairs": 3,
+      "identical_pairs": 2,
+      "fuzzy_pairs": 1,
+      "observation_vs_raw_twin_pairs": 3,
+      "items_in_duplicate_pair": 6,
+      "duplicate_item_rate": 0.1935,
+      "pairs": [
+       {
+        "i": 8,
+        "j": 12,
+        "a_id": "f3fa4f80-eeb8-4ddf-b59f-5b34e9de7f09",
+        "a_type": "experience",
+        "b_id": "c669084f-2548-4749-a43b-d4db571f425b",
+        "b_type": "observation",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 155 chars]"
+       },
+       {
+        "i": 16,
+        "j": 20,
+        "a_id": "2194c095-b76b-42ec-9004-bf36d47d6c41",
+        "a_type": "world",
+        "b_id": "02119be7-0add-4606-b014-3ac2c3edd440",
+        "b_type": "observation",
+        "similarity": 0.9819,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 21,
+        "j": 26,
+        "a_id": "e9c1916a-7f46-47da-b3f6-580075dbb51a",
+        "a_type": "observation",
+        "b_id": "a5030fa2-8ded-4826-808f-44764ff6cae0",
+        "b_type": "world",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       }
+      ]
+     },
+     "reranker": {
+      "n_items": 31,
+      "n_with_scores": 31,
+      "n_with_reranker_score": 31,
+      "reranker_engaged": true,
+      "mean_reranker": 0.3933,
+      "mean_semantic": 0.438,
+      "mean_final": 0.4304,
+      "top1_id_final": "2fb7a3cc-68e0-4de7-9d30-17ed193c582c",
+      "top1_id_by_reranker": "2fb7a3cc-68e0-4de7-9d30-17ed193c582c",
+      "top1_id_by_semantic": "e5a9c6da-9d84-4f00-aec5-35420cfcb182",
+      "reranker_changed_top1_vs_semantic": true,
+      "top3_final": [
+       0.7325,
+       0.6648,
+       0.6491
+      ]
+     },
+     "ranking_proxy": {
+      "triggered_strict": true,
+      "triggered_loose": false,
+      "n_newer_siblings_flagged": 6,
+      "evidence": {
+       "sibling_rank": 14,
+       "sibling_id": "7db0a339-b56e-484d-8c44-64506cdddf59",
+       "sibling_type": "observation",
+       "sibling_mentioned_at": "2026-08-14T10:52:34.794609+00:00",
+       "shared_entities": [
+        "deepseek-v4-flash",
+        "opencode-go"
+       ],
+       "token_overlap": 0.078,
+       "differing_value_tokens": [
+        "10mofallback2openaicodexgpt56lunafallback3deepseekdeepseekv4flash",
+        "429freeusagelimiterror",
+        "5xx",
+        "cost0",
+        "dx09pukeyhermesconfigcheck",
+        "fallback1opencodegodeepseekv4flash",
+        "hermesconfigsetdelegationprovideropencodegohermesconfigsetdelegationmodeldeepseekv4flash",
+        "primaryopencodezendeepseekv4flashfree"
+       ],
+       "supersede_verb": false,
+       "sibling_text": "[redacted 220 chars]"
+      }
+     },
+     "top1": {
+      "id": "2fb7a3cc-68e0-4de7-9d30-17ed193c582c",
+      "type": "world",
+      "mentioned_at": "2026-08-14T09:55:08.493201+00:00",
+      "final": 0.7325094297332772,
+      "text": "[redacted 240 chars]"
+     },
+     "top1_is_raw": true,
+     "newer_siblings_in_response": 23
+    }
+   ],
+   "ok": true,
+   "n_results": 31,
+   "duplication": {
+    "duplicate_pairs": 3,
+    "identical_pairs": 2,
+    "fuzzy_pairs": 1,
+    "observation_vs_raw_twin_pairs": 3,
+    "items_in_duplicate_pair": 6,
+    "duplicate_item_rate": 0.1935,
+    "pairs": [
+     {
+      "i": 8,
+      "j": 12,
+      "a_id": "f3fa4f80-eeb8-4ddf-b59f-5b34e9de7f09",
+      "a_type": "experience",
+      "b_id": "c669084f-2548-4749-a43b-d4db571f425b",
+      "b_type": "observation",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 155 chars]"
+     },
+     {
+      "i": 16,
+      "j": 20,
+      "a_id": "2194c095-b76b-42ec-9004-bf36d47d6c41",
+      "a_type": "world",
+      "b_id": "02119be7-0add-4606-b014-3ac2c3edd440",
+      "b_type": "observation",
+      "similarity": 0.9819,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 21,
+      "j": 26,
+      "a_id": "e9c1916a-7f46-47da-b3f6-580075dbb51a",
+      "a_type": "observation",
+      "b_id": "a5030fa2-8ded-4826-808f-44764ff6cae0",
+      "b_type": "world",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     }
+    ]
+   },
+   "reranker": {
+    "n_items": 31,
+    "n_with_scores": 31,
+    "n_with_reranker_score": 31,
+    "reranker_engaged": true,
+    "mean_reranker": 0.3933,
+    "mean_semantic": 0.438,
+    "mean_final": 0.4304,
+    "top1_id_final": "2fb7a3cc-68e0-4de7-9d30-17ed193c582c",
+    "top1_id_by_reranker": "2fb7a3cc-68e0-4de7-9d30-17ed193c582c",
+    "top1_id_by_semantic": "e5a9c6da-9d84-4f00-aec5-35420cfcb182",
+    "reranker_changed_top1_vs_semantic": true,
+    "top3_final": [
+     0.7325,
+     0.6648,
+     0.6491
+    ]
+   },
+   "ranking_proxy": {
+    "triggered_strict": true,
+    "triggered_loose": false,
+    "n_newer_siblings_flagged": 6,
+    "evidence": {
+     "sibling_rank": 14,
+     "sibling_id": "7db0a339-b56e-484d-8c44-64506cdddf59",
+     "sibling_type": "observation",
+     "sibling_mentioned_at": "2026-08-14T10:52:34.794609+00:00",
+     "shared_entities": [
+      "deepseek-v4-flash",
+      "opencode-go"
+     ],
+     "token_overlap": 0.078,
+     "differing_value_tokens": [
+      "10mofallback2openaicodexgpt56lunafallback3deepseekdeepseekv4flash",
+      "429freeusagelimiterror",
+      "5xx",
+      "cost0",
+      "dx09pukeyhermesconfigcheck",
+      "fallback1opencodegodeepseekv4flash",
+      "hermesconfigsetdelegationprovideropencodegohermesconfigsetdelegationmodeldeepseekv4flash",
+      "primaryopencodezendeepseekv4flashfree"
+     ],
+     "supersede_verb": false,
+     "sibling_text": "[redacted 220 chars]"
+    }
+   },
+   "top1": {
+    "id": "2fb7a3cc-68e0-4de7-9d30-17ed193c582c",
+    "type": "world",
+    "mentioned_at": "2026-08-14T09:55:08.493201+00:00",
+    "final": 0.7325094297332772,
+    "text": "[redacted 240 chars]"
+   },
+   "top1_is_raw": true,
+   "latency_s": 0.653
+  },
+  {
+   "id": "q08-hindsight-llm",
+   "lang": "zh-Hant",
+   "query": "[REDACTED:89859a306d7e]",
+   "runs": [
+    {
+     "repeat": 1,
+     "latency_s": 0.7128,
+     "retries": 0,
+     "n_results": 43,
+     "duplication": {
+      "duplicate_pairs": 6,
+      "identical_pairs": 4,
+      "fuzzy_pairs": 2,
+      "observation_vs_raw_twin_pairs": 6,
+      "items_in_duplicate_pair": 12,
+      "duplicate_item_rate": 0.2791,
+      "pairs": [
+       {
+        "i": 4,
+        "j": 5,
+        "a_id": "5ed4a593-8a5b-4c8e-a3b9-a89521e6a964",
+        "a_type": "world",
+        "b_id": "37a5a5aa-a323-4418-8336-aa3f1184a680",
+        "b_type": "observation",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 14,
+        "j": 38,
+        "a_id": "1eb81448-690b-4508-8977-43cf4401dc09",
+        "a_type": "observation",
+        "b_id": "3d297749-82d0-4217-9a9d-36a6d3a916c3",
+        "b_type": "world",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 96 chars]",
+        "b_text": "[redacted 112 chars]"
+       },
+       {
+        "i": 18,
+        "j": 28,
+        "a_id": "571e234e-c1ef-49d2-a0a7-cc267a5dbab8",
+        "a_type": "experience",
+        "b_id": "659c8371-8476-4bd5-97cd-ec12e739c5c6",
+        "b_type": "observation",
+        "similarity": 0.9684,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 24,
+        "j": 34,
+        "a_id": "e00e04da-2f84-4743-9957-b1d1c47652be",
+        "a_type": "world",
+        "b_id": "547c76cb-ea21-4125-bd5c-a6c78d0e3cb6",
+        "b_type": "observation",
+        "similarity": 0.9388,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 29,
+        "j": 31,
+        "a_id": "b2f2e0b7-50d1-474b-9748-df860316efdd",
+        "a_type": "world",
+        "b_id": "c0fe8a02-4e16-42af-b9ae-d2d9a0260b90",
+        "b_type": "observation",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 142 chars]",
+        "b_text": "[redacted 120 chars]"
+       },
+       {
+        "i": 41,
+        "j": 42,
+        "a_id": "969f4d1e-a571-4d9b-af35-c1879672ba51",
+        "a_type": "world",
+        "b_id": "b95a1dd6-f4e2-476e-932e-db7ce263c483",
+        "b_type": "observation",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "strict",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 101 chars]",
+        "b_text": "[redacted 101 chars]"
+       }
+      ]
+     },
+     "reranker": {
+      "n_items": 43,
+      "n_with_scores": 43,
+      "n_with_reranker_score": 43,
+      "reranker_engaged": true,
+      "mean_reranker": 0.6002,
+      "mean_semantic": 0.4827,
+      "mean_final": 0.6549,
+      "top1_id_final": "ae924601-5615-490f-ae5e-6dcd3f07bd7b",
+      "top1_id_by_reranker": "ae924601-5615-490f-ae5e-6dcd3f07bd7b",
+      "top1_id_by_semantic": "ae924601-5615-490f-ae5e-6dcd3f07bd7b",
+      "reranker_changed_top1_vs_semantic": false,
+      "top3_final": [
+       0.8597,
+       0.8461,
+       0.8419
+      ]
+     },
+     "ranking_proxy": {
+      "triggered_strict": true,
+      "triggered_loose": false,
+      "n_newer_siblings_flagged": 7,
+      "evidence": {
+       "sibling_rank": 32,
+       "sibling_id": "92a8c3f4-adaa-4436-86eb-c194e3634ae2",
+       "sibling_type": "observation",
+       "sibling_mentioned_at": "2026-08-22T17:20:43.900380+00:00",
+       "shared_entities": [
+        "assistant",
+        "deepseek-v4-flash",
+        "hindsight",
+        "mimo-v2",
+        "opencode-go",
+        "user"
+       ],
+       "token_overlap": 0.107,
+       "differing_value_tokens": [
+        "1starthindsightps1",
+        "mimov252hindsightpackage"
+       ],
+       "supersede_verb": true,
+       "sibling_text": "[redacted 166 chars]"
+      }
+     },
+     "top1": {
+      "id": "ae924601-5615-490f-ae5e-6dcd3f07bd7b",
+      "type": "observation",
+      "mentioned_at": "2026-08-22T17:20:43.880380+00:00",
+      "final": 0.859731303478736,
+      "text": "[redacted 143 chars]"
+     },
+     "top1_is_raw": false,
+     "newer_siblings_in_response": 14
+    }
+   ],
+   "ok": true,
+   "n_results": 43,
+   "duplication": {
+    "duplicate_pairs": 6,
+    "identical_pairs": 4,
+    "fuzzy_pairs": 2,
+    "observation_vs_raw_twin_pairs": 6,
+    "items_in_duplicate_pair": 12,
+    "duplicate_item_rate": 0.2791,
+    "pairs": [
+     {
+      "i": 4,
+      "j": 5,
+      "a_id": "5ed4a593-8a5b-4c8e-a3b9-a89521e6a964",
+      "a_type": "world",
+      "b_id": "37a5a5aa-a323-4418-8336-aa3f1184a680",
+      "b_type": "observation",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 14,
+      "j": 38,
+      "a_id": "1eb81448-690b-4508-8977-43cf4401dc09",
+      "a_type": "observation",
+      "b_id": "3d297749-82d0-4217-9a9d-36a6d3a916c3",
+      "b_type": "world",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 96 chars]",
+      "b_text": "[redacted 112 chars]"
+     },
+     {
+      "i": 18,
+      "j": 28,
+      "a_id": "571e234e-c1ef-49d2-a0a7-cc267a5dbab8",
+      "a_type": "experience",
+      "b_id": "659c8371-8476-4bd5-97cd-ec12e739c5c6",
+      "b_type": "observation",
+      "similarity": 0.9684,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 24,
+      "j": 34,
+      "a_id": "e00e04da-2f84-4743-9957-b1d1c47652be",
+      "a_type": "world",
+      "b_id": "547c76cb-ea21-4125-bd5c-a6c78d0e3cb6",
+      "b_type": "observation",
+      "similarity": 0.9388,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 29,
+      "j": 31,
+      "a_id": "b2f2e0b7-50d1-474b-9748-df860316efdd",
+      "a_type": "world",
+      "b_id": "c0fe8a02-4e16-42af-b9ae-d2d9a0260b90",
+      "b_type": "observation",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 142 chars]",
+      "b_text": "[redacted 120 chars]"
+     },
+     {
+      "i": 41,
+      "j": 42,
+      "a_id": "969f4d1e-a571-4d9b-af35-c1879672ba51",
+      "a_type": "world",
+      "b_id": "b95a1dd6-f4e2-476e-932e-db7ce263c483",
+      "b_type": "observation",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "strict",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 101 chars]",
+      "b_text": "[redacted 101 chars]"
+     }
+    ]
+   },
+   "reranker": {
+    "n_items": 43,
+    "n_with_scores": 43,
+    "n_with_reranker_score": 43,
+    "reranker_engaged": true,
+    "mean_reranker": 0.6002,
+    "mean_semantic": 0.4827,
+    "mean_final": 0.6549,
+    "top1_id_final": "ae924601-5615-490f-ae5e-6dcd3f07bd7b",
+    "top1_id_by_reranker": "ae924601-5615-490f-ae5e-6dcd3f07bd7b",
+    "top1_id_by_semantic": "ae924601-5615-490f-ae5e-6dcd3f07bd7b",
+    "reranker_changed_top1_vs_semantic": false,
+    "top3_final": [
+     0.8597,
+     0.8461,
+     0.8419
+    ]
+   },
+   "ranking_proxy": {
+    "triggered_strict": true,
+    "triggered_loose": false,
+    "n_newer_siblings_flagged": 7,
+    "evidence": {
+     "sibling_rank": 32,
+     "sibling_id": "92a8c3f4-adaa-4436-86eb-c194e3634ae2",
+     "sibling_type": "observation",
+     "sibling_mentioned_at": "2026-08-22T17:20:43.900380+00:00",
+     "shared_entities": [
+      "assistant",
+      "deepseek-v4-flash",
+      "hindsight",
+      "mimo-v2",
+      "opencode-go",
+      "user"
+     ],
+     "token_overlap": 0.107,
+     "differing_value_tokens": [
+      "1starthindsightps1",
+      "mimov252hindsightpackage"
+     ],
+     "supersede_verb": true,
+     "sibling_text": "[redacted 166 chars]"
+    }
+   },
+   "top1": {
+    "id": "ae924601-5615-490f-ae5e-6dcd3f07bd7b",
+    "type": "observation",
+    "mentioned_at": "2026-08-22T17:20:43.880380+00:00",
+    "final": 0.859731303478736,
+    "text": "[redacted 143 chars]"
+   },
+   "top1_is_raw": false,
+   "latency_s": 0.7128
+  },
+  {
+   "id": "q09-liveness-user-pref",
+   "lang": "zh-Hant",
+   "query": "用戶偏好嘅回覆語言同格式係點？",
+   "runs": [
+    {
+     "repeat": 1,
+     "latency_s": 0.6578,
+     "retries": 0,
+     "n_results": 42,
+     "duplication": {
+      "duplicate_pairs": 3,
+      "identical_pairs": 2,
+      "fuzzy_pairs": 1,
+      "observation_vs_raw_twin_pairs": 3,
+      "items_in_duplicate_pair": 6,
+      "duplicate_item_rate": 0.1429,
+      "pairs": [
+       {
+        "i": 9,
+        "j": 12,
+        "a_id": "4bd9dc87-ebe4-46ce-81a2-ac7c5cda56da",
+        "a_type": "world",
+        "b_id": "f317beae-8c9d-4ee6-aa18-6e45364b2a91",
+        "b_type": "observation",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 103 chars]",
+        "b_text": "[redacted 86 chars]"
+       },
+       {
+        "i": 10,
+        "j": 11,
+        "a_id": "81abe207-b59b-41aa-9ee7-83581ae0ee70",
+        "a_type": "world",
+        "b_id": "0ea7f0f9-615a-4999-a09e-cfda298aa516",
+        "b_type": "observation",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 19,
+        "j": 32,
+        "a_id": "3f00a492-d5ea-4b63-b070-28b3106acafd",
+        "a_type": "experience",
+        "b_id": "c8b7b6b1-55bd-46cc-912c-243a6e22669d",
+        "b_type": "observation",
+        "similarity": 0.9347,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 115 chars]"
+       }
+      ]
+     },
+     "reranker": {
+      "n_items": 42,
+      "n_with_scores": 42,
+      "n_with_reranker_score": 42,
+      "reranker_engaged": true,
+      "mean_reranker": 0.4584,
+      "mean_semantic": 0.3628,
+      "mean_final": 0.4994,
+      "top1_id_final": "6c51507f-7f98-4e00-a641-b0e3bf3d1ce9",
+      "top1_id_by_reranker": "6c51507f-7f98-4e00-a641-b0e3bf3d1ce9",
+      "top1_id_by_semantic": "6b448e76-a389-474a-ad80-7fd17b0ef1e9",
+      "reranker_changed_top1_vs_semantic": true,
+      "top3_final": [
+       0.788,
+       0.741,
+       0.7152
+      ]
+     },
+     "ranking_proxy": {
+      "triggered_strict": false,
+      "triggered_loose": false,
+      "n_newer_siblings_flagged": 0,
+      "evidence": null
+     },
+     "top1": {
+      "id": "6c51507f-7f98-4e00-a641-b0e3bf3d1ce9",
+      "type": "experience",
+      "mentioned_at": "2026-09-05T22:50:30.010000+00:00",
+      "final": 0.7879616081651468,
+      "text": "[redacted 106 chars]"
+     },
+     "top1_is_raw": true,
+     "newer_siblings_in_response": 5
+    }
+   ],
+   "ok": true,
+   "n_results": 42,
+   "duplication": {
+    "duplicate_pairs": 3,
+    "identical_pairs": 2,
+    "fuzzy_pairs": 1,
+    "observation_vs_raw_twin_pairs": 3,
+    "items_in_duplicate_pair": 6,
+    "duplicate_item_rate": 0.1429,
+    "pairs": [
+     {
+      "i": 9,
+      "j": 12,
+      "a_id": "4bd9dc87-ebe4-46ce-81a2-ac7c5cda56da",
+      "a_type": "world",
+      "b_id": "f317beae-8c9d-4ee6-aa18-6e45364b2a91",
+      "b_type": "observation",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 103 chars]",
+      "b_text": "[redacted 86 chars]"
+     },
+     {
+      "i": 10,
+      "j": 11,
+      "a_id": "81abe207-b59b-41aa-9ee7-83581ae0ee70",
+      "a_type": "world",
+      "b_id": "0ea7f0f9-615a-4999-a09e-cfda298aa516",
+      "b_type": "observation",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 19,
+      "j": 32,
+      "a_id": "3f00a492-d5ea-4b63-b070-28b3106acafd",
+      "a_type": "experience",
+      "b_id": "c8b7b6b1-55bd-46cc-912c-243a6e22669d",
+      "b_type": "observation",
+      "similarity": 0.9347,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 115 chars]"
+     }
+    ]
+   },
+   "reranker": {
+    "n_items": 42,
+    "n_with_scores": 42,
+    "n_with_reranker_score": 42,
+    "reranker_engaged": true,
+    "mean_reranker": 0.4584,
+    "mean_semantic": 0.3628,
+    "mean_final": 0.4994,
+    "top1_id_final": "6c51507f-7f98-4e00-a641-b0e3bf3d1ce9",
+    "top1_id_by_reranker": "6c51507f-7f98-4e00-a641-b0e3bf3d1ce9",
+    "top1_id_by_semantic": "6b448e76-a389-474a-ad80-7fd17b0ef1e9",
+    "reranker_changed_top1_vs_semantic": true,
+    "top3_final": [
+     0.788,
+     0.741,
+     0.7152
+    ]
+   },
+   "ranking_proxy": {
+    "triggered_strict": false,
+    "triggered_loose": false,
+    "n_newer_siblings_flagged": 0,
+    "evidence": null
+   },
+   "top1": {
+    "id": "6c51507f-7f98-4e00-a641-b0e3bf3d1ce9",
+    "type": "experience",
+    "mentioned_at": "2026-09-05T22:50:30.010000+00:00",
+    "final": 0.7879616081651468,
+    "text": "[redacted 106 chars]"
+   },
+   "top1_is_raw": true,
+   "latency_s": 0.6578
+  },
+  {
+   "id": "q10-liveness-memory",
+   "lang": "zh-Hant",
+   "query": "記憶系統嘅健康檢查應該留意咩徵狀？",
+   "runs": [
+    {
+     "repeat": 1,
+     "latency_s": 0.6338,
+     "retries": 0,
+     "n_results": 27,
+     "duplication": {
+      "duplicate_pairs": 2,
+      "identical_pairs": 1,
+      "fuzzy_pairs": 1,
+      "observation_vs_raw_twin_pairs": 2,
+      "items_in_duplicate_pair": 4,
+      "duplicate_item_rate": 0.1481,
+      "pairs": [
+       {
+        "i": 2,
+        "j": 5,
+        "a_id": "33e48fa6-3199-45bf-8c12-89a0cdc75c11",
+        "a_type": "observation",
+        "b_id": "30bb3b74-fd33-47eb-ae50-6ae9e4554a26",
+        "b_type": "world",
+        "similarity": 1.0,
+        "kind": "identical",
+        "match_layer": "strict",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       },
+       {
+        "i": 14,
+        "j": 15,
+        "a_id": "5b3e5635-8be3-4043-ab77-def6f4865919",
+        "a_type": "experience",
+        "b_id": "935ba7b8-4b64-4605-9ed1-642c85ec11b4",
+        "b_type": "observation",
+        "similarity": 0.9691,
+        "kind": "fuzzy>=0.9",
+        "match_layer": "core",
+        "observation_vs_raw_twin": true,
+        "a_text": "[redacted 160 chars]",
+        "b_text": "[redacted 160 chars]"
+       }
+      ]
+     },
+     "reranker": {
+      "n_items": 27,
+      "n_with_scores": 27,
+      "n_with_reranker_score": 27,
+      "reranker_engaged": true,
+      "mean_reranker": 0.467,
+      "mean_semantic": 0.3874,
+      "mean_final": 0.5106,
+      "top1_id_final": "fef3206d-892b-4857-b1f0-f94a231b48ce",
+      "top1_id_by_reranker": "fef3206d-892b-4857-b1f0-f94a231b48ce",
+      "top1_id_by_semantic": "fef3206d-892b-4857-b1f0-f94a231b48ce",
+      "reranker_changed_top1_vs_semantic": false,
+      "top3_final": [
+       0.6135,
+       0.5839,
+       0.5797
+      ]
+     },
+     "ranking_proxy": {
+      "triggered_strict": true,
+      "triggered_loose": false,
+      "n_newer_siblings_flagged": 5,
+      "evidence": {
+       "sibling_rank": 18,
+       "sibling_id": "1e35bb06-c187-4ac5-bdc3-402934651f8b",
+       "sibling_type": "experience",
+       "sibling_mentioned_at": "2026-09-12T04:56:32+00:00",
+       "shared_entities": [
+        "hindsight"
+       ],
+       "token_overlap": 0.052,
+       "differing_value_tokens": [
+        "2026",
+        "400missingsessionid",
+        "45",
+        "7",
+        "9"
+       ],
+       "supersede_verb": false,
+       "sibling_text": "[redacted 220 chars]"
+      }
+     },
+     "top1": {
+      "id": "fef3206d-892b-4857-b1f0-f94a231b48ce",
+      "type": "experience",
+      "mentioned_at": "2026-08-13T00:30:54.481382+00:00",
+      "final": 0.6135089510368533,
+      "text": "[redacted 234 chars]"
+     },
+     "top1_is_raw": true,
+     "newer_siblings_in_response": 23
+    }
+   ],
+   "ok": true,
+   "n_results": 27,
+   "duplication": {
+    "duplicate_pairs": 2,
+    "identical_pairs": 1,
+    "fuzzy_pairs": 1,
+    "observation_vs_raw_twin_pairs": 2,
+    "items_in_duplicate_pair": 4,
+    "duplicate_item_rate": 0.1481,
+    "pairs": [
+     {
+      "i": 2,
+      "j": 5,
+      "a_id": "33e48fa6-3199-45bf-8c12-89a0cdc75c11",
+      "a_type": "observation",
+      "b_id": "30bb3b74-fd33-47eb-ae50-6ae9e4554a26",
+      "b_type": "world",
+      "similarity": 1.0,
+      "kind": "identical",
+      "match_layer": "strict",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     },
+     {
+      "i": 14,
+      "j": 15,
+      "a_id": "5b3e5635-8be3-4043-ab77-def6f4865919",
+      "a_type": "experience",
+      "b_id": "935ba7b8-4b64-4605-9ed1-642c85ec11b4",
+      "b_type": "observation",
+      "similarity": 0.9691,
+      "kind": "fuzzy>=0.9",
+      "match_layer": "core",
+      "observation_vs_raw_twin": true,
+      "a_text": "[redacted 160 chars]",
+      "b_text": "[redacted 160 chars]"
+     }
+    ]
+   },
+   "reranker": {
+    "n_items": 27,
+    "n_with_scores": 27,
+    "n_with_reranker_score": 27,
+    "reranker_engaged": true,
+    "mean_reranker": 0.467,
+    "mean_semantic": 0.3874,
+    "mean_final": 0.5106,
+    "top1_id_final": "fef3206d-892b-4857-b1f0-f94a231b48ce",
+    "top1_id_by_reranker": "fef3206d-892b-4857-b1f0-f94a231b48ce",
+    "top1_id_by_semantic": "fef3206d-892b-4857-b1f0-f94a231b48ce",
+    "reranker_changed_top1_vs_semantic": false,
+    "top3_final": [
+     0.6135,
+     0.5839,
+     0.5797
+    ]
+   },
+   "ranking_proxy": {
+    "triggered_strict": true,
+    "triggered_loose": false,
+    "n_newer_siblings_flagged": 5,
+    "evidence": {
+     "sibling_rank": 18,
+     "sibling_id": "1e35bb06-c187-4ac5-bdc3-402934651f8b",
+     "sibling_type": "experience",
+     "sibling_mentioned_at": "2026-09-12T04:56:32+00:00",
+     "shared_entities": [
+      "hindsight"
+     ],
+     "token_overlap": 0.052,
+     "differing_value_tokens": [
+      "2026",
+      "400missingsessionid",
+      "45",
+      "7",
+      "9"
+     ],
+     "supersede_verb": false,
+     "sibling_text": "[redacted 220 chars]"
+    }
+   },
+   "top1": {
+    "id": "fef3206d-892b-4857-b1f0-f94a231b48ce",
+    "type": "experience",
+    "mentioned_at": "2026-08-13T00:30:54.481382+00:00",
+    "final": 0.6135089510368533,
+    "text": "[redacted 234 chars]"
+   },
+   "top1_is_raw": true,
+   "latency_s": 0.6338
+  }
+ ],
+ "methodology": {
+  "duplication": "For every ordered pair in one recall response, text is NFKC-normalized, casefolded, punctuation/symbol/whitespace folded, then compared. A pair is a duplicate when the folded strings are equal (similarity 1.0) or difflib.SequenceMatcher ratio >= 0.9, on either of two layers: 'strict' (whole text) or 'core' (annotation segments such as ' | When: ... | Involving: ...' removed, because raw world/experience facts carry those annotations while their derived observation does not). Normalized strings shorter than 12 chars are excluded to avoid matching on boilerplate. 'observation_vs_raw_twin' = one side type=observation and the other type in {world, experience}.",
+  "staleness_proxy": "PROXY, NOT A VERIFIED CONTRADICTION. For each question the top-1 item must be a raw fact (world/experience); a sibling is 'newer' when its mentioned_at is later; it is flagged when it shares >=1 entity or >=35% of content tokens (Latin words len>=3 or containing a digit, plus CJK character bigrams) with the top-1 item AND either carries a value-bearing token the top-1 lacks (regex: contains a digit) or uses a supersede verb (改為/更正/作廢/replaced/updated to/...). A shared-entity newer sibling can be additive rather than contradictory, so the strict rate is an UPPER bound on true staleness. The 'loose' variant (>=50% token overlap + a new value token) is reported alongside.",
+  "reranker_engagement": "Read from each result's scores object (final/reranker/semantic/keyword). 'engaged' = at least one returned item carries a non-null, non-zero reranker score. 'reranker_changed_top1_vs_semantic' compares the argmax by reranker with the argmax by semantic.",
+  "recall": "A question's expected-value list is matched any-of against each returned item's text (casefold + punctuation-folded); hit_rank is the first matching rank. NOTE: the recall endpoint has no 'limit' parameter in its schema - response size is governed by the bank's recall_max_tokens budget, so recall@10 is only bounded by the response when the response returns <10 items (flagged as k_capped_by_response).",
+  "markers": "stale_markers/fresh_markers are exact token probes for controlled experiments: stale_above_fresh is true when the stale token's best rank precedes the fresh token's. For reflect, 'resolved' = the fresh token appears AND no unqualified stale mentioning remains (a stale mention is 'qualified' when a supersede/old word appears within 140 normalized chars)."
+ }
+}

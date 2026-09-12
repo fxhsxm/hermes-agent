@@ -1,0 +1,409 @@
+{
+  "generated_at": "2026-09-12T11:11:54Z",
+  "mode": "dry-run",
+  "api_base": "http://127.0.0.1:8888",
+  "bank": "fwh-main",
+  "range": {
+    "from": "2026-09-07",
+    "to": "2026-09-12",
+    "tz": "local (UTC+08)"
+  },
+  "filters": {
+    "sources": [
+      "telegram",
+      "desktop",
+      "cli"
+    ],
+    "min_messages": 1,
+    "chunk_chars": 3000,
+    "turns_per_chunk": 6
+  },
+  "estimator": {
+    "tokenizer": "tiktoken:o200k_base",
+    "base_input_tokens_per_document": 3200,
+    "output_tokens_per_document": 300,
+    "note": "est_input = documents*3200 + tokens(content); est_output = documents*300. Measured LLM fact-extraction budget."
+  },
+  "coverage": {
+    "session_tag_count": 127,
+    "sources_used": [
+      "GET /v1/default/banks/fwh-main/memories/list (paged)",
+      "GET /v1/default/banks/fwh-main/observations/scopes"
+    ],
+    "degraded": false,
+    "memories_list_walk": {
+      "pages": 11,
+      "items": 5075,
+      "total": 5075
+    },
+    "observations_scopes_session_tags": 127,
+    "index_session_tags": 126,
+    "api_session_tags": 127,
+    "index_only_tags": [],
+    "api_only_tags": [
+      "session:20260912_123537_27ba8df5"
+    ],
+    "note": "coverage = union of paginated /memories/list session tags and observations/scopes; /memories/list?tags= is NOT used (silently ignores the filter)"
+  },
+  "selection": {
+    "eligible_sessions_in_range": 43,
+    "already_covered_in_range": 2,
+    "uncovered_in_range_total": 41,
+    "selected": 3,
+    "selected_6plus": 3,
+    "selected_6plus_by_session_message_count": 3,
+    "excluded_by_min_messages": 35,
+    "population_uncovered_in_range": 38,
+    "population_6plus": 26,
+    "population_6plus_by_session_message_count": 35,
+    "top_level_only": true,
+    "order": "newest",
+    "limit": 3,
+    "max_documents": 12
+  },
+  "totals_full_run": {
+    "sessions": 3,
+    "sessions_6plus": 3,
+    "sessions_6plus_by_session_message_count": 3,
+    "turns": 8,
+    "documents": 33,
+    "user_messages": 8,
+    "assistant_messages": 71,
+    "retainable_messages": 79,
+    "payload_chars": 86025,
+    "est_input_tokens": 136517,
+    "est_output_tokens": 9900,
+    "est_total_tokens": 146417
+  },
+  "capped_run_20_largest": {
+    "cap": 20,
+    "sessions": [
+      "20260912_114629_a77d1329",
+      "20260912_103316_46f77a05",
+      "20260912_111132_acf84ede"
+    ],
+    "by_session": [
+      {
+        "session_id": "20260912_114629_a77d1329",
+        "source": "telegram",
+        "day": "2026-09-12",
+        "retainable_messages": 49,
+        "documents": 19,
+        "est_total_tokens": 82270
+      },
+      {
+        "session_id": "20260912_103316_46f77a05",
+        "source": "telegram",
+        "day": "2026-09-12",
+        "retainable_messages": 24,
+        "documents": 12,
+        "est_total_tokens": 55023
+      },
+      {
+        "session_id": "20260912_111132_acf84ede",
+        "source": "telegram",
+        "day": "2026-09-12",
+        "retainable_messages": 6,
+        "documents": 2,
+        "est_total_tokens": 9124
+      }
+    ],
+    "totals": {
+      "sessions": 3,
+      "sessions_6plus": 3,
+      "sessions_6plus_by_session_message_count": 3,
+      "turns": 8,
+      "documents": 33,
+      "user_messages": 8,
+      "assistant_messages": 71,
+      "retainable_messages": 79,
+      "payload_chars": 86025,
+      "est_input_tokens": 136517,
+      "est_output_tokens": 9900,
+      "est_total_tokens": 146417
+    }
+  },
+  "per_day": {
+    "2026-09-08": {
+      "sessions": 2,
+      "sessions_6plus": 1,
+      "sessions_6plus_by_session_message_count": 2,
+      "sessions_selected": 0,
+      "messages": 81,
+      "retainable_messages": 11,
+      "turns": 6,
+      "documents": 16,
+      "est_total_tokens": 70125,
+      "by_source": {
+        "telegram": 1,
+        "desktop": 1
+      }
+    },
+    "2026-09-09": {
+      "sessions": 3,
+      "sessions_6plus": 1,
+      "sessions_6plus_by_session_message_count": 2,
+      "sessions_selected": 0,
+      "messages": 116,
+      "retainable_messages": 15,
+      "turns": 8,
+      "documents": 19,
+      "est_total_tokens": 81709,
+      "by_source": {
+        "telegram": 3
+      }
+    },
+    "2026-09-10": {
+      "sessions": 10,
+      "sessions_6plus": 6,
+      "sessions_6plus_by_session_message_count": 9,
+      "sessions_selected": 0,
+      "messages": 1222,
+      "retainable_messages": 755,
+      "turns": 135,
+      "documents": 520,
+      "est_total_tokens": 2334957,
+      "by_source": {
+        "desktop": 1,
+        "telegram": 7,
+        "cli": 2
+      }
+    },
+    "2026-09-11": {
+      "sessions": 16,
+      "sessions_6plus": 11,
+      "sessions_6plus_by_session_message_count": 15,
+      "sessions_selected": 0,
+      "messages": 1716,
+      "retainable_messages": 517,
+      "turns": 75,
+      "documents": 383,
+      "est_total_tokens": 1665019,
+      "by_source": {
+        "telegram": 12,
+        "cli": 1,
+        "desktop": 3
+      }
+    },
+    "2026-09-12": {
+      "sessions": 7,
+      "sessions_6plus": 7,
+      "sessions_6plus_by_session_message_count": 7,
+      "sessions_selected": 3,
+      "messages": 1881,
+      "retainable_messages": 183,
+      "turns": 28,
+      "documents": 65,
+      "est_total_tokens": 291090,
+      "by_source": {
+        "telegram": 7
+      }
+    }
+  },
+  "per_source": {
+    "cli": {
+      "sessions": 3,
+      "sessions_6plus": 0,
+      "sessions_6plus_by_session_message_count": 1,
+      "sessions_selected": 0,
+      "messages": 16,
+      "retainable_messages": 6,
+      "turns": 3,
+      "documents": 3,
+      "est_total_tokens": 11719,
+      "by_source": {}
+    },
+    "desktop": {
+      "sessions": 5,
+      "sessions_6plus": 3,
+      "sessions_6plus_by_session_message_count": 5,
+      "sessions_selected": 0,
+      "messages": 536,
+      "retainable_messages": 42,
+      "turns": 16,
+      "documents": 39,
+      "est_total_tokens": 172758,
+      "by_source": {}
+    },
+    "telegram": {
+      "sessions": 30,
+      "sessions_6plus": 23,
+      "sessions_6plus_by_session_message_count": 29,
+      "sessions_selected": 3,
+      "messages": 4464,
+      "retainable_messages": 1433,
+      "turns": 233,
+      "documents": 961,
+      "est_total_tokens": 4258423,
+      "by_source": {}
+    }
+  },
+  "data_quality": {
+    "population": "all uncovered in-range sessions (before --min-messages / --limit)",
+    "sessions_with_zero_retainable_messages": [
+      "20260909_053953_a74168b1"
+    ],
+    "sessions_with_empty_content_rows": 37,
+    "total_empty_content_rows": 3265,
+    "sessions_user_without_assistant": 15,
+    "total_user_without_assistant_turns": 87,
+    "sessions_assistant_without_user": 1,
+    "total_assistant_without_user_turns": 1,
+    "sessions_marked_message_count_but_no_user_assistant": [],
+    "sessions_with_parent_session_id": 0,
+    "tokens_column_note": "state.db messages.token_count is NULL for every row (127,432/127,432 populated) -> token cost is estimated, not read"
+  },
+  "history_context": {
+    "note": "uncovered telegram/desktop/cli sessions per local day across ALL of state.db (outside the selected range is informational only)",
+    "all_uncovered_total": 434,
+    "per_day": {
+      "2026-04-09": 10,
+      "2026-04-10": 7,
+      "2026-04-11": 5,
+      "2026-04-12": 2,
+      "2026-04-13": 6,
+      "2026-04-14": 10,
+      "2026-04-15": 24,
+      "2026-04-16": 9,
+      "2026-04-17": 14,
+      "2026-04-19": 6,
+      "2026-04-20": 7,
+      "2026-04-21": 5,
+      "2026-04-22": 10,
+      "2026-04-23": 7,
+      "2026-04-24": 1,
+      "2026-04-25": 1,
+      "2026-04-26": 2,
+      "2026-04-27": 1,
+      "2026-04-29": 4,
+      "2026-04-30": 6,
+      "2026-07-24": 5,
+      "2026-07-25": 8,
+      "2026-07-26": 1,
+      "2026-07-27": 5,
+      "2026-07-28": 2,
+      "2026-07-29": 2,
+      "2026-07-30": 6,
+      "2026-08-02": 5,
+      "2026-08-03": 2,
+      "2026-08-04": 12,
+      "2026-08-05": 9,
+      "2026-08-06": 5,
+      "2026-08-07": 14,
+      "2026-08-08": 15,
+      "2026-08-09": 12,
+      "2026-08-10": 11,
+      "2026-08-11": 7,
+      "2026-08-12": 45,
+      "2026-08-13": 7,
+      "2026-08-14": 7,
+      "2026-08-15": 14,
+      "2026-08-16": 1,
+      "2026-08-17": 3,
+      "2026-08-18": 1,
+      "2026-08-19": 3,
+      "2026-08-20": 3,
+      "2026-08-21": 12,
+      "2026-08-22": 2,
+      "2026-08-23": 1,
+      "2026-08-24": 4,
+      "2026-08-25": 6,
+      "2026-08-26": 3,
+      "2026-08-31": 4,
+      "2026-09-01": 6,
+      "2026-09-02": 8,
+      "2026-09-03": 4,
+      "2026-09-06": 1,
+      "2026-09-07": 1,
+      "2026-09-08": 3,
+      "2026-09-09": 3,
+      "2026-09-10": 10,
+      "2026-09-11": 17,
+      "2026-09-12": 7
+    }
+  },
+  "sessions": [
+    {
+      "session_id": "20260912_114629_a77d1329",
+      "source": "telegram",
+      "day": "2026-09-12",
+      "started_at": "2026-09-12T11:46:29+08:00",
+      "title": "Hermes Agent execution architecture 梳理及 push",
+      "parent_session_id": null,
+      "is_top_level": true,
+      "session_message_count": 421,
+      "tool_call_count": 234,
+      "user_messages": 3,
+      "assistant_messages": 46,
+      "retainable_messages": 49,
+      "has_6plus_messages": true,
+      "has_6plus_session_count": true,
+      "assistant_rows_empty_content": 137,
+      "turns": 3,
+      "documents": 19,
+      "payload_chars": 50662,
+      "content_tokens": 15770,
+      "est_input_tokens": 76570,
+      "est_output_tokens": 5700,
+      "est_total_tokens": 82270,
+      "skipped_empty_content": 137,
+      "user_without_assistant": 0,
+      "assistant_without_user": 0
+    },
+    {
+      "session_id": "20260912_111132_acf84ede",
+      "source": "telegram",
+      "day": "2026-09-12",
+      "started_at": "2026-09-12T11:11:32+08:00",
+      "title": "審查 Hermes Agent background 執行阻塞問題",
+      "parent_session_id": null,
+      "is_top_level": true,
+      "session_message_count": 149,
+      "tool_call_count": 78,
+      "user_messages": 2,
+      "assistant_messages": 4,
+      "retainable_messages": 6,
+      "has_6plus_messages": true,
+      "has_6plus_session_count": true,
+      "assistant_rows_empty_content": 64,
+      "turns": 2,
+      "documents": 2,
+      "payload_chars": 4824,
+      "content_tokens": 2124,
+      "est_input_tokens": 8524,
+      "est_output_tokens": 600,
+      "est_total_tokens": 9124,
+      "skipped_empty_content": 64,
+      "user_without_assistant": 0,
+      "assistant_without_user": 0
+    },
+    {
+      "session_id": "20260912_103316_46f77a05",
+      "source": "telegram",
+      "day": "2026-09-12",
+      "started_at": "2026-09-12T10:33:17+08:00",
+      "title": "Hermes Agent 可靠性審查與修復",
+      "parent_session_id": null,
+      "is_top_level": true,
+      "session_message_count": 326,
+      "tool_call_count": 180,
+      "user_messages": 3,
+      "assistant_messages": 21,
+      "retainable_messages": 24,
+      "has_6plus_messages": true,
+      "has_6plus_session_count": true,
+      "assistant_rows_empty_content": 121,
+      "turns": 3,
+      "documents": 12,
+      "payload_chars": 30539,
+      "content_tokens": 13023,
+      "est_input_tokens": 51423,
+      "est_output_tokens": 3600,
+      "est_total_tokens": 55023,
+      "skipped_empty_content": 121,
+      "user_without_assistant": 0,
+      "assistant_without_user": 0
+    }
+  ],
+  "resume_state_file": "v2/backfill_state.json"
+}

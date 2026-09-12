@@ -1,0 +1,52 @@
+{
+  "_README": "SYNTHETIC TEMPLATE. The live question set is memory-derived (a question plus its expected token describes the user's machine and preferences), so it is NOT kept in this public repository. The live set lives beside the tools that run it: %LOCALAPPDATA%/hermes/scripts/memory-ops/retrieval_questions.json, with a copy in the audit workspace (v2/retrieval_questions.local.json). Copy this file to one of those locations to rebuild one. See MAINTENANCE.md 5.4 and run scripts/check_artifacts_privacy.py before committing.",
+  "version": 3,
+  "synthetic": true,
+  "tiers": {
+    "core": "bank-retrievable long-term memory with a selective expected token (<=20 containing items). THE benchmark: the backfill gate uses this tier only.",
+    "environment": "facts a live tool can read back (port, version, model, path, filename, cadence, code): recall SMOKE, never gated.",
+    "builtin": "answer lives in the injected MEMORY.md/USER.md store, which is always in context and is NOT retrieved from the bank; verified against those files, never scored as bank recall.",
+    "gap": "the expected answer is retained in neither store - reported as a finding; not scored.",
+    "liveness": "no expectation; checks the endpoint answers at all."
+  },
+  "scoring": "The headline recall@k is the CORE tier. environment is smoke. builtin is verified against the memory files. liveness is not scored. Every expected token was verified to be both present in its store and selective (see artifacts/golden_set_coverage.json); a token that appears in hundreds of items is excluded, because it makes nearly any response a hit.",
+  "questions": [
+    {
+      "id": "core-example",
+      "lang": "en",
+      "category": "project_decision",
+      "tier": "core",
+      "query": "Which file records the decisions a project has already made?",
+      "expect": [
+        "DECISIONS.md"
+      ]
+    },
+    {
+      "id": "environment-example",
+      "lang": "en",
+      "category": "environment",
+      "tier": "environment",
+      "query": "Which port does the local service listen on?",
+      "expect": [
+        "127.0.0.1:9999"
+      ]
+    },
+    {
+      "id": "builtin-example",
+      "lang": "en",
+      "category": "user_pref",
+      "tier": "builtin",
+      "query": "Which language should replies use?",
+      "expect": [
+        "reply in the user's language"
+      ]
+    },
+    {
+      "id": "liveness-example",
+      "lang": "en",
+      "category": "liveness",
+      "tier": "liveness",
+      "query": "Summarise what you know about the current project."
+    }
+  ]
+}

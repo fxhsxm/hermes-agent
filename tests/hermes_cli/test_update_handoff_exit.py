@@ -23,7 +23,6 @@ import pytest
 import hermes_cli.main as main_mod
 from hermes_cli import update_cmd
 from hermes_cli.main import cmd_update
-from hermes_cli.update_receipt import COMMAND_BOUNDARY_STOP_REASON
 
 
 class _FakeLock:
@@ -90,7 +89,7 @@ def _noop_impl(args, gateway_mode=False):
 def test_handoff_child_hard_exits_zero_after_success(monkeypatch):
     events = _run_cmd_update(monkeypatch, _noop_impl, reexec=True)
     assert events["exit_codes"] == [0]
-    assert events["receipts"] == [(0, COMMAND_BOUNDARY_STOP_REASON)]
+    assert events["receipts"] == [(0, "completed at command boundary")]
     # The hard exit is the last thing, after lock release and stdio restore.
     assert events["order"] == ["acquire", "impl", "release", "restore-stdio", "hard-exit"]
 
@@ -99,7 +98,7 @@ def test_non_handoff_run_never_hard_exits(monkeypatch):
     events = _run_cmd_update(monkeypatch, _noop_impl, reexec=False)
     assert events["exit_codes"] == []
     assert "hard-exit" not in events["order"]
-    assert events["receipts"] == [(0, COMMAND_BOUNDARY_STOP_REASON)]
+    assert events["receipts"] == [(0, "completed at command boundary")]
 
 
 def test_handoff_child_propagates_early_systemexit_code(monkeypatch):

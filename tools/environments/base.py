@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 
 from hermes_constants import get_hermes_home
-from tools.interrupt import consume_yield, is_interrupted, is_thread_interrupted
+from tools.interrupt import is_interrupted, is_thread_interrupted
 from tools.environments.base_output import (
     ProcessHandle, _finalize_wait_result, _new_output_collector, _start_drain_thread,
 )
@@ -153,10 +153,6 @@ class BaseEnvironment(ABC):
 
     # Snapshot creation timeout (override for slow cold-starts).
     _snapshot_timeout: int = 30
-
-    # Opt in only when a timed-out probe can kill its command without tearing
-    # down the whole backend. SDK adapters cancel by stopping the sandbox.
-    _sudo_nopasswd_probe_supported: bool = False
 
     # Local and Docker override this because they resolve allowlisted values
     # through the active profile scope; other backends keep plain snapshots.
@@ -341,13 +337,8 @@ class BaseEnvironment(ABC):
     # --- Process lifecycle ---
     def _wait_for_process(
         self, proc: ProcessHandle, timeout: int = 120, *,
-        bounded_capture: bool = False, watch_interrupt_tid: int | None = None,
-        yield_handler: Callable[[ProcessHandle, str], dict] | None = None) -> dict:
+        bounded_capture: bool = False, watch_interrupt_tid: int | None = None) -> dict:
         """Poll-based wait with interrupt checking and stdout draining (shared, not overridden).
-        ``yield_handler(proc, output_so_far)``: when the tool thread is asked to yield
-        (``tools.interrupt.request_yield`` — a user message arrived mid-command), the drain
-        thread is stopped, the still-running process is handed to the handler and its dict
-        is returned as the result; the process is NOT killed.
         ``bounded_capture=True`` (foreground terminal-tool path only) retains at most
         ``tool_output.max_bytes`` in a head/tail window so a verbose subprocess cannot OOM the
         process; the default keeps full fidelity for internal consumers. Fires the activity
@@ -363,8 +354,7 @@ class BaseEnvironment(ABC):
         data. See #64435.
         """
         output = _new_output_collector(proc, bounded_capture)
-        drain_stop = threading.Event() if yield_handler is not None else None
-        drain_thread = _start_drain_thread(proc, output, drain_stop)
+        drain_thread = _start_drain_thread(proc, output)
         _now = time.monotonic()
         deadline = _now + timeout
         _activity_state = {"last_touch": _now, "start": _now}
@@ -385,19 +375,6 @@ class BaseEnvironment(ABC):
                     trace.interrupted()
                     _kill_and_join()
                     return self._finalize_wait_result(output, output.render(suffix="\n[Command interrupted]"), 130)
-                if yield_handler is not None and consume_yield(watch_interrupt_tid):
-                    drain_stop.set()
-                    drain_thread.join(timeout=1)
-                    try:
-                        handed = yield_handler(proc, output.render())
-                    except Exception:
-                        logger.warning("yield-to-background handoff failed; continuing to wait", exc_info=True)
-                        handed = None
-                    if handed is not None:
-                        output.close_spill()
-                        return handed
-                    drain_stop.clear()
-                    drain_thread = _start_drain_thread(proc, output, drain_stop)
                 if time.monotonic() > deadline:
                     trace.timed_out()
                     _kill_and_join()
@@ -485,8 +462,7 @@ class BaseEnvironment(ABC):
         timeout: int | None = None,
         stdin_data: str | None = None,
         rewrite_compound_background: bool = True,
-        bounded_capture: bool = False,
-        yield_handler: Callable[[ProcessHandle, str], dict] | None = None) -> dict:
+        bounded_capture: bool = False) -> dict:
         """Execute a command, return {"output": str, "returncode": int}. ``bounded_capture=True``
         caps retention at ``tool_output.max_bytes`` WHILE draining; only the foreground terminal
         tool may set it — internal full-fidelity consumers (file-op ``cat`` reads feeding the
@@ -533,9 +509,7 @@ class BaseEnvironment(ABC):
             spawned = self._run_bash(wrapped, login=login, timeout=effective_timeout, stdin_data=effective_stdin)
             proc_holder.append(spawned)
             return self._wait_for_process(
-                spawned, timeout=effective_timeout, bounded_capture=bounded_capture,
-                watch_interrupt_tid=parent_tid,
-                **({"yield_handler": yield_handler} if yield_handler is not None else {}))
+                spawned, timeout=effective_timeout, bounded_capture=bounded_capture, watch_interrupt_tid=parent_tid)
 
         def _on_timeout() -> None:
             if proc_holder:
@@ -591,22 +565,9 @@ class BaseEnvironment(ABC):
             pass
 
     def _prepare_command(self, command: str) -> tuple[str, str | None]:
-        """Rewrite sudo for a piped password, or leave it alone when this backend has NOPASSWD."""
+        """Transform sudo commands if SUDO_PASSWORD is available."""
         from tools.terminal_tool_sudo import _transform_sudo_command
-        return _transform_sudo_command(command, sudo_nopasswd_check=self._sudo_nopasswd_works)
-
-    _SUDO_PROBE_TIMEOUT_S = 3
-
-    def _sudo_nopasswd_works(self) -> bool:
-        """``sudo -n true`` inside THIS backend (host sudo state must not leak into a sandbox).
-        Fails closed: any error or a timed-out probe means "assume a password is needed"."""
-        if not self._sudo_nopasswd_probe_supported:
-            return False
-        try:
-            proc = self._run_bash("sudo -n true", timeout=self._SUDO_PROBE_TIMEOUT_S)
-            return self._wait_for_process(proc, timeout=self._SUDO_PROBE_TIMEOUT_S).get("returncode") == 0
-        except Exception:
-            return False
+        return _transform_sudo_command(command)
 
 
 # ---- BEGIN PLUGIN-COMPAT (revert-scheduled; see COMPAT_MANIFEST.md) ----

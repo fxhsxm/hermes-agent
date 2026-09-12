@@ -1,0 +1,54 @@
+{
+ "version": 1,
+ "bank": "fwh-audit-sandbox",
+ "run_started_at": "2026-09-12T18:22:13Z",
+ "run_ended_at": "2026-09-12T18:22:36Z",
+ "range": {
+  "from": "2026-08-20",
+  "to": "2026-08-20"
+ },
+ "caps": {
+  "limit": 1,
+  "max_documents": 5,
+  "chunk_chars": 3000,
+  "turns_per_chunk": 6
+ },
+ "summary": {
+  "completed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "documents": 4,
+  "ops_completed": 4,
+  "ops_failed": 0
+ },
+ "sessions": [
+  {
+   "session_id": "20260820_195102_0f93e2cd",
+   "source": "telegram",
+   "status": "completed",
+   "documents": 4,
+   "doc_ids": [
+    "bf-20260820_195102_0f93e2cd-c002-ccbc39c2",
+    "bf-20260820_195102_0f93e2cd-c003-91e23fca",
+    "bf-20260820_195102_0f93e2cd-c004-898a48b8",
+    "bf-20260820_195102_0f93e2cd-c005-ce9ec890"
+   ],
+   "turns": 12,
+   "est_total_tokens": 27666,
+   "resumed": true,
+   "chunks_skipped_already_in_bank": 2
+  }
+ ],
+ "document_ids": [
+  "bf-20260820_195102_0f93e2cd-c002-ccbc39c2",
+  "bf-20260820_195102_0f93e2cd-c003-91e23fca",
+  "bf-20260820_195102_0f93e2cd-c004-898a48b8",
+  "bf-20260820_195102_0f93e2cd-c005-ce9ec890"
+ ],
+ "document_count": 4,
+ "rollback": {
+  "preferred": "restore the backup zip taken immediately before this run",
+  "precise": "DELETE /v1/default/banks/fwh-audit-sandbox/documents/<document_id> for each id in document_ids",
+  "forbidden": "deleting by the kind:backfill tag would also delete every earlier batch, including the ones that passed their gate"
+ }
+}

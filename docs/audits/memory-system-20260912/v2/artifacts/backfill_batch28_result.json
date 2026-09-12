@@ -1,0 +1,160 @@
+{
+ "batch": 28,
+ "tool": "memory_backfill_batch",
+ "scope": {
+  "from": "2026-09-08",
+  "to": "2026-09-12",
+  "limit": 6,
+  "max_documents": 40,
+  "order": "oldest",
+  "top_level_only": true
+ },
+ "execute": true,
+ "started": "2026-09-13T03:12:13",
+ "min_margin": 0.05,
+ "dup_tolerance": 0.02,
+ "bank_before": {
+  "total_nodes": 10873,
+  "total_documents": 1160,
+  "failed_operations": 332,
+  "pending_operations": 1,
+  "last_memory_write_at": "2026-09-12T19:12:01.571731+00:00"
+ },
+ "backup": {
+  "path": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backups\\fwh-main-20260912T191213Z.zip",
+  "rc": 0,
+  "bytes": 65713261,
+  "ok": true
+ },
+ "before": {
+  "recall@1": 0.625,
+  "recall@3": 0.75,
+  "recall@10": 0.875,
+  "recall_without_backfill@3": 0.625,
+  "dup_item_rate": 0.211,
+  "decided_ids": [
+   "q07-delegation-policy"
+  ],
+  "unstable_ids": [
+   "q01-txt-encoding",
+   "q02-hindsight-port",
+   "q03-pg0-port",
+   "q04-reranker",
+   "q05-worker-id",
+   "q06-delivery-dir",
+   "q08-hindsight-llm",
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "staleness_proxy_strict": 10,
+  "n": 10,
+  "n_answered": 10,
+  "margins": {
+   "q01-txt-encoding": 0.0484,
+   "q02-hindsight-port": 0.0086,
+   "q03-pg0-port": 0.0432,
+   "q04-reranker": 0.0166,
+   "q05-worker-id": 0.0131,
+   "q06-delivery-dir": 0.0086,
+   "q07-delegation-policy": 0.0568,
+   "q08-hindsight-llm": 0.0469,
+   "q09-liveness-user-pref": 0.0151,
+   "q10-liveness-memory": 0.0296
+  }
+ },
+ "backfill": {
+  "rc": 0,
+  "manifest": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\manifests\\batch28-20260912T191213Z.json",
+  "report": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backfill_batch28_report.json",
+  "manifest_sessions": 1,
+  "manifest_documents": 6,
+  "manifest_statuses": {
+   "completed": 1
+  },
+  "ops_completed": 6,
+  "ops_failed": 0,
+  "doc_ids": [
+   "bf-20260912_114629_a77d1329-c013-33fe5841",
+   "bf-20260912_114629_a77d1329-c014-b20053dd",
+   "bf-20260912_114629_a77d1329-c015-ad33b2d0",
+   "bf-20260912_114629_a77d1329-c016-999eb8ab",
+   "bf-20260912_114629_a77d1329-c017-5e9f2eb7",
+   "bf-20260912_114629_a77d1329-c018-18637c9b"
+  ]
+ },
+ "after": {
+  "recall@1": 0.625,
+  "recall@3": 0.75,
+  "recall@10": 0.875,
+  "recall_without_backfill@3": 0.625,
+  "dup_item_rate": 0.2225,
+  "decided_ids": [
+   "q07-delegation-policy"
+  ],
+  "unstable_ids": [
+   "q01-txt-encoding",
+   "q02-hindsight-port",
+   "q03-pg0-port",
+   "q04-reranker",
+   "q05-worker-id",
+   "q06-delivery-dir",
+   "q08-hindsight-llm",
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "staleness_proxy_strict": 9,
+  "n": 10,
+  "n_answered": 10,
+  "margins": {
+   "q01-txt-encoding": 0.0484,
+   "q02-hindsight-port": 0.0086,
+   "q03-pg0-port": 0.0432,
+   "q04-reranker": 0.0166,
+   "q05-worker-id": 0.0131,
+   "q06-delivery-dir": 0.0086,
+   "q07-delegation-policy": 0.0568,
+   "q08-hindsight-llm": 0.0469,
+   "q09-liveness-user-pref": 0.0151,
+   "q10-liveness-memory": 0.0296
+  }
+ },
+ "bank_after": {
+  "total_nodes": 10895,
+  "total_documents": 1166,
+  "failed_operations": 332,
+  "pending_operations": 1,
+  "last_memory_write_at": "2026-09-12T19:13:43.612276+00:00"
+ },
+ "gate": {
+  "rc": 0,
+  "checks": {
+   "recall@3_not_worse": true,
+   "no_answer_lost": true,
+   "no_decided_rank_regression": true,
+   "all_questions_answered": true,
+   "dup_within_tolerance": true
+  },
+  "all_ok": true,
+  "regressions": [],
+  "unstable_flips": [],
+  "flipped": [],
+  "improved": [],
+  "counts": {
+   "SAME": 7,
+   "SAME_ABSENT": 1,
+   "no_ground_truth": 2
+  },
+  "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.",
+  "file": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\batch28_compare.json"
+ },
+ "write_check": {
+  "manifest_documents": 6,
+  "bank_before_documents": 1160,
+  "bank_after_documents": 1166,
+  "delta": 6,
+  "ops_failed": 0,
+  "ok": true
+ },
+ "finished": "2026-09-13T03:14:09",
+ "duration_s": 116.0
+}

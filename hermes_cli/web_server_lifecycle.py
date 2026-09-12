@@ -1,7 +1,6 @@
 """Serve-process lifecycle: parent death watchdog, port-conflict preflight, READY announcement, browser open, trusted proxies.
 """
 
-import asyncio
 import logging
 import ipaddress
 import json
@@ -76,9 +75,7 @@ def _process_start_marker(pid: int) -> str:
     marker = result.stdout.strip()
     if result.returncode == 0 and marker:
         return f"ps:{marker}"
-    # Only known "missing pid" signals become ProcessLookupError; anything else stays OSError so the
-    # watchdog degrades to pid liveness instead of exiting on a healthy backend.
-    if (result.returncode == 1 and not marker) or "no such process" in result.stderr.lower():
+    if result.returncode == 1 and not marker:
         raise ProcessLookupError(pid)
     raise OSError(f"ps could not inspect PID {pid}: {result.stderr.strip()}")
 
@@ -171,23 +168,16 @@ def _resolve_restart_drain_timeout() -> float:
 
 
 def _eager_reconcile_own_session_db() -> None:
-    """Bring this process's own state.db schema current at startup — read-only first.
+    """One writable open of this process's own state.db at startup.
 
-    The dashboard is a view layer; the gateway owns the writer. A healthy store
-    must never see a second writable ``SessionDB`` from this process (its
-    close-time checkpoint and a possible FTS rebuild in ``_init_fts`` are the
-    two-writer corruption vector, #107688 / #100896). The read-only path still
-    bootstraps a missing store and heals a stale/malformed schema through ONE
-    writable open, so the #79531 contract holds. Never raises: an unfixable
-    store still gets the per-poll read-probe heal.
+    ``SessionDB.__init__`` runs ``_init_schema`` → ``_reconcile_columns`` with
+    open-time lock patience. Never raises: an unfixable store still gets the
+    per-poll read-probe heal in :func:`_open_session_db_at_path`.
     """
     try:
-        from hermes_state import _default_db_path
+        from hermes_state import SessionDB, _default_db_path
 
-        from hermes_cli.web_server_sessions import _open_session_db_at_path
-
-        db = _open_session_db_at_path(Path(_default_db_path()), read_only=True)
-        db.close()
+        SessionDB(db_path=Path(_default_db_path()), read_only=False).close()
     except Exception as exc:
         _log.warning(
             "startup schema reconcile of state.db failed (%s); session "
@@ -286,25 +276,20 @@ def _is_serve_orphaned(
     try:
         if expected_start_marker is not None:
             probe = process_start_marker or _process_start_marker
-            try:
-                actual_marker = probe(int(desktop_pid))
-            except ProcessLookupError:
+            actual_marker = probe(int(desktop_pid))
+            if _parent_start_markers_match(actual_marker, expected_start_marker):
+                return False
+            if _parent_start_marker_mismatch_is_conclusive(actual_marker, expected_start_marker):
                 return True
-            except Exception:
-                actual_marker = None
-
-            if actual_marker is not None:
-                if _parent_start_markers_match(actual_marker, expected_start_marker):
-                    return False
-                if _parent_start_marker_mismatch_is_conclusive(actual_marker, expected_start_marker):
-                    return True
-                # Inconclusive marker: degrade to PID liveness instead of exiting.
+            # Inconclusive marker: degrade to PID liveness instead of exiting.
 
         if pid_exists is None:
             from gateway.status import _pid_exists
 
             pid_exists = _pid_exists
         return not bool(pid_exists(int(desktop_pid)))
+    except ProcessLookupError:
+        return True
     except Exception:
         return False
 

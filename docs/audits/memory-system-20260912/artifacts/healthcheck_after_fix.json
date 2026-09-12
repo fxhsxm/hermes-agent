@@ -1,0 +1,143 @@
+{
+  "generated_at": "2026-09-12T04:57:16+00:00",
+  "status": "degraded",
+  "checks": [
+    {
+      "check": "provider_wiring",
+      "level": "ok",
+      "detail": "provider=hindsight mode=local_external bank=fwh-main"
+    },
+    {
+      "check": "api_liveness",
+      "level": "ok",
+      "detail": "/health=healthy db=connected api=0.9.0",
+      "api_version": "0.9.0"
+    },
+    {
+      "check": "write_path_probe",
+      "level": "ok",
+      "detail": "dry-run extraction returned 1 facts in 5.7s (nothing persisted)",
+      "elapsed_s": 5.7,
+      "facts": 1
+    },
+    {
+      "check": "bank_activity",
+      "level": "ok",
+      "detail": "last write 0.0h ago, last consolidation 120.9h ago"
+    },
+    {
+      "check": "failed_consolidation",
+      "level": "warn",
+      "detail": "1 consolidation failure(s) recorded"
+    },
+    {
+      "check": "recent_operations",
+      "level": "fail",
+      "detail": "49/50 of the last 50 operations failed (98%) [window 2026-09-11T19:34 .. 2026-09-12T04:56]",
+      "failed": 49,
+      "window": 50,
+      "window_from": "2026-09-11T19:34:34.753809+00:00",
+      "window_to": "2026-09-12T04:56:47.117912+00:00",
+      "error_classes": {
+        "Fact extraction failed: 1/1 chunks failed. First failures: chunk 0: BadRequestError: Error": 49
+      }
+    },
+    {
+      "check": "retrieval",
+      "level": "ok",
+      "detail": "1 recall probe(s) in 1.1s; reranker_engaged=True",
+      "reranker_engaged": true,
+      "probes": [
+        {
+          "id": "smoke",
+          "n": 62,
+          "hit_rank": null,
+          "latency_s": 1.11,
+          "reranker_top3": [
+            0.746,
+            0.75,
+            0.742
+          ]
+        }
+      ]
+    },
+    {
+      "check": "coverage",
+      "level": "warn",
+      "detail": "15/60 sessions in the last 7d reached the bank; days with sessions but no memory: ['2026-09-08', '2026-09-09', '2026-09-10', '2026-09-11', '2026-09-12']",
+      "per_day": [
+        {
+          "day": "2026-09-05",
+          "sessions": 7,
+          "in_bank": 7,
+          "coverage": 1.0
+        },
+        {
+          "day": "2026-09-06",
+          "sessions": 8,
+          "in_bank": 7,
+          "coverage": 0.875
+        },
+        {
+          "day": "2026-09-07",
+          "sessions": 4,
+          "in_bank": 1,
+          "coverage": 0.25
+        },
+        {
+          "day": "2026-09-08",
+          "sessions": 3,
+          "in_bank": 0,
+          "coverage": 0.0
+        },
+        {
+          "day": "2026-09-09",
+          "sessions": 3,
+          "in_bank": 0,
+          "coverage": 0.0
+        },
+        {
+          "day": "2026-09-10",
+          "sessions": 10,
+          "in_bank": 0,
+          "coverage": 0.0
+        },
+        {
+          "day": "2026-09-11",
+          "sessions": 17,
+          "in_bank": 0,
+          "coverage": 0.0
+        },
+        {
+          "day": "2026-09-12",
+          "sessions": 8,
+          "in_bank": 0,
+          "coverage": 0.0
+        }
+      ],
+      "silent_days": [
+        "2026-09-08",
+        "2026-09-09",
+        "2026-09-10",
+        "2026-09-11",
+        "2026-09-12"
+      ]
+    },
+    {
+      "check": "builtin_MEMORY.md",
+      "level": "warn",
+      "detail": "2129/2200 chars (97% of the injected budget)",
+      "chars": 2129,
+      "limit": 2200
+    },
+    {
+      "check": "builtin_USER.md",
+      "level": "ok",
+      "detail": "1169/1375 chars (85% of the injected budget)",
+      "chars": 1169,
+      "limit": 1375
+    }
+  ],
+  "bank": "fwh-main",
+  "api_url": "http://127.0.0.1:8888"
+}

@@ -155,11 +155,7 @@ def test_pre_api_compression_budget_rearms_only_after_pressure_clears(
     estimate_values = iter([200, 190, 200, 10])
     _last_estimate = [10]
 
-    def _next_estimate(messages=None, *_args, **_kwargs):
-        # The scripted sequence prices the WHOLE history; a usage-anchored gate
-        # estimates only the few messages appended since the real reading.
-        if isinstance(messages, list) and len(messages) <= 4:
-            return 10
+    def _next_estimate(*_args, **_kwargs):
         # The provider-recovery variant re-runs the pre-API preflight after
         # fallback activation (#84733), consuming an extra estimate reading.
         # Hold the final low-pressure value once the scripted sequence is

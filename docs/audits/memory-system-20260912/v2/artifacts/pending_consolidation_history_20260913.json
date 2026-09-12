@@ -1,0 +1,26 @@
+[
+ {
+  "at": "2026-09-12T21:35:01+00:00",
+  "pending_consolidation": 738,
+  "pending_operations": 0,
+  "failed_consolidation": 1,
+  "total_documents": 1167,
+  "last_consolidated_at": "2026-09-12T21:34:52.987409+00:00"
+ },
+ {
+  "at": "2026-09-12T21:35:03+00:00",
+  "pending_consolidation": 738,
+  "pending_operations": 0,
+  "failed_consolidation": 1,
+  "total_documents": 1167,
+  "last_consolidated_at": "2026-09-12T21:34:52.987409+00:00"
+ },
+ {
+  "at": "2026-09-12T21:37:43+00:00",
+  "pending_consolidation": 730,
+  "pending_operations": 0,
+  "failed_consolidation": 1,
+  "total_documents": 1167,
+  "last_consolidated_at": "2026-09-12T21:37:27.265175+00:00"
+ }
+]

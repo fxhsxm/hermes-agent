@@ -1,0 +1,78 @@
+=== memory regression 20260913-054800 (bank=fwh-main api=http://127.0.0.1:8888 tools=/c/Users/Fwhne/AppData/Local/hermes/scripts/memory-ops) ===
+--- 1/3 unit invariants ---
+unit invariants: SKIPPED (no run_tests.sh found; run this from a repo checkout)
+--- 2/3 health check ---
+Memory health — bank=fwh-main api=http://127.0.0.1:8888
+------------------------------------------------------------------------
+PASS  api_liveness           /health=healthy db=connected api=0.9.2
+PASS  write_path_probe       dry-run extraction HTTP 200 in 17.6s, 1 fact(s) extracted (nothing persisted)
+PASS  bank_activity          last write 0.0h ago, last consolidation 0.0h ago
+WARN  failed_consolidation   1 consolidation failure(s) recorded
+PASS  recent_operations      0/50 of the last 50 operations failed (0%) [window 2026-09-12T19:10 .. 2026-09-12T21:43]
+PASS  pending_consolidation  622 pending; baseline recorded (no earlier sample to compare) [trend=first_sample; history=C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\regression-v22\pending_consolidation_history.json, 1 samples]
+PASS  retrieval              1 recall probe(s) in 1.3s; reranker_engaged=True
+PASS  coverage               53/63 sessions in the last 7d reached the bank
+PASS  builtin_MEMORY.md      1561/2200 chars (71% of the injected budget)
+PASS  builtin_USER.md        1101/1375 chars (80% of the injected budget)
+------------------------------------------------------------------------
+status: warnings  (0=healthy 1=warnings 2=degraded)
+json: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\regression-v22/health-20260913-054800.json
+health check: exit 1 (1=warnings, 2=degraded)
+--- 3/3 retrieval quality ---
+[up-language] n=45 dup_pairs=6 twin=6 hit=11 lat=0.9199s margin=0.0043 unstable proxy=False
+[up-delivery-dir] n=47 dup_pairs=11 twin=11 hit=7 lat=0.8305s margin=0.0086 unstable proxy=True
+[up-txt-encoding] n=39 dup_pairs=5 twin=5 hit=1 lat=0.8553s margin=0.0484 unstable proxy=True
+[up-asr-model] n=46 dup_pairs=6 twin=5 hit=13 lat=0.9736s margin=0.0169 unstable proxy=True
+[up-cookies-rule] n=51 dup_pairs=4 twin=4 hit=6 lat=0.8206s margin=0.0258 unstable proxy=False
+[up-delete-rollback] n=53 dup_pairs=3 twin=3 hit=1 lat=1.2346s margin=0.073 decided proxy=False
+[up-provider-fallback] n=26 dup_pairs=2 twin=2 hit=1 lat=1.0063s margin=0.0013 unstable proxy=True
+[up-ocr-rule] n=26 dup_pairs=1 twin=1 hit=1 lat=0.898s margin=0.0168 unstable proxy=True
+[up-subagent-report] n=41 dup_pairs=5 twin=5 hit=None lat=0.8386s margin=0.0456 unstable proxy=True
+[up-scope-lock] n=39 dup_pairs=1 twin=1 hit=None lat=0.8812s margin=0.1862 decided proxy=True
+[up-context-hygiene] n=36 dup_pairs=2 twin=2 hit=None lat=0.851s margin=0.0 unstable proxy=True
+[up-risk-query] n=33 dup_pairs=1 twin=1 hit=2 lat=0.858s margin=0.035 unstable proxy=True
+[env-hindsight-port] n=45 dup_pairs=4 twin=4 hit=1 lat=0.7701s margin=0.0086 unstable proxy=True
+[env-pg0-port] n=44 dup_pairs=3 twin=3 hit=1 lat=0.7452s margin=0.0119 unstable proxy=False
+[env-bank] n=38 dup_pairs=7 twin=7 hit=1 lat=0.7154s margin=0.0179 unstable proxy=True
+[env-hindsight-venv] n=40 dup_pairs=7 twin=7 hit=1 lat=0.8195s margin=0.0364 unstable proxy=True
+[env-embedding] n=50 dup_pairs=9 twin=9 hit=2 lat=0.7779s margin=0.0205 unstable proxy=True
+[env-reranker] n=38 dup_pairs=5 twin=5 hit=1 lat=0.795s margin=0.0167 unstable proxy=True
+[env-llm-provider] n=43 dup_pairs=8 twin=8 hit=1 lat=0.7582s margin=0.047 unstable proxy=True
+[env-hindsight-version] n=45 dup_pairs=6 twin=6 hit=5 lat=0.7577s margin=0.018 unstable proxy=True
+[env-provider-config] n=39 dup_pairs=5 twin=5 hit=1 lat=0.8722s margin=0.0436 unstable proxy=True
+[env-telegram-topic] n=54 dup_pairs=4 twin=3 hit=13 lat=0.7644s margin=0.0644 decided proxy=True
+[env-delegation-iterations] n=49 dup_pairs=6 twin=6 hit=1 lat=0.6999s margin=0.0497 unstable proxy=True
+[env-delegation-stall] n=38 dup_pairs=4 twin=4 hit=1 lat=0.7365s margin=0.0 unstable proxy=True
+[env-github-task-source] n=66 dup_pairs=8 twin=8 hit=10 lat=0.8196s margin=0.0558 decided proxy=True
+[env-cron-script-lang] n=46 dup_pairs=4 twin=4 hit=1 lat=0.8417s margin=0.0743 decided proxy=False
+[env-launcher-flags] n=55 dup_pairs=9 twin=9 hit=1 lat=0.844s margin=0.0246 unstable proxy=True
+[env-loopback] n=35 dup_pairs=3 twin=3 hit=3 lat=0.7924s margin=0.0172 unstable proxy=False
+[proj-write-header] n=37 dup_pairs=4 twin=4 hit=1 lat=0.8683s margin=0.0636 decided proxy=True
+[proj-upgrade-rollback] n=53 dup_pairs=7 twin=7 hit=2 lat=0.8483s margin=0.0074 unstable proxy=True
+[proj-backfill-rollback] n=48 dup_pairs=5 twin=5 hit=32 lat=0.8884s margin=0.0171 unstable proxy=True
+[proj-gate-criterion] n=42 dup_pairs=5 twin=5 hit=None lat=0.7148s margin=0.009 unstable proxy=True
+[proj-stale-proxy] n=42 dup_pairs=3 twin=3 hit=3 lat=0.828s margin=0.1823 decided proxy=False
+[proj-coverage-check] n=29 dup_pairs=2 twin=2 hit=None lat=0.8171s margin=0.0049 unstable proxy=True
+[proj-resume-partial] n=38 dup_pairs=2 twin=2 hit=1 lat=0.7658s margin=0.0615 decided proxy=False
+[proj-fail-closed] n=39 dup_pairs=3 twin=3 hit=12 lat=0.8164s margin=0.0318 unstable proxy=True
+[proj-attribution] n=39 dup_pairs=9 twin=9 hit=None lat=0.8026s margin=0.0151 unstable proxy=True
+[proj-sandbox-bank] n=40 dup_pairs=7 twin=7 hit=3 lat=0.9763s margin=0.0046 unstable proxy=True
+[proj-reflect-rule] n=41 dup_pairs=7 twin=7 hit=1 lat=0.7395s margin=0.0258 unstable proxy=False
+[proj-memory-layers] n=32 dup_pairs=3 twin=3 hit=2 lat=0.7247s margin=0.0209 unstable proxy=True
+[proj-lane-git] n=51 dup_pairs=6 twin=6 hit=1 lat=0.717s margin=0.0286 unstable proxy=True
+[proj-stop-rule] n=71 dup_pairs=9 twin=9 hit=1 lat=0.9864s margin=0.0058 unstable proxy=True
+[mon-cron-cadence] n=47 dup_pairs=8 twin=8 hit=None lat=0.7257s margin=0.0251 unstable proxy=True
+[mon-health-checks] n=28 dup_pairs=1 twin=1 hit=4 lat=0.8706s margin=0.0226 unstable proxy=True
+[live-pref-summary] n=39 dup_pairs=3 twin=3 hit=None lat=1.2317s margin=0.0269 unstable proxy=True
+[live-open-items] n=38 dup_pairs=9 twin=9 hit=None lat=0.7414s margin=0.0213 unstable proxy=True
+[live-top-risk] n=33 dup_pairs=0 twin=0 hit=None lat=0.7923s margin=0.0086 unstable proxy=True
+[live-write-path] n=24 dup_pairs=4 twin=4 hit=None lat=0.6843s margin=0.0402 unstable proxy=True
+
+AGGREGATE {"bank": "fwh-main", "n_questions": 48, "n_answered": 48, "recall": {"n_scored": 44, "recall@1": {"hits": 20, "n": 44, "rate": 0.4545}, "recall@3": {"hits": 27, "n": 44, "rate": 0.6136}, "recall@10": {"hits": 32, "n": 44, "rate": 0.7273}, "misses": ["up-language", "up-asr-model", "up-subagent-report", "up-scope-lock", "up-context-hygiene", "env-telegram-topic", "proj-backfill-rollback", "proj-gate-criterion", "proj-coverage-check", "proj-fail-closed", "proj-attribution", "mon-cron-cadence"], "capped_by_response": []}, "recall_at_1": 0.4545, "recall_at_3": 0.6136, "recall_at_10": 0.7273, "recall_n_scored": 44, "ranking_decision": {"min_margin": 0.05, "decided": 8, "decided_ids": ["up-delete-rollback", "up-scope-lock", "env-telegram-topic", "env-github-task-source", "env-cron-script-lang", "proj-write-header", "proj-stale-proxy", "proj-resume-partial"], "unstable": 40, "unstable_ids": ["up-language", "up-delivery-dir", "up-txt-encoding", "up-asr-model", "up-cookies-rule", "up-provider-fallback", "up-ocr-rule", "up-subagent-report", "up-context-hygiene", "up-risk-query", "env-hindsight-port", "env-pg0-port", "env-bank", "env-hindsight-venv", "env-embedding", "env-reranker", "env-llm-provider", "env-hindsight-version", "env-provider-config", "env-delegation-iterations", "env-delegation-stall", "env-launcher-flags", "env-loopback", "proj-upgrade-rollback", "proj-backfill-rollback", "proj-gate-criterion", "proj-coverage-check", "proj-fail-closed", "proj-attribution", "proj-sandbox-bank", "proj-reflect-rule", "proj-memory-layers", "proj-lane-git", "proj-stop-rule", "mon-cron-cadence", "mon-health-checks", "live-pref-summary", "live-open-items", "live-top-risk", "live-write-path"], "unscored": 0, "unscored_ids": [], "margins": {"up-language": 0.0043, "up-delivery-dir": 0.0086, "up-txt-encoding": 0.0484, "up-asr-model": 0.0169, "up-cookies-rule": 0.0258, "up-delete-rollback": 0.073, "up-provider-fallback": 0.0013, "up-ocr-rule": 0.0168, "up-subagent-report": 0.0456, "up-scope-lock": 0.1862, "up-context-hygiene": 0.0, "up-risk-query": 0.035, "env-hindsight-port": 0.0086, "env-pg0-port": 0.0119, "env-bank": 0.0179, "env-hindsight-venv": 0.0364, "env-embedding": 0.0205, "env-reranker": 0.0167, "env-llm-provider": 0.047, "env-hindsight-version": 0.018, "env-provider-config": 0.0436, "env-telegram-topic": 0.0644, "env-delegation-iterations": 0.0497, "env-delegation-stall": 0.0, "env-github-task-source": 0.0558, "env-cron-script-lang": 0.0743, "env-launcher-flags": 0.024
+wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\regression-v22/retrieval-20260913-054800.json
+retrieval quality: PASS
+=== exit 1 — artifacts in C:/Users/Fwhne/Documents/HermesOutput/hermes-memory-audit-20260912/v2/regression-v22 ===
+  health-20260913-054800.json
+  pending_consolidation_history.json
+  retrieval-20260913-054800.json
+exit=1

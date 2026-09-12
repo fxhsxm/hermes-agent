@@ -1,0 +1,158 @@
+{
+ "version": 1,
+ "bank": "fwh-main",
+ "run_started_at": "2026-09-12T18:06:51Z",
+ "run_ended_at": "2026-09-12T18:09:53Z",
+ "range": {
+  "from": "2026-09-08",
+  "to": "2026-09-12"
+ },
+ "caps": {
+  "limit": 6,
+  "max_documents": 40,
+  "chunk_chars": 3000,
+  "turns_per_chunk": 6
+ },
+ "summary": {
+  "completed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "documents": 32,
+  "ops_completed": 32,
+  "ops_failed": 0
+ },
+ "sessions": [
+  {
+   "session_id": "20260911_090442_09a5ffe9",
+   "source": "telegram",
+   "status": "completed",
+   "documents": 1,
+   "doc_ids": [
+    "bf-20260911_090442_09a5ffe9-c000-5bb19c13"
+   ],
+   "turns": 1,
+   "est_total_tokens": 4348
+  },
+  {
+   "session_id": "20260911_115134_95e340",
+   "source": "desktop",
+   "status": "completed",
+   "documents": 18,
+   "doc_ids": [
+    "bf-20260911_115134_95e340-c000-268a07de",
+    "bf-20260911_115134_95e340-c001-7d041d89",
+    "bf-20260911_115134_95e340-c002-06d8da24",
+    "bf-20260911_115134_95e340-c003-268a07de",
+    "bf-20260911_115134_95e340-c004-7d041d89",
+    "bf-20260911_115134_95e340-c005-06d8da24",
+    "bf-20260911_115134_95e340-c006-5bca5ddf",
+    "bf-20260911_115134_95e340-c007-01e289a1",
+    "bf-20260911_115134_95e340-c008-647da1bf",
+    "bf-20260911_115134_95e340-c009-36066456",
+    "bf-20260911_115134_95e340-c010-bd708e12",
+    "bf-20260911_115134_95e340-c011-3ab9326b",
+    "bf-20260911_115134_95e340-c012-1e39c4df",
+    "bf-20260911_115134_95e340-c013-0daf7756",
+    "bf-20260911_115134_95e340-c014-2e3a7aea",
+    "bf-20260911_115134_95e340-c015-3f6017cc",
+    "bf-20260911_115134_95e340-c016-f415cdd2",
+    "bf-20260911_115134_95e340-c017-0feda276"
+   ],
+   "turns": 7,
+   "est_total_tokens": 80660
+  },
+  {
+   "session_id": "20260911_115853_10b46f",
+   "source": "desktop",
+   "status": "completed",
+   "documents": 1,
+   "doc_ids": [
+    "bf-20260911_115853_10b46f-c000-c22b8258"
+   ],
+   "turns": 2,
+   "est_total_tokens": 4577
+  },
+  {
+   "session_id": "20260911_125152_d0f355",
+   "source": "desktop",
+   "status": "completed",
+   "documents": 3,
+   "doc_ids": [
+    "bf-20260911_125152_d0f355-c000-42882512",
+    "bf-20260911_125152_d0f355-c001-f3327e12",
+    "bf-20260911_125152_d0f355-c002-289742fb"
+   ],
+   "turns": 1,
+   "est_total_tokens": 12906
+  },
+  {
+   "session_id": "20260911_231926_fc4378c2",
+   "source": "telegram",
+   "status": "completed",
+   "documents": 5,
+   "doc_ids": [
+    "bf-20260911_231926_fc4378c2-c000-04cb1d67",
+    "bf-20260911_231926_fc4378c2-c001-d35c87c6",
+    "bf-20260911_231926_fc4378c2-c002-b71ece9c",
+    "bf-20260911_231926_fc4378c2-c003-d883fa40",
+    "bf-20260911_231926_fc4378c2-c004-a23eb462"
+   ],
+   "turns": 3,
+   "est_total_tokens": 21917
+  },
+  {
+   "session_id": "20260912_013338_19b939ca",
+   "source": "telegram",
+   "status": "completed",
+   "documents": 4,
+   "doc_ids": [
+    "bf-20260912_013338_19b939ca-c000-91a23a02",
+    "bf-20260912_013338_19b939ca-c001-d5ee6ba9",
+    "bf-20260912_013338_19b939ca-c002-5de2ccde",
+    "bf-20260912_013338_19b939ca-c003-8b4104b2"
+   ],
+   "turns": 1,
+   "est_total_tokens": 16757
+  }
+ ],
+ "document_ids": [
+  "bf-20260911_090442_09a5ffe9-c000-5bb19c13",
+  "bf-20260911_115134_95e340-c000-268a07de",
+  "bf-20260911_115134_95e340-c001-7d041d89",
+  "bf-20260911_115134_95e340-c002-06d8da24",
+  "bf-20260911_115134_95e340-c003-268a07de",
+  "bf-20260911_115134_95e340-c004-7d041d89",
+  "bf-20260911_115134_95e340-c005-06d8da24",
+  "bf-20260911_115134_95e340-c006-5bca5ddf",
+  "bf-20260911_115134_95e340-c007-01e289a1",
+  "bf-20260911_115134_95e340-c008-647da1bf",
+  "bf-20260911_115134_95e340-c009-36066456",
+  "bf-20260911_115134_95e340-c010-bd708e12",
+  "bf-20260911_115134_95e340-c011-3ab9326b",
+  "bf-20260911_115134_95e340-c012-1e39c4df",
+  "bf-20260911_115134_95e340-c013-0daf7756",
+  "bf-20260911_115134_95e340-c014-2e3a7aea",
+  "bf-20260911_115134_95e340-c015-3f6017cc",
+  "bf-20260911_115134_95e340-c016-f415cdd2",
+  "bf-20260911_115134_95e340-c017-0feda276",
+  "bf-20260911_115853_10b46f-c000-c22b8258",
+  "bf-20260911_125152_d0f355-c000-42882512",
+  "bf-20260911_125152_d0f355-c001-f3327e12",
+  "bf-20260911_125152_d0f355-c002-289742fb",
+  "bf-20260911_231926_fc4378c2-c000-04cb1d67",
+  "bf-20260911_231926_fc4378c2-c001-d35c87c6",
+  "bf-20260911_231926_fc4378c2-c002-b71ece9c",
+  "bf-20260911_231926_fc4378c2-c003-d883fa40",
+  "bf-20260911_231926_fc4378c2-c004-a23eb462",
+  "bf-20260912_013338_19b939ca-c000-91a23a02",
+  "bf-20260912_013338_19b939ca-c001-d5ee6ba9",
+  "bf-20260912_013338_19b939ca-c002-5de2ccde",
+  "bf-20260912_013338_19b939ca-c003-8b4104b2"
+ ],
+ "document_count": 32,
+ "rollback": {
+  "preferred": "restore the backup zip taken immediately before this run",
+  "precise": "DELETE /v1/default/banks/fwh-main/documents/<document_id> for each id in document_ids",
+  "forbidden": "deleting by the kind:backfill tag would also delete every earlier batch, including the ones that passed their gate"
+ }
+}

@@ -18,6 +18,7 @@ import json
 import logging
 import os
 import queue
+import re
 import sys
 import threading
 import time
@@ -36,7 +37,6 @@ from .embedded import (
     _RETRIABLE_CONNECTION_MARKERS, _build_embedded_profile_env,
     _check_local_runtime, _embedded_llm_api_key, _embedded_profile_env_path,
     _export_port_health_grace_timeout, _load_simple_env, _local_runtime_hint, _materialize_embedded_profile_env,
-    _may_rewrite_profile_env,
 )
 from .settings import (
     _DEFAULT_API_URL, _DEFAULT_IDLE_TIMEOUT, _DEFAULT_LOCAL_URL, _DEFAULT_RETAIN_SOURCE,
@@ -50,6 +50,70 @@ logger = logging.getLogger(__name__)
 
 _LOCAL_MODES = {"local", "local_embedded"}
 _RETAIN_CONTEXT_DEFAULT = "conversation between Hermes Agent and the User"
+# Delegated children run without a provider session of their own, so their turn stream is
+# never retained. What IS worth keeping is the parent-side outcome: goal, final summary and
+# the artifacts the child produced. The digest is built from the hook's two strings only, so
+# intermediate reasoning, tool chatter and wrong turns cannot reach memory by construction.
+_DELEGATION_GOAL_MAX_CHARS = 400
+_DELEGATION_RESULT_MAX_CHARS = 1200
+_DELEGATION_MAX_ARTIFACTS = 6
+_DELEGATION_MAX_DEDUPE_KEYS = 200
+# Absolute/relative file paths and URLs named in a child's summary.
+_ARTIFACT_RE = re.compile(r"(?:[A-Za-z]:[\\/][^\s\"'`,;]+|https?://[^\s\"'`,;)]+|(?<![\w./])/[\w./-]{6,})")
+_WS_RE = re.compile(r"\s+")
+# Fold used to compare two recall results / two delegation digests.
+_RECALL_FOLD_RE = re.compile(r"[\s\.,;:!?，。；：！？、\"'`（）()\[\]【】]+")
+
+
+def _normalize_recall_text(text: str) -> str:
+    """Comparison key for a recall result or digest (case/whitespace/punctuation folded)."""
+    return _RECALL_FOLD_RE.sub("", (text or "").casefold())
+
+
+def _dedupe_recall_results(results: list) -> tuple[list, int]:
+    """Drop results whose normalized text repeats an EARLIER (higher-ranked) result.
+
+    The bank returns a raw fact and the consolidated observation built from it as two
+    entries with near-identical text, so one fact spends context twice in the injected
+    block. Rank order is preserved and the first occurrence always wins, so a higher-ranked
+    result is never replaced by a lower-ranked paraphrase of it.
+    """
+    seen: set[str] = set()
+    kept: list = []
+    dropped = 0
+    for item in results:
+        key = _normalize_recall_text(getattr(item, "text", "") or "")
+        if key and key in seen:
+            dropped += 1
+            continue
+        if key:
+            seen.add(key)
+        kept.append(item)
+    return kept, dropped
+
+
+def _build_delegation_digest(task: str, result: str, child_session_id: str = "") -> str:
+    """Compact outcome digest for one completed delegation, or "" when there is nothing to keep."""
+    goal = _WS_RE.sub(" ", (task or "")).strip()[:_DELEGATION_GOAL_MAX_CHARS]
+    summary = _WS_RE.sub(" ", (result or "")).strip()[:_DELEGATION_RESULT_MAX_CHARS]
+    if not goal and not summary:
+        return ""
+    artifacts: List[str] = []
+    for candidate in _ARTIFACT_RE.findall(result or ""):
+        if 5 <= len(candidate) <= 200 and candidate not in artifacts:
+            artifacts.append(candidate)
+        if len(artifacts) >= _DELEGATION_MAX_ARTIFACTS:
+            break
+    lines = ["Delegation outcome (outcome only, recorded once):"]
+    if goal:
+        lines.append(f"Goal: {goal}")
+    if summary:
+        lines.append(f"Result: {summary}")
+    if artifacts:
+        lines.append("Artifacts: " + ", ".join(artifacts))
+    if child_session_id:
+        lines.append(f"Child session: {child_session_id}")
+    return "\n".join(lines)
 
 
 def _ensure_client_dependency() -> None:
@@ -241,20 +305,17 @@ def _load_config() -> dict:
         if path.exists():
             with contextlib.suppress(Exception):
                 return json.loads(path.read_text(encoding="utf-8"))
-    # Mode, bank (the data partition), endpoint and retain shaping are per-profile .env values like
-    # the key beside them: read through the secret scope so a multiplexed secondary never inherits
-    # the default profile's bank/mode. Tuning knobs (timeouts, budget) stay process-global.
     return {
-        "mode": get_secret("HINDSIGHT_MODE", "") or "cloud",
+        "mode": os.environ.get("HINDSIGHT_MODE", "cloud"),
         "apiKey": get_secret("HINDSIGHT_API_KEY", ""),
         "timeout": _parse_int_setting(os.environ.get("HINDSIGHT_TIMEOUT"), _DEFAULT_TIMEOUT),
         "idle_timeout": _parse_int_setting(os.environ.get("HINDSIGHT_IDLE_TIMEOUT"), _DEFAULT_IDLE_TIMEOUT),
-        "retain_tags": get_secret("HINDSIGHT_RETAIN_TAGS", "") or "",
-        "observation_scopes": get_secret("HINDSIGHT_RETAIN_OBSERVATION_SCOPES", "") or "",
+        "retain_tags": os.environ.get("HINDSIGHT_RETAIN_TAGS", ""),
+        "observation_scopes": os.environ.get("HINDSIGHT_RETAIN_OBSERVATION_SCOPES", ""),
         "retain_source": os.environ.get("HINDSIGHT_RETAIN_SOURCE", _DEFAULT_RETAIN_SOURCE),
         "retain_user_prefix": os.environ.get("HINDSIGHT_RETAIN_USER_PREFIX", "User"),
         "retain_assistant_prefix": os.environ.get("HINDSIGHT_RETAIN_ASSISTANT_PREFIX", "Assistant"),
-        "banks": {"hermes": {"bankId": get_secret("HINDSIGHT_BANK_ID", "") or "hermes",
+        "banks": {"hermes": {"bankId": os.environ.get("HINDSIGHT_BANK_ID", "hermes"),
                              "budget": os.environ.get("HINDSIGHT_BUDGET", "mid"), "enabled": True}},
     }
 
@@ -340,6 +401,14 @@ class HindsightMemoryProvider(MemoryProvider):
         self._pending_retain_ops: set[str] = set()
         self._pending_retain_ops_lock = threading.Lock()
         self._retain_ops_bank_id = ""
+        # Failed server-side retain ops already reported (one WARNING per op, so a
+        # polling loop that can observe the same op repeatedly cannot spam the log).
+        self._failed_retain_ops: set[str] = set()
+        self._failed_retain_ops_lock = threading.Lock()
+        # Delegation outcome digests already queued this session (bounded, see
+        # _DELEGATION_MAX_DEDUPE_KEYS): one digest per child, never a repeat.
+        self._delegation_digest_keys: set[str] = set()
+        self._delegation_digest_lock = threading.Lock()
         self._apply_retain_policy({})
 
         # Recall: pending prefetch block + count, and the indicator state (recall_status()).
@@ -360,7 +429,7 @@ class HindsightMemoryProvider(MemoryProvider):
             if mode in _LOCAL_MODES:
                 return _check_local_runtime()[0]
             return mode == "local_external" or bool(
-                _cloud_api_key(cfg) or cfg.get("api_url") or get_secret("HINDSIGHT_API_URL", ""))
+                _cloud_api_key(cfg) or cfg.get("api_url") or os.environ.get("HINDSIGHT_API_URL", ""))
         except Exception:
             return False
 
@@ -563,7 +632,12 @@ class HindsightMemoryProvider(MemoryProvider):
 
     def _is_retain_op_complete(self, bank_id: str, op_id: str) -> bool:
         """True when a server-side retain op is done or gone (completed ops are evicted,
-        so 404 = no longer pending). Transient errors -> False, caller keeps waiting."""
+        so 404 = no longer pending). Transient errors -> False, caller keeps waiting.
+
+        A ``failed`` op is terminal too — there is nothing left to wait for — but it is
+        reported once through :meth:`_warn_failed_retain`. Without that, a provider-side
+        write outage is indistinguishable from success *at this layer*: the turn is
+        simply absent from memory, with no log line and no user-visible signal."""
         from hindsight_client_api.exceptions import NotFoundException
 
         try:
@@ -575,7 +649,29 @@ class HindsightMemoryProvider(MemoryProvider):
         except Exception as exc:
             logger.debug("Prefetch: operation status check failed for %s: %s", op_id, exc)
             return False
-        return str(getattr(resp, "status", "") or "").lower() in {"completed", "failed"}
+        status = str(getattr(resp, "status", "") or "").lower()
+        if status == "failed":
+            self._warn_failed_retain(bank_id, op_id, getattr(resp, "error_message", None))
+        return status in {"completed", "failed"}
+
+    def _warn_failed_retain(self, bank_id: str, op_id: str, error_message: Any = None) -> None:
+        """Surface a failed server-side retain: one WARNING per op (the poll loop can
+        observe the same op repeatedly before it is evicted) plus the retain indicator,
+        so a durable-memory write failure is visible to both the log and the user."""
+        with self._failed_retain_ops_lock:
+            if op_id in self._failed_retain_ops:
+                return
+            self._failed_retain_ops.add(op_id)
+        detail = str(error_message or "").strip()[:400] or "server returned no error detail"
+        logger.warning(
+            "Hindsight retain operation %s FAILED — this turn was NOT written to memory "
+            "(bank=%s): %s", op_id, bank_id, detail,
+        )
+        if self._status_callback is not None and self._retain_indicator:
+            try:
+                self._status_callback(f"{_HINDSIGHT_GLYPH} Hindsight — memory write FAILED (see logs)")
+            except Exception:
+                logger.debug("Failed-retain indicator emit failed (non-fatal)", exc_info=True)
 
     def _wait_for_retains_drained(self, timeout: float) -> bool:
         """Block up to *timeout* s for the last retain to become recall-visible
@@ -711,7 +807,7 @@ class HindsightMemoryProvider(MemoryProvider):
         """Endpoint, bank and mode selectors from *cfg* (env fallbacks where documented)."""
         self._api_key = _cloud_api_key(cfg)
         default_url = _DEFAULT_LOCAL_URL if self._mode in {"local_embedded", "local_external"} else _DEFAULT_API_URL
-        self._api_url = cfg.get("api_url") or get_secret("HINDSIGHT_API_URL", "") or default_url
+        self._api_url = cfg.get("api_url") or os.environ.get("HINDSIGHT_API_URL", default_url)
         self._llm_base_url = cfg.get("llm_base_url", "")
 
         banks = cfg_get(cfg, "banks", "hermes", default={})
@@ -820,24 +916,11 @@ class HindsightMemoryProvider(MemoryProvider):
             client = self._get_client()
             profile = self._config.get("profile", "hermes")
             # Profile .env out of sync with config -> rewrite and restart a running daemon.
-            # Fail-closed on key material: when this process holds no key (no secret
-            # scope on this thread) but the file does, a rewrite would destroy the
-            # only key copy the daemon subprocess can read. Skip the write AND the
-            # stop: restarting the daemon now would boot it keyless, which is the
-            # exact outage this guards against. _get_client() above already passed
-            # whatever key WAS available into the in-process client kwargs.
             if _load_simple_env(_embedded_profile_env_path(self._config)) != _build_embedded_profile_env(self._config):
-                if _may_rewrite_profile_env(self._config):
-                    _materialize_embedded_profile_env(self._config)
-                    if client._manager.is_running(profile):
-                        _log("\n=== Config changed, restarting daemon ===\n")
-                        client._manager.stop(profile)
-                else:
-                    logger.warning(
-                        "Hindsight profile env for %r holds an LLM API key this process cannot see "
-                        "(no secret scope); leaving the file untouched so the daemon keeps its key.",
-                        profile)
-                    _log("\n=== Profile env has a key this process cannot see; left untouched ===\n")
+                _materialize_embedded_profile_env(self._config)
+                if client._manager.is_running(profile):
+                    _log("\n=== Config changed, restarting daemon ===\n")
+                    client._manager.stop(profile)
             client._ensure_started()
             _log("\n=== Daemon started successfully ===\n")
         except Exception as e:
@@ -885,6 +968,9 @@ class HindsightMemoryProvider(MemoryProvider):
             logger.debug("Recall: calling recall (bank=%s, query_len=%d, budget=%s)",
                          self._bank_id, len(query), self._budget)
             results = self._recall(query)
+            results, dropped = _dedupe_recall_results(results)
+            if dropped:
+                logger.debug("Recall: dropped %d duplicate result(s) (fact + its observation twin)", dropped)
             logger.debug("Recall: returned %d results", len(results))
             return "\n".join(f"- {r.text}" for r in results if r.text), len(results)
         except Exception as e:
@@ -1017,6 +1103,64 @@ class HindsightMemoryProvider(MemoryProvider):
 
         return _job
 
+    def _make_delegation_retain_job(self, content: str, *, document_id: str, update_mode: str | None,
+                                    child_session_id: str = "") -> Callable[[], None]:
+        """Writer job for one delegation outcome digest. It gets its own document id so it
+        can never overwrite (or append onto) the parent session's turn document."""
+        metadata = self._build_metadata(message_count=1, turn_index=self._turn_index)
+        metadata["kind"] = "delegation-outcome"
+        tags = [f"{kind}:{sid}" for kind, sid in (("session", self._session_id), ("parent", self._parent_session_id)) if sid]
+        tags.append("kind:delegation-outcome")
+        if child_session_id:
+            tags.append(f"child:{child_session_id}")
+        bank_id, retain_async, retain_context = self._bank_id, self._retain_async, self._retain_context
+        doc = f"{document_id}-delegation-{child_session_id or 'outcome'}"
+
+        def _job() -> None:
+            item = self._build_retain_kwargs(content, context=retain_context, metadata=metadata,
+                                             tags=tags, update_mode=update_mode)
+            logger.debug("Hindsight delegation-outcome: bank=%s, doc=%s, content_len=%d", bank_id, doc, len(content))
+            resp = self._retain_batch(item, bank_id=bank_id, document_id=doc, retain_async=retain_async)
+            if retain_async:
+                self._track_retain_ops(resp, bank_id)
+            logger.debug("Hindsight delegation-outcome succeeded")
+
+        return _job
+
+    # -- delegated work ----------------------------------------------------------
+
+    def on_delegation(self, task: str, result: str, *, child_session_id: str = "", **kwargs) -> None:
+        """Retain ONE outcome digest per completed delegation — never the child's transcript.
+
+        A subagent has no provider session, so nothing it does is retained verbatim; the
+        parent records what the work produced (goal, final summary, named artifacts) under
+        the parent session with ``kind:delegation-outcome``. Anti-pollution is structural:
+        the digest is assembled from the hook's two strings, so intermediate reasoning, tool
+        output, duplicates and abandoned hypotheses have no path into memory.
+        """
+        if not self._auto_retain:
+            logger.debug("on_delegation: skipped (auto_retain disabled)")
+            return
+        if self._shutting_down.is_set():
+            logger.debug("on_delegation: skipped (shutting down)")
+            return
+        digest = _build_delegation_digest(task, result, child_session_id)
+        if not digest:
+            logger.debug("on_delegation: nothing worth retaining")
+            return
+        key = _normalize_recall_text(digest)
+        with self._delegation_digest_lock:
+            if key in self._delegation_digest_keys:
+                logger.debug("on_delegation: duplicate outcome digest skipped")
+                return
+            if len(self._delegation_digest_keys) >= _DELEGATION_MAX_DEDUPE_KEYS:
+                self._delegation_digest_keys.clear()
+            self._delegation_digest_keys.add(key)
+        document_id, update_mode = self._resolve_retain_target(self._document_id)
+        self._enqueue_retain(self._make_delegation_retain_job(
+            digest, document_id=document_id, update_mode=update_mode, child_session_id=child_session_id))
+        logger.debug("on_delegation: outcome digest queued (%d chars, child=%s)", len(digest), child_session_id or "n/a")
+
     def sync_turn(self, user_content: str, assistant_content: str, *, session_id: str = "") -> None:
         """Enqueue a retain for the current turn (non-blocking; writer thread). Dropped
         once shutdown() fired so post-exit retains never reach aiohttp during teardown."""
@@ -1086,6 +1230,9 @@ class HindsightMemoryProvider(MemoryProvider):
         logger.debug("Tool hindsight_recall: bank=%s, query_len=%d, budget=%s",
                      self._bank_id, len(query), self._budget)
         results = self._recall(query)
+        results, dropped = _dedupe_recall_results(results)
+        if dropped:
+            logger.debug("Tool hindsight_recall: dropped %d duplicate result(s)", dropped)
         logger.debug("Tool hindsight_recall: %d results", len(results))
         return "\n".join(f"{i}. {r.text}" for i, r in enumerate(results, 1)) or "No relevant memories found."
 

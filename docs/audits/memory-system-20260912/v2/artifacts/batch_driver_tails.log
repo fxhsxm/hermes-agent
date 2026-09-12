@@ -1,0 +1,703 @@
+[driver] === batch 13 start 02:23:01 ===
+[02:23:01] === batch 13: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:23:02] bank before: {"total_nodes": 7377, "total_documents": 560, "failed_operations": 332, "pending_operations": 0, "last_memory_write_at": "2026-09-12T18:22:58.855565+00:00"}
+[02:23:02] $ backup -> fwh-main-20260912T182301Z.zip
+[02:23:06]       [16/21] Backing up webhooks... 0 rows
+[02:23:06]       [17/21] Backing up file_storage... 0 rows
+[02:23:06]       [18/21] Backing up audit_log... 0 rows
+[02:23:06]       [19/21] Backing up llm_requests... 1083 rows
+[02:23:06]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:23:06]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:23:06]     Backed up 160759 rows across 21 tables
+[02:23:06]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T182301Z.zip
+[02:23:06] backup rc=0 bytes=43925854
+[02:23:06] $ measure batch13_before
+[02:23:17]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch13_before.json
+[02:23:17] BEFORE {"recall@1": 0.5, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2415, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 8, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0041, "q07-delegation-policy": 0.0157, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:23:17] $ backfill batch 13
+[02:27:12]     [02:23:19] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[02:27:12]     [02:23:19] EXECUTE: bank=fwh-main sessions=6 max_documents=40
+[02:27:12]     [02:24:42]   ok   20260910_182218_b4e16039 (5 docs, resumed: 3 chunks already in bank)
+[02:27:12]     [02:27:11]   FAIL 20260910_191901_8fd312ed: stopped by --max-documents before this chunk
+[02:27:12]     [02:27:11] max-documents cap reached; stopping
+[02:27:12]     [02:27:11] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch13-20260912T182301Z.json (40 document ids, 2 sessions)
+[02:27:12]     [02:27:11] execute summary: {'completed': 1, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[02:27:12]     [02:27:11] state file: v2/backfill_state_prod.json
+[02:27:32] $ measure batch13_after
+[02:27:43]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch13_after.json
+[02:27:43] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2245, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 8, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0041, "q07-delegation-policy": 0.0186, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:27:43] $ gate
+[02:27:43]         q07-delegation-policy          2 ->     1  gap=  0.0186  unstable  UNSTABLE_FLIP_UP
+[02:27:43]             rank 2 -> 1 (holding margin +0.0186)
+[02:27:43]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[02:27:43]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[02:27:43]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[02:27:43]       flipped:  ['q07-delegation-policy']
+[02:27:43]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[02:27:43]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:27:43] write check: {"manifest_documents": 40, "bank_before_documents": 560, "bank_after_documents": 600, "delta": 40, "ops_failed": 0, "ok": true}
+[02:27:43] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:27:43] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch13_result.json  exit=0
+[driver] RESULT {"batch": 13, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 600, "recall@1_before": 0.5, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": ["q07-delegation-policy"], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 14 start 02:27:43 ===
+[02:27:43] === batch 14: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:27:44] bank before: {"total_nodes": 7678, "total_documents": 600, "failed_operations": 332, "pending_operations": 0, "last_memory_write_at": "2026-09-12T18:27:31.868893+00:00"}
+[02:27:44] $ backup -> fwh-main-20260912T182743Z.zip
+[02:27:48]       [16/21] Backing up webhooks... 0 rows
+[02:27:48]       [17/21] Backing up file_storage... 0 rows
+[02:27:48]       [18/21] Backing up audit_log... 0 rows
+[02:27:48]       [19/21] Backing up llm_requests... 1150 rows
+[02:27:48]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:27:48]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:27:48]     Backed up 167367 rows across 21 tables
+[02:27:48]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T182743Z.zip
+[02:27:48] backup rc=0 bytes=45835382
+[02:27:48] $ measure batch14_before
+[02:27:58]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch14_before.json
+[02:27:58] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2211, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 8, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0041, "q07-delegation-policy": 0.0186, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:27:58] $ backfill batch 14
+[02:29:52]     [02:27:59] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[02:29:52]     [02:27:59] EXECUTE: bank=fwh-main sessions=6 max_documents=40
+[02:29:52]     [02:28:57]   ok   20260910_191901_8fd312ed (16 docs, resumed: 74 chunks already in bank)
+[02:29:52]     [02:29:52]   FAIL 20260910_195429_302d77d7: stopped by --max-documents before this chunk
+[02:29:52]     [02:29:52] max-documents cap reached; stopping
+[02:29:52]     [02:29:52] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch14-20260912T182743Z.json (40 document ids, 2 sessions)
+[02:29:52]     [02:29:52] execute summary: {'completed': 1, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[02:29:52]     [02:29:52] state file: v2/backfill_state_prod.json
+[02:30:12] $ measure batch14_after
+[02:30:23]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch14_after.json
+[02:30:23] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.22, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 8, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0041, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:30:23] $ gate
+[02:30:23]         q06-delivery-dir               8 ->     8  gap=  0.0113  unstable  SAME
+[02:30:23]         q07-delegation-policy          1 ->     1  gap=   0.026  unstable  SAME
+[02:30:23]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[02:30:23]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[02:30:23]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[02:30:23]       flipped:  none (every answer kept its rank)
+[02:30:23]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[02:30:23]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:30:23] write check: {"manifest_documents": 40, "bank_before_documents": 600, "bank_after_documents": 640, "delta": 40, "ops_failed": 0, "ok": true}
+[02:30:23] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:30:23] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch14_result.json  exit=0
+[driver] RESULT {"batch": 14, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 640, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 15 start 02:30:23 ===
+[02:30:23] === batch 15: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:30:24] bank before: {"total_nodes": 7913, "total_documents": 640, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T18:29:58.161118+00:00"}
+[02:30:24] $ backup -> fwh-main-20260912T183023Z.zip
+[02:30:29]       [16/21] Backing up webhooks... 0 rows
+[02:30:29]       [17/21] Backing up file_storage... 0 rows
+[02:30:29]       [18/21] Backing up audit_log... 0 rows
+[02:30:29]       [19/21] Backing up llm_requests... 1197 rows
+[02:30:29]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:30:29]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:30:29]     Backed up 173808 rows across 21 tables
+[02:30:29]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T183023Z.zip
+[02:30:29] backup rc=0 bytes=47265910
+[02:30:29] $ measure batch15_before
+[02:30:38]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch15_before.json
+[02:30:38] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2121, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 8, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0041, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:30:38] $ backfill batch 15
+[02:33:32]     [02:30:40] CAP 20 LARGEST: 5 sessions / 683 documents / ~3,021,858 tokens
+[02:33:32]     [02:30:40] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[02:33:32]     [02:30:40] EXECUTE: bank=fwh-main sessions=5 max_documents=40
+[02:33:32]     [02:33:32]   FAIL 20260910_195429_302d77d7: stopped by --max-documents before this chunk
+[02:33:32]     [02:33:32] max-documents cap reached; stopping
+[02:33:32]     [02:33:32] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch15-20260912T183023Z.json (40 document ids, 1 sessions)
+[02:33:32]     [02:33:32] execute summary: {'completed': 0, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[02:33:32]     [02:33:32] state file: v2/backfill_state_prod.json
+[02:33:52] $ measure batch15_after
+[02:34:04]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch15_after.json
+[02:34:04] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2045, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 8, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0041, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:34:04] $ gate
+[02:34:04]             rank 8 -> 4 (holding margin +0.0113)
+[02:34:04]         q07-delegation-policy          1 ->     1  gap=   0.026  unstable  SAME
+[02:34:04]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[02:34:04]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[02:34:04]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[02:34:04]       flipped:  ['q06-delivery-dir']
+[02:34:04]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[02:34:04]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:34:04] write check: {"manifest_documents": 40, "bank_before_documents": 640, "bank_after_documents": 680, "delta": 40, "ops_failed": 0, "ok": true}
+[02:34:04] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:34:04] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch15_result.json  exit=0
+[driver] RESULT {"batch": 15, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 680, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": ["q06-delivery-dir"], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 16 start 02:34:04 ===
+[02:34:04] === batch 16: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:34:04] bank before: {"total_nodes": 8224, "total_documents": 680, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T18:33:37.033595+00:00"}
+[02:34:04] $ backup -> fwh-main-20260912T183404Z.zip
+[02:34:10]       [16/21] Backing up webhooks... 0 rows
+[02:34:10]       [17/21] Backing up file_storage... 0 rows
+[02:34:10]       [18/21] Backing up audit_log... 0 rows
+[02:34:10]       [19/21] Backing up llm_requests... 1253 rows
+[02:34:10]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:34:10]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:34:10]     Backed up 181207 rows across 21 tables
+[02:34:10]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T183404Z.zip
+[02:34:10] backup rc=0 bytes=49242390
+[02:34:10] $ measure batch16_before
+[02:34:20]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch16_before.json
+[02:34:20] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2084, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 8, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0041, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:34:20] $ backfill batch 16
+[02:35:53]     [02:34:22] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[02:35:53]     [02:34:22] EXECUTE: bank=fwh-main sessions=5 max_documents=40
+[02:35:53]     [02:35:04]   ok   20260910_195429_302d77d7 (15 docs, resumed: 96 chunks already in bank)
+[02:35:53]     [02:35:53]   FAIL 20260910_205955_fdcab8f7: stopped by --max-documents before this chunk
+[02:35:53]     [02:35:53] max-documents cap reached; stopping
+[02:35:53]     [02:35:53] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch16-20260912T183404Z.json (40 document ids, 2 sessions)
+[02:35:53]     [02:35:53] execute summary: {'completed': 1, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[02:35:53]     [02:35:53] state file: v2/backfill_state_prod.json
+[02:36:13] $ measure batch16_after
+[02:36:25]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch16_after.json
+[02:36:25] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2084, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 8, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0041, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:36:25] $ gate
+[02:36:25]         q06-delivery-dir               4 ->     4  gap=  0.0256  unstable  SAME
+[02:36:25]         q07-delegation-policy          1 ->     1  gap=   0.026  unstable  SAME
+[02:36:25]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[02:36:25]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[02:36:25]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[02:36:25]       flipped:  none (every answer kept its rank)
+[02:36:25]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[02:36:25]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:36:25] write check: {"manifest_documents": 40, "bank_before_documents": 680, "bank_after_documents": 720, "delta": 40, "ops_failed": 0, "ok": true}
+[02:36:25] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:36:25] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch16_result.json  exit=0
+[driver] RESULT {"batch": 16, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 720, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 17 start 02:36:25 ===
+[02:36:25] === batch 17: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:36:25] bank before: {"total_nodes": 8425, "total_documents": 720, "failed_operations": 332, "pending_operations": 0, "last_memory_write_at": "2026-09-12T18:35:59.370329+00:00"}
+[02:36:25] $ backup -> fwh-main-20260912T183625Z.zip
+[02:36:30]       [16/21] Backing up webhooks... 0 rows
+[02:36:30]       [17/21] Backing up file_storage... 0 rows
+[02:36:30]       [18/21] Backing up audit_log... 0 rows
+[02:36:30]       [19/21] Backing up llm_requests... 1298 rows
+[02:36:30]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:36:30]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:36:30]     Backed up 186775 rows across 21 tables
+[02:36:30]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T183625Z.zip
+[02:36:30] backup rc=0 bytes=50567048
+[02:36:30] $ measure batch17_before
+[02:36:41]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch17_before.json
+[02:36:41] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2113, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 8, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0041, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:36:41] $ backfill batch 17
+[02:38:41]     [02:36:42] CAP 20 LARGEST: 4 sessions / 572 documents / ~2,510,162 tokens
+[02:38:41]     [02:36:42] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[02:38:41]     [02:36:42] EXECUTE: bank=fwh-main sessions=4 max_documents=40
+[02:38:41]     [02:38:41]   FAIL 20260910_205955_fdcab8f7: stopped by --max-documents before this chunk
+[02:38:41]     [02:38:41] max-documents cap reached; stopping
+[02:38:41]     [02:38:41] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch17-20260912T183625Z.json (40 document ids, 1 sessions)
+[02:38:41]     [02:38:41] execute summary: {'completed': 0, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[02:38:41]     [02:38:41] state file: v2/backfill_state_prod.json
+[02:39:01] $ measure batch17_after
+[02:39:12]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch17_after.json
+[02:39:12] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2145, "decided_ids": ["q06-delivery-dir"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 7, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0861, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:39:12] $ gate
+[02:39:12]             rank 4 -> 5 but the answer's holding margin is +0.0256 (< 0.05) -> near-tie, excluded from pass/fail
+[02:39:12]         q07-delegation-policy          1 ->     1  gap=   0.026  unstable  SAME
+[02:39:12]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[02:39:12]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[02:39:12]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[02:39:12]       flipped:  ['q06-delivery-dir']
+[02:39:12]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[02:39:12]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:39:12] write check: {"manifest_documents": 40, "bank_before_documents": 720, "bank_after_documents": 760, "delta": 40, "ops_failed": 0, "ok": true}
+[02:39:12] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:39:12] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch17_result.json  exit=0
+[driver] RESULT {"batch": 17, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 760, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": ["q06-delivery-dir"], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 18 start 02:39:12 ===
+[02:39:12] === batch 18: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:39:13] bank before: {"total_nodes": 8599, "total_documents": 760, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T18:38:40.187752+00:00"}
+[02:39:13] $ backup -> fwh-main-20260912T183912Z.zip
+[02:39:18]       [16/21] Backing up webhooks... 0 rows
+[02:39:18]       [17/21] Backing up file_storage... 0 rows
+[02:39:18]       [18/21] Backing up audit_log... 0 rows
+[02:39:18]       [19/21] Backing up llm_requests... 1342 rows
+[02:39:18]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:39:18]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:39:18]     Backed up 192390 rows across 21 tables
+[02:39:18]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T183912Z.zip
+[02:39:18] backup rc=0 bytes=51641686
+[02:39:18] $ measure batch18_before
+[02:39:28]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch18_before.json
+[02:39:28] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2145, "decided_ids": ["q06-delivery-dir"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 7, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0861, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:39:28] $ backfill batch 18
+[02:41:07]     [02:39:29] CAP 20 LARGEST: 4 sessions / 572 documents / ~2,510,162 tokens
+[02:41:07]     [02:39:29] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[02:41:07]     [02:39:29] EXECUTE: bank=fwh-main sessions=4 max_documents=40
+[02:41:07]     [02:41:07]   FAIL 20260910_205955_fdcab8f7: stopped by --max-documents before this chunk
+[02:41:07]     [02:41:07] max-documents cap reached; stopping
+[02:41:07]     [02:41:07] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch18-20260912T183912Z.json (40 document ids, 1 sessions)
+[02:41:07]     [02:41:07] execute summary: {'completed': 0, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[02:41:07]     [02:41:07] state file: v2/backfill_state_prod.json
+[02:41:27] $ measure batch18_after
+[02:41:38]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch18_after.json
+[02:41:38] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2167, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 8, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0119, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:41:38] $ gate
+[02:41:38]             rank 5 -> 6 but the answer's holding margin is +0.0256 (< 0.05) -> near-tie, excluded from pass/fail
+[02:41:38]         q07-delegation-policy          1 ->     1  gap=   0.026  unstable  SAME
+[02:41:38]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[02:41:38]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[02:41:38]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[02:41:38]       flipped:  ['q06-delivery-dir']
+[02:41:38]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[02:41:38]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:41:38] write check: {"manifest_documents": 40, "bank_before_documents": 760, "bank_after_documents": 800, "delta": 40, "ops_failed": 0, "ok": true}
+[02:41:38] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:41:38] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch18_result.json  exit=0
+[driver] RESULT {"batch": 18, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 800, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": ["q06-delivery-dir"], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 19 start 02:41:39 ===
+[02:41:39] === batch 19: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:41:39] bank before: {"total_nodes": 8843, "total_documents": 800, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T18:41:07.557808+00:00"}
+[02:41:39] $ backup -> fwh-main-20260912T184139Z.zip
+[02:41:44]       [16/21] Backing up webhooks... 0 rows
+[02:41:44]       [17/21] Backing up file_storage... 0 rows
+[02:41:44]       [18/21] Backing up audit_log... 0 rows
+[02:41:44]       [19/21] Backing up llm_requests... 1386 rows
+[02:41:44]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:41:44]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:41:44]     Backed up 199905 rows across 21 tables
+[02:41:44]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T184139Z.zip
+[02:41:44] backup rc=0 bytes=53069439
+[02:41:44] $ measure batch19_before
+[02:41:55]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch19_before.json
+[02:41:55] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2206, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 7, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:41:55] $ backfill batch 19
+[02:44:31]     [02:41:56] CAP 20 LARGEST: 4 sessions / 572 documents / ~2,510,162 tokens
+[02:44:31]     [02:41:56] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[02:44:31]     [02:41:56] EXECUTE: bank=fwh-main sessions=4 max_documents=40
+[02:44:31]     [02:44:31]   FAIL 20260910_205955_fdcab8f7: stopped by --max-documents before this chunk
+[02:44:31]     [02:44:31] max-documents cap reached; stopping
+[02:44:31]     [02:44:31] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch19-20260912T184139Z.json (40 document ids, 1 sessions)
+[02:44:31]     [02:44:31] execute summary: {'completed': 0, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[02:44:31]     [02:44:31] state file: v2/backfill_state_prod.json
+[02:44:51] $ measure batch19_after
+[02:45:03]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch19_after.json
+[02:45:03] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2195, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 7, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:45:03] $ gate
+[02:45:03]         q06-delivery-dir               6 ->     6  gap=  0.0256  unstable  SAME
+[02:45:03]         q07-delegation-policy          1 ->     1  gap=   0.026  unstable  SAME
+[02:45:03]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[02:45:03]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[02:45:03]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[02:45:03]       flipped:  none (every answer kept its rank)
+[02:45:03]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[02:45:03]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:45:03] write check: {"manifest_documents": 40, "bank_before_documents": 800, "bank_after_documents": 840, "delta": 40, "ops_failed": 0, "ok": true}
+[02:45:03] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:45:03] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch19_result.json  exit=0
+[driver] RESULT {"batch": 19, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 840, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 20 start 02:45:03 ===
+[02:45:03] === batch 20: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:45:03] bank before: {"total_nodes": 9095, "total_documents": 840, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T18:44:36.559209+00:00"}
+[02:45:03] $ backup -> fwh-main-20260912T184503Z.zip
+[02:45:09]       [16/21] Backing up webhooks... 0 rows
+[02:45:09]       [17/21] Backing up file_storage... 0 rows
+[02:45:09]       [18/21] Backing up audit_log... 0 rows
+[02:45:09]       [19/21] Backing up llm_requests... 1430 rows
+[02:45:09]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:45:09]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:45:09]     Backed up 208165 rows across 21 tables
+[02:45:09]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T184503Z.zip
+[02:45:09] backup rc=0 bytes=54559495
+[02:45:09] $ measure batch20_before
+[02:45:19]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch20_before.json
+[02:45:19] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.225, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 7, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0063, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0294, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:45:19] $ backfill batch 20
+[02:48:05]     [02:45:21] CAP 20 LARGEST: 4 sessions / 572 documents / ~2,510,162 tokens
+[02:48:05]     [02:45:21] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[02:48:05]     [02:45:21] EXECUTE: bank=fwh-main sessions=4 max_documents=40
+[02:48:05]     [02:48:05]   FAIL 20260910_205955_fdcab8f7: stopped by --max-documents before this chunk
+[02:48:05]     [02:48:05] max-documents cap reached; stopping
+[02:48:05]     [02:48:05] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch20-20260912T184503Z.json (40 document ids, 1 sessions)
+[02:48:05]     [02:48:05] execute summary: {'completed': 0, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[02:48:05]     [02:48:05] state file: v2/backfill_state_prod.json
+[02:48:25] $ measure batch20_after
+[02:48:36]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch20_after.json
+[02:48:36] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2189, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0119, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0294, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:48:36] $ gate
+[02:48:36]         q06-delivery-dir               6 ->     6  gap=  0.0256  unstable  SAME
+[02:48:36]         q07-delegation-policy          1 ->     1  gap=  0.0293  unstable  SAME
+[02:48:36]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[02:48:36]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[02:48:36]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[02:48:36]       flipped:  none (every answer kept its rank)
+[02:48:36]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[02:48:36]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:48:36] write check: {"manifest_documents": 40, "bank_before_documents": 840, "bank_after_documents": 880, "delta": 40, "ops_failed": 0, "ok": true}
+[02:48:36] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:48:36] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch20_result.json  exit=0
+[driver] RESULT {"batch": 20, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 880, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 21 start 02:48:36 ===
+[02:48:36] === batch 21: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:48:36] bank before: {"total_nodes": 9315, "total_documents": 880, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T18:48:04.092549+00:00"}
+[02:48:36] $ backup -> fwh-main-20260912T184836Z.zip
+[02:48:42]       [16/21] Backing up webhooks... 0 rows
+[02:48:42]       [17/21] Backing up file_storage... 0 rows
+[02:48:42]       [18/21] Backing up audit_log... 0 rows
+[02:48:42]       [19/21] Backing up llm_requests... 1476 rows
+[02:48:42]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:48:42]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:48:42]     Backed up 215221 rows across 21 tables
+[02:48:42]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T184836Z.zip
+[02:48:42] backup rc=0 bytes=55945766
+[02:48:42] $ measure batch21_before
+[02:48:52]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch21_before.json
+[02:48:52] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2139, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0119, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0294, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:48:52] $ backfill batch 21
+[02:51:32]     [02:48:53] CAP 20 LARGEST: 4 sessions / 572 documents / ~2,510,162 tokens
+[02:51:32]     [02:48:53] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[02:51:32]     [02:48:53] EXECUTE: bank=fwh-main sessions=4 max_documents=40
+[02:51:32]     [02:51:31]   FAIL 20260910_205955_fdcab8f7: stopped by --max-documents before this chunk
+[02:51:32]     [02:51:31] max-documents cap reached; stopping
+[02:51:32]     [02:51:31] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch21-20260912T184836Z.json (40 document ids, 1 sessions)
+[02:51:32]     [02:51:31] execute summary: {'completed': 0, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[02:51:32]     [02:51:31] state file: v2/backfill_state_prod.json
+[02:51:52] $ measure batch21_after
+[02:52:02]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch21_after.json
+[02:52:02] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2238, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0119, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:52:02] $ gate
+[02:52:03]         q06-delivery-dir               6 ->     6  gap=  0.0256  unstable  SAME
+[02:52:03]         q07-delegation-policy          1 ->     1  gap=   0.026  unstable  SAME
+[02:52:03]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[02:52:03]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[02:52:03]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[02:52:03]       flipped:  none (every answer kept its rank)
+[02:52:03]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[02:52:03]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:52:03] write check: {"manifest_documents": 40, "bank_before_documents": 880, "bank_after_documents": 920, "delta": 40, "ops_failed": 0, "ok": true}
+[02:52:03] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:52:03] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch21_result.json  exit=0
+[driver] RESULT {"batch": 21, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 920, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 22 start 02:52:03 ===
+[02:52:03] === batch 22: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:52:03] bank before: {"total_nodes": 9630, "total_documents": 920, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T18:51:42.963095+00:00"}
+[02:52:03] $ backup -> fwh-main-20260912T185203Z.zip
+[02:52:09]       [16/21] Backing up webhooks... 0 rows
+[02:52:09]       [17/21] Backing up file_storage... 0 rows
+[02:52:09]       [18/21] Backing up audit_log... 0 rows
+[02:52:09]       [19/21] Backing up llm_requests... 1525 rows
+[02:52:09]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:52:09]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:52:09]     Backed up 224808 rows across 21 tables
+[02:52:09]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T185203Z.zip
+[02:52:09] backup rc=0 bytes=57809970
+[02:52:09] $ measure batch22_before
+[02:52:18]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch22_before.json
+[02:52:18] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2195, "decided_ids": [], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q07-delegation-policy", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0119, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0259, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:52:18] $ backfill batch 22
+[02:55:13]     [02:52:20] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[02:55:13]     [02:52:20] EXECUTE: bank=fwh-main sessions=4 max_documents=40
+[02:55:13]     [02:54:52]   ok   20260910_205955_fdcab8f7 (33 docs, resumed: 234 chunks already in bank)
+[02:55:13]     [02:55:13]   FAIL 20260911_050243_7e17c9e7: stopped by --max-documents before this chunk
+[02:55:13]     [02:55:13] max-documents cap reached; stopping
+[02:55:13]     [02:55:13] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch22-20260912T185203Z.json (40 document ids, 2 sessions)
+[02:55:13]     [02:55:13] execute summary: {'completed': 1, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[02:55:13]     [02:55:13] state file: v2/backfill_state_prod.json
+[02:55:33] $ measure batch22_after
+[02:55:44]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch22_after.json
+[02:55:44] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2146, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0131, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:55:44] $ gate
+[02:55:44]         q06-delivery-dir               6 ->     6  gap=  0.0256  unstable  SAME
+[02:55:44]         q07-delegation-policy          1 ->     1  gap=  0.0567   decided  SAME
+[02:55:44]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[02:55:44]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[02:55:44]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[02:55:44]       flipped:  none (every answer kept its rank)
+[02:55:44]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[02:55:44]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:55:44] write check: {"manifest_documents": 40, "bank_before_documents": 920, "bank_after_documents": 960, "delta": 40, "ops_failed": 0, "ok": true}
+[02:55:44] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:55:44] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch22_result.json  exit=0
+[driver] RESULT {"batch": 22, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 960, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 23 start 02:55:44 ===
+[02:55:44] === batch 23: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:55:44] bank before: {"total_nodes": 9851, "total_documents": 960, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T18:55:25.107920+00:00"}
+[02:55:44] $ backup -> fwh-main-20260912T185544Z.zip
+[02:55:50]       [16/21] Backing up webhooks... 0 rows
+[02:55:50]       [17/21] Backing up file_storage... 0 rows
+[02:55:50]       [18/21] Backing up audit_log... 0 rows
+[02:55:50]       [19/21] Backing up llm_requests... 1577 rows
+[02:55:50]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:55:50]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:55:50]     Backed up 231392 rows across 21 tables
+[02:55:50]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T185544Z.zip
+[02:55:50] backup rc=0 bytes=59345326
+[02:55:50] $ measure batch23_before
+[02:56:01]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch23_before.json
+[02:56:01] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2146, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0119, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:56:01] $ backfill batch 23
+[02:58:02]     [02:56:03] CAP 20 LARGEST: 3 sessions / 305 documents / ~1,317,427 tokens
+[02:58:02]     [02:56:03] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[02:58:02]     [02:56:03] EXECUTE: bank=fwh-main sessions=3 max_documents=40
+[02:58:02]     [02:58:02]   FAIL 20260911_050243_7e17c9e7: stopped by --max-documents before this chunk
+[02:58:02]     [02:58:02] max-documents cap reached; stopping
+[02:58:02]     [02:58:02] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch23-20260912T185544Z.json (40 document ids, 1 sessions)
+[02:58:02]     [02:58:02] execute summary: {'completed': 0, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[02:58:02]     [02:58:02] state file: v2/backfill_state_prod.json
+[02:58:22] $ measure batch23_after
+[02:58:33]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch23_after.json
+[02:58:33] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2108, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0131, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:58:33] $ gate
+[02:58:33]         q06-delivery-dir               6 ->     6  gap=  0.0256  unstable  SAME
+[02:58:33]         q07-delegation-policy          1 ->     1  gap=  0.0567   decided  SAME
+[02:58:33]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[02:58:33]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[02:58:33]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[02:58:33]       flipped:  none (every answer kept its rank)
+[02:58:33]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[02:58:33]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:58:33] write check: {"manifest_documents": 40, "bank_before_documents": 960, "bank_after_documents": 1000, "delta": 40, "ops_failed": 0, "ok": true}
+[02:58:33] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[02:58:33] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch23_result.json  exit=0
+[driver] RESULT {"batch": 23, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 1000, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 24 start 02:58:33 ===
+[02:58:33] === batch 24: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[02:58:34] bank before: {"total_nodes": 10058, "total_documents": 1000, "failed_operations": 332, "pending_operations": 0, "last_memory_write_at": "2026-09-12T18:58:11.462147+00:00"}
+[02:58:34] $ backup -> fwh-main-20260912T185833Z.zip
+[02:58:40]       [16/21] Backing up webhooks... 0 rows
+[02:58:40]       [17/21] Backing up file_storage... 0 rows
+[02:58:40]       [18/21] Backing up audit_log... 0 rows
+[02:58:40]       [19/21] Backing up llm_requests... 1626 rows
+[02:58:40]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[02:58:40]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[02:58:40]     Backed up 237891 rows across 21 tables
+[02:58:40]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T185833Z.zip
+[02:58:40] backup rc=0 bytes=60683859
+[02:58:40] $ measure batch24_before
+[02:58:50]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch24_before.json
+[02:58:50] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2108, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0119, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[02:58:50] $ backfill batch 24
+[03:01:20]     [02:58:51] CAP 20 LARGEST: 3 sessions / 305 documents / ~1,317,427 tokens
+[03:01:20]     [02:58:51] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[03:01:20]     [02:58:51] EXECUTE: bank=fwh-main sessions=3 max_documents=40
+[03:01:20]     [03:01:20]   FAIL 20260911_050243_7e17c9e7: stopped by --max-documents before this chunk
+[03:01:20]     [03:01:20] max-documents cap reached; stopping
+[03:01:20]     [03:01:20] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch24-20260912T185833Z.json (40 document ids, 1 sessions)
+[03:01:20]     [03:01:20] execute summary: {'completed': 0, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[03:01:20]     [03:01:20] state file: v2/backfill_state_prod.json
+[03:01:40] $ measure batch24_after
+[03:01:52]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch24_after.json
+[03:01:52] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.211, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0119, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[03:01:52] $ gate
+[03:01:52]         q06-delivery-dir               6 ->     6  gap=  0.0256  unstable  SAME
+[03:01:52]         q07-delegation-policy          1 ->     1  gap=  0.0567   decided  SAME
+[03:01:52]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[03:01:52]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[03:01:52]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[03:01:52]       flipped:  none (every answer kept its rank)
+[03:01:52]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[03:01:52]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[03:01:52] write check: {"manifest_documents": 40, "bank_before_documents": 1000, "bank_after_documents": 1040, "delta": 40, "ops_failed": 0, "ok": true}
+[03:01:52] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[03:01:52] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch24_result.json  exit=0
+[driver] RESULT {"batch": 24, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 1040, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 25 start 03:01:52 ===
+[03:01:52] === batch 25: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[03:01:52] bank before: {"total_nodes": 10239, "total_documents": 1040, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T19:01:39.379241+00:00"}
+[03:01:52] $ backup -> fwh-main-20260912T190152Z.zip
+[03:01:58]       [16/21] Backing up webhooks... 0 rows
+[03:01:58]       [17/21] Backing up file_storage... 0 rows
+[03:01:58]       [18/21] Backing up audit_log... 0 rows
+[03:01:58]       [19/21] Backing up llm_requests... 1656 rows
+[03:01:58]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[03:01:58]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[03:01:58]     Backed up 243483 rows across 21 tables
+[03:01:58]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T190152Z.zip
+[03:01:58] backup rc=0 bytes=61785269
+[03:01:58] $ measure batch25_before
+[03:02:08]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch25_before.json
+[03:02:08] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2087, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0119, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[03:02:08] $ backfill batch 25
+[03:04:24]     [03:02:10] CAP 20 LARGEST: 3 sessions / 305 documents / ~1,317,427 tokens
+[03:04:24]     [03:02:10] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[03:04:24]     [03:02:10] EXECUTE: bank=fwh-main sessions=3 max_documents=40
+[03:04:24]     [03:04:24]   FAIL 20260911_050243_7e17c9e7: stopped by --max-documents before this chunk
+[03:04:24]     [03:04:24] max-documents cap reached; stopping
+[03:04:24]     [03:04:24] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch25-20260912T190152Z.json (40 document ids, 1 sessions)
+[03:04:24]     [03:04:24] execute summary: {'completed': 0, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[03:04:24]     [03:04:24] state file: v2/backfill_state_prod.json
+[03:04:44] $ measure batch25_after
+[03:04:55]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch25_after.json
+[03:04:55] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2087, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0131, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[03:04:55] $ gate
+[03:04:55]         q06-delivery-dir               6 ->     6  gap=  0.0256  unstable  SAME
+[03:04:55]         q07-delegation-policy          1 ->     1  gap=  0.0567   decided  SAME
+[03:04:55]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[03:04:55]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[03:04:55]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[03:04:55]       flipped:  none (every answer kept its rank)
+[03:04:55]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[03:04:55]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[03:04:55] write check: {"manifest_documents": 40, "bank_before_documents": 1040, "bank_after_documents": 1080, "delta": 40, "ops_failed": 0, "ok": true}
+[03:04:55] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[03:04:55] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch25_result.json  exit=0
+[driver] RESULT {"batch": 25, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 1080, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 26 start 03:04:55 ===
+[03:04:56] === batch 26: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[03:04:56] bank before: {"total_nodes": 10458, "total_documents": 1080, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T19:04:23.142763+00:00"}
+[03:04:56] $ backup -> fwh-main-20260912T190456Z.zip
+[03:05:02]       [16/21] Backing up webhooks... 0 rows
+[03:05:02]       [17/21] Backing up file_storage... 0 rows
+[03:05:02]       [18/21] Backing up audit_log... 0 rows
+[03:05:02]       [19/21] Backing up llm_requests... 1701 rows
+[03:05:02]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[03:05:02]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[03:05:02]     Backed up 250050 rows across 21 tables
+[03:05:02]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T190456Z.zip
+[03:05:02] backup rc=0 bytes=63089894
+[03:05:02] $ measure batch26_before
+[03:05:13]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch26_before.json
+[03:05:13] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2126, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 10, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0119, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[03:05:13] $ backfill batch 26
+[03:07:19]     [03:05:15] CAP 20 LARGEST: 3 sessions / 305 documents / ~1,317,427 tokens
+[03:07:19]     [03:05:15] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[03:07:19]     [03:05:15] EXECUTE: bank=fwh-main sessions=3 max_documents=40
+[03:07:19]     [03:07:19]   FAIL 20260911_050243_7e17c9e7: stopped by --max-documents before this chunk
+[03:07:19]     [03:07:19] max-documents cap reached; stopping
+[03:07:19]     [03:07:19] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch26-20260912T190456Z.json (40 document ids, 1 sessions)
+[03:07:19]     [03:07:19] execute summary: {'completed': 0, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[03:07:19]     [03:07:19] state file: v2/backfill_state_prod.json
+[03:07:39] $ measure batch26_after
+[03:07:50]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch26_after.json
+[03:07:50] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.211, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 10, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0131, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[03:07:50] $ gate
+[03:07:51]         q06-delivery-dir               6 ->     6  gap=  0.0256  unstable  SAME
+[03:07:51]         q07-delegation-policy          1 ->     1  gap=  0.0567   decided  SAME
+[03:07:51]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[03:07:51]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[03:07:51]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[03:07:51]       flipped:  none (every answer kept its rank)
+[03:07:51]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[03:07:51]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[03:07:51] write check: {"manifest_documents": 40, "bank_before_documents": 1080, "bank_after_documents": 1120, "delta": 40, "ops_failed": 0, "ok": true}
+[03:07:51] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[03:07:51] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch26_result.json  exit=0
+[driver] RESULT {"batch": 26, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 1120, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 27 start 03:07:51 ===
+[03:07:51] === batch 27: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[03:07:51] bank before: {"total_nodes": 10661, "total_documents": 1120, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T19:07:38.181883+00:00"}
+[03:07:51] $ backup -> fwh-main-20260912T190751Z.zip
+[03:07:57]       [16/21] Backing up webhooks... 0 rows
+[03:07:57]       [17/21] Backing up file_storage... 0 rows
+[03:07:57]       [18/21] Backing up audit_log... 0 rows
+[03:07:57]       [19/21] Backing up llm_requests... 1747 rows
+[03:07:57]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[03:07:57]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[03:07:57]     Backed up 256513 rows across 21 tables
+[03:07:57]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T190751Z.zip
+[03:07:57] backup rc=0 bytes=64399454
+[03:07:57] $ measure batch27_before
+[03:08:08]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch27_before.json
+[03:08:08] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.211, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 10, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0085, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0131, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[03:08:08] $ backfill batch 27
+[03:11:42]     [03:08:10] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[03:11:42]     [03:08:10] EXECUTE: bank=fwh-main sessions=3 max_documents=40
+[03:11:42]     [03:10:09]   ok   20260911_050243_7e17c9e7 (20 docs, resumed: 207 chunks already in bank)
+[03:11:42]     [03:11:17]   ok   20260911_074154_bed04773 (19 docs, resumed: 40 chunks already in bank)
+[03:11:42]     [03:11:42]   FAIL 20260912_114629_a77d1329: stopped by --max-documents before this chunk
+[03:11:42]     [03:11:42] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch27-20260912T190751Z.json (40 document ids, 3 sessions)
+[03:11:42]     [03:11:42] execute summary: {'completed': 2, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}
+[03:11:42]     [03:11:42] state file: v2/backfill_state_prod.json
+[03:12:02] $ measure batch27_after
+[03:12:13]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch27_after.json
+[03:12:13] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2062, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 10, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0131, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[03:12:13] $ gate
+[03:12:13]         q06-delivery-dir               6 ->     6  gap=  0.0256  unstable  SAME
+[03:12:13]         q07-delegation-policy          1 ->     1  gap=  0.0567   decided  SAME
+[03:12:13]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[03:12:13]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[03:12:13]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[03:12:13]       flipped:  none (every answer kept its rank)
+[03:12:13]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[03:12:13]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[03:12:13] write check: {"manifest_documents": 40, "bank_before_documents": 1120, "bank_after_documents": 1160, "delta": 40, "ops_failed": 0, "ok": true}
+[03:12:13] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[03:12:13] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch27_result.json  exit=0
+[driver] RESULT {"batch": 27, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 1160, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 28 start 03:12:13 ===
+[03:12:13] === batch 28: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[03:12:14] bank before: {"total_nodes": 10873, "total_documents": 1160, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T19:12:01.571731+00:00"}
+[03:12:14] $ backup -> fwh-main-20260912T191213Z.zip
+[03:12:20]       [16/21] Backing up webhooks... 0 rows
+[03:12:20]       [17/21] Backing up file_storage... 0 rows
+[03:12:20]       [18/21] Backing up audit_log... 0 rows
+[03:12:20]       [19/21] Backing up llm_requests... 1796 rows
+[03:12:20]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[03:12:20]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[03:12:20]     Backed up 262998 rows across 21 tables
+[03:12:20]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T191213Z.zip
+[03:12:20] backup rc=0 bytes=65713261
+[03:12:20] $ measure batch28_before
+[03:12:30]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch28_before.json
+[03:12:30] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.211, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 10, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0131, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[03:12:30] $ backfill batch 28
+[03:13:38]     [03:12:32] FULL RUN: 1 sessions / 19 documents / ~82,270 tokens
+[03:13:38]     [03:12:32] CAP 20 LARGEST: 1 sessions / 19 documents / ~82,270 tokens
+[03:13:38]     [03:12:32] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[03:13:38]     [03:12:32] EXECUTE: bank=fwh-main sessions=1 max_documents=40
+[03:13:38]     [03:13:38]   ok   20260912_114629_a77d1329 (6 docs, resumed: 13 chunks already in bank)
+[03:13:38]     [03:13:38] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch28-20260912T191213Z.json (6 document ids, 1 sessions)
+[03:13:38]     [03:13:38] execute summary: {'completed': 1, 'failed': 0, 'skipped': 0, 'documents': 6, 'ops_completed': 6, 'ops_failed': 0}
+[03:13:38]     [03:13:38] state file: v2/backfill_state_prod.json
+[03:13:58] $ measure batch28_after
+[03:14:09]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch28_after.json
+[03:14:09] AFTER {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.2225, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0131, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[03:14:09] $ gate
+[03:14:09]         q06-delivery-dir               6 ->     6  gap=  0.0256  unstable  SAME
+[03:14:09]         q07-delegation-policy          1 ->     1  gap=  0.0567   decided  SAME
+[03:14:09]         q08-hindsight-llm              1 ->     1  gap=  0.0469  unstable  SAME
+[03:14:09]         q09-liveness-user-pref      None ->  None  gap=    None  unstable  no_ground_truth
+[03:14:09]         q10-liveness-memory         None ->  None  gap=    None  unstable  no_ground_truth
+[03:14:09]       flipped:  none (every answer kept its rank)
+[03:14:09]       checks: {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}
+[03:14:09]       VERDICT: PASS - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[03:14:09] write check: {"manifest_documents": 6, "bank_before_documents": 1160, "bank_after_documents": 1166, "delta": 6, "ops_failed": 0, "ok": true}
+[03:14:09] GATE PASSED - CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.
+[03:14:09] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch28_result.json  exit=0
+[driver] RESULT {"batch": 28, "rc": 0, "docs": 6, "ops_failed": 0, "bank_documents": 1166, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] === batch 29 start 03:14:09 ===
+[03:14:09] === batch 29: 2026-09-08..2026-09-12 limit=6 max_docs=40 execute=True ===
+[03:14:10] bank before: {"total_nodes": 10895, "total_documents": 1166, "failed_operations": 332, "pending_operations": 1, "last_memory_write_at": "2026-09-12T19:13:43.612276+00:00"}
+[03:14:10] $ backup -> fwh-main-20260912T191409Z.zip
+[03:14:16]       [16/21] Backing up webhooks... 0 rows
+[03:14:16]       [17/21] Backing up file_storage... 0 rows
+[03:14:16]       [18/21] Backing up audit_log... 0 rows
+[03:14:16]       [19/21] Backing up llm_requests... 1808 rows
+[03:14:16]       [20/21] Backing up graph_maintenance_queue... 0 rows
+[03:14:16]       [21/21] Backing up entity_maintenance_queue... 0 rows
+[03:14:16]     Backed up 263495 rows across 21 tables
+[03:14:16]     Backup saved to C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backups\fwh-main-20260912T191409Z.zip
+[03:14:16] backup rc=0 bytes=65986343
+[03:14:16] $ measure batch29_before
+[03:14:27]     wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\batch29_before.json
+[03:14:27] BEFORE {"recall@1": 0.625, "recall@3": 0.75, "recall@10": 0.875, "recall_without_backfill@3": 0.625, "dup_item_rate": 0.223, "decided_ids": ["q07-delegation-policy"], "unstable_ids": ["q01-txt-encoding", "q02-hindsight-port", "q03-pg0-port", "q04-reranker", "q05-worker-id", "q06-delivery-dir", "q08-hindsight-llm", "q09-liveness-user-pref", "q10-liveness-memory"], "staleness_proxy_strict": 9, "n": 10, "n_answered": 10, "margins": {"q01-txt-encoding": 0.0484, "q02-hindsight-port": 0.0086, "q03-pg0-port": 0.0432, "q04-reranker": 0.0166, "q05-worker-id": 0.0131, "q06-delivery-dir": 0.0086, "q07-delegation-policy": 0.0568, "q08-hindsight-llm": 0.0469, "q09-liveness-user-pref": 0.0151, "q10-liveness-memory": 0.0296}}
+[03:14:27] $ backfill batch 29
+[03:14:29]     [03:14:29] wrote dry-run plan: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch29_report.json
+[03:14:29]     [03:14:29] FULL RUN: 0 sessions / 0 documents / ~0 tokens
+[03:14:29]     [03:14:29] CAP 20 LARGEST: 0 sessions / 0 documents / ~0 tokens
+[03:14:29]     [03:14:29] resume: skipped 0 sessions already completed in v2/backfill_state_prod.json
+[03:14:29]     [03:14:29] EXECUTE: bank=fwh-main sessions=0 max_documents=40
+[03:14:29]     [03:14:29] manifest: C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\manifests\batch29-20260912T191409Z.json (0 document ids, 0 sessions)
+[03:14:29]     [03:14:29] execute summary: {'completed': 0, 'failed': 0, 'skipped': 0, 'documents': 0, 'ops_completed': 0, 'ops_failed': 0}
+[03:14:29]     [03:14:29] state file: v2/backfill_state_prod.json
+[03:14:29] wrote C:\Users\Fwhne\[REDACTED:d94b58638345]\hermes-memory-audit-20260912\v2\backfill_batch29_result.json  exit=0
+[driver] RESULT {"batch": 29, "rc": 0, "docs": 0, "ops_failed": 0, "bank_documents": null, "recall@1_before": 0.625, "recall@1_after": null, "recall@3_before": 0.75, "recall@3_after": null, "gate": null, "flipped": null, "regressions": null, "action": "segment exhausted: 0 uncovered sessions left in range - nothing to backfill, nothing written"}
+[driver] STOP: batch 29 wrote no documents - nothing left to backfill
+[driver] === summary ===
+[driver] {"batch": 13, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 600, "recall@1_before": 0.5, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": ["q07-delegation-policy"], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 14, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 640, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 15, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 680, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": ["q06-delivery-dir"], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 16, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 720, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 17, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 760, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": ["q06-delivery-dir"], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 18, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 800, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": ["q06-delivery-dir"], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 19, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 840, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 20, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 880, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 21, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 920, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 22, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 960, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 23, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 1000, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 24, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 1040, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 25, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 1080, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 26, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 1120, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 27, "rc": 0, "docs": 40, "ops_failed": 0, "bank_documents": 1160, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 28, "rc": 0, "docs": 6, "ops_failed": 0, "bank_documents": 1166, "recall@1_before": 0.625, "recall@1_after": 0.625, "recall@3_before": 0.75, "recall@3_after": 0.75, "gate": {"recall@3_not_worse": true, "no_answer_lost": true, "no_decided_rank_regression": true, "all_questions_answered": true, "dup_within_tolerance": true}, "flipped": [], "regressions": [], "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise."}
+[driver] {"batch": 29, "rc": 0, "docs": 0, "ops_failed": 0, "bank_documents": null, "recall@1_before": 0.625, "recall@1_after": null, "recall@3_before": 0.75, "recall@3_after": null, "gate": null, "flipped": null, "regressions": null, "action": "segment exhausted: 0 uncovered sessions left in range - nothing to backfill, nothing written"}
+[driver] batches attempted=17 wall=51.5min

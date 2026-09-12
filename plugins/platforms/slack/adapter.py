@@ -35,14 +35,11 @@ sys.path.insert(0, str(_Path(__file__).resolve().parents[3]))
 from agent.secret_scope import UnscopedSecretError, get_secret
 from gateway.config import Platform, PlatformConfig
 from gateway.platforms.helpers import MessageDeduplicator
-from gateway.platforms._shared import get_scoped_secret as _get_scoped_secret, yaml_env_setter as _yaml_env_setter
 from gateway.platforms.base import (
-    gateway_trust_env, BasePlatformAdapter,
+    gateway_trust_env, BasePlatformAdapter, MessageEvent, MessageType, ProcessingOutcome,
     SendResult, SUPPORTED_DOCUMENT_TYPES, SUPPORTED_VIDEO_TYPES, _TEXT_INJECT_EXTENSIONS,
     is_host_excluded_by_no_proxy, resolve_proxy_url, safe_url_for_log, _ssrf_redirect_guard,
-    cache_document_from_bytes_async, cache_video_from_bytes_async,
-)
-from gateway.platforms.event import MessageEvent, MessageType, ProcessingOutcome
+    cache_document_from_bytes_async, cache_video_from_bytes_async)
 
 try:  # sibling module; support both package and flat plugin-dir import
     from .block_kit import render_blocks, sanitize_blocks
@@ -1937,9 +1934,8 @@ class SlackAdapter(BasePlatformAdapter):
                 chunks.extend(self._task_update_chunk(task) for task in tasks)
                 append_payload: Dict[str, Any] = {
                     "channel": chat_id, "ts": stream.stream_ts, "chunks": chunks}
-                # chunks-only: Slack rejects markdown_text alongside chunks
-                # (cannot_provide_both_markdown_text_and_chunks, #87743); the gateway owns
-                # the editable-text fallback rail that fallback_text feeds when this call fails.
+                if fallback_text:
+                    append_payload["markdown_text"] = fallback_text
                 await client.api_call("chat.appendStream", json=append_payload)
                 return SendResult(success=True, message_id=stream.stream_ts)
             except Exception as exc:  # pragma: no cover - defensive logging
@@ -2537,8 +2533,7 @@ class SlackAdapter(BasePlatformAdapter):
 
     def _slack_allow_bots(self) -> str:
         """Return normalized Slack bot-message policy."""
-        # Scoped read: under multiplex os.environ is the DEFAULT profile's bot-admission policy.
-        raw = self.config.extra.get("allow_bots", "") or _get_scoped_secret("SLACK_ALLOW_BOTS", "none")
+        raw = self.config.extra.get("allow_bots", "") or os.getenv("SLACK_ALLOW_BOTS", "none")
         value = str(raw).lower().strip()
         if value not in {"none", "mentions", "all"}:
             logger.warning("[Slack] Unknown allow_bots=%r; treating as 'none'", raw)
@@ -2560,7 +2555,7 @@ class SlackAdapter(BasePlatformAdapter):
         if cached is None:
             raw = self.config.extra.get("api_human_users")
             if raw is None:
-                raw = _get_scoped_secret("SLACK_API_HUMAN_USERS", "")
+                raw = os.getenv("SLACK_API_HUMAN_USERS", "")
             parts = raw if isinstance(raw, (list, tuple, set)) else str(raw).split(",")
             cached = self._api_human_users_cache = frozenset(
                 str(p).strip() for p in parts if str(p).strip())
@@ -2659,25 +2654,25 @@ class SlackAdapter(BasePlatformAdapter):
 
     async def send_multiple_images(
         self, chat_id: str, images: List[Tuple[str, str]],
-        metadata: Optional[Dict[str, Any]] = None, human_delay: float = 0.0) -> SendResult:
+        metadata: Optional[Dict[str, Any]] = None, human_delay: float = 0.0) -> None:
         """Send a batch of images as one message via ``files_upload_v2(file_uploads=...)`` (10 per
         call, Slack cap) instead of N posts; falls back to the base per-image loop on failure."""
         if self._suppressed_ignored(chat_id, "multi-image upload in"):
-            return SendResult(success=False, error="ignored_channel")
+            return
         if not self._app:
-            return SendResult(success=False, error="Not connected")
+            return
         if not images:
-            return SendResult(success=False, error="no images to send")
+            return
         chat_id = await self._dm_target(chat_id, metadata)
         try:
             from urllib.parse import unquote as _unquote
             from tools.url_safety import create_ssrf_safe_async_client, is_safe_url as _is_safe_url
         except Exception:
-            return await super().send_multiple_images(chat_id, images, metadata, human_delay)
+            await super().send_multiple_images(chat_id, images, metadata, human_delay)
+            return
         thread_ts = self._resolve_thread_ts(None, metadata)
         CHUNK = 10
         chunks = [images[i : i + CHUNK] for i in range(0, len(images), CHUNK)]
-        delivered = False
         for chunk_idx, chunk in enumerate(chunks):
             if human_delay > 0 and chunk_idx > 0:
                 await asyncio.sleep(human_delay)
@@ -2694,15 +2689,12 @@ class SlackAdapter(BasePlatformAdapter):
                     channel=chat_id, file_uploads=file_uploads, initial_comment=initial_comment,
                     thread_ts=thread_ts)
                 self._record_uploaded_file_thread(chat_id, thread_ts, metadata)
-                delivered = True
             except Exception as e:
                 logger.warning(
                     "[Slack] Multi-image files_upload_v2 failed (chunk %d/%d), falling back to per-image: %s",
                     chunk_idx + 1, len(chunks), e, exc_info=True)
-                fallback = await super().send_multiple_images(
+                await super().send_multiple_images(
                     chat_id, chunk, metadata, human_delay=human_delay)
-                delivered = delivered or fallback.success
-        return SendResult(success=delivered, error=None if delivered else "all images failed to send")
 
     @staticmethod
     async def _collect_image_uploads(
@@ -2938,11 +2930,8 @@ class SlackAdapter(BasePlatformAdapter):
         return await self._react(channel, timestamp, emoji, team_id, remove=True)
 
     def _reactions_enabled(self) -> bool:
-        """Whether message reactions are enabled (``extra.reactions`` / ``SLACK_REACTIONS``)."""
-        configured = self.config.extra.get("reactions")
-        if configured is None:
-            configured = os.getenv("SLACK_REACTIONS", "true")
-        return str(configured).lower() not in {"false", "0", "no"}
+        """Whether message reactions are enabled (``SLACK_REACTIONS`` env)."""
+        return os.getenv("SLACK_REACTIONS", "true").lower() not in {"false", "0", "no"}
 
     def _reacting_target(self, event: MessageEvent) -> Optional[Tuple[str, str, Any]]:
         """``(ts, team_id, marker)`` when reactions are on and ``event`` is being tracked."""
@@ -5829,6 +5818,7 @@ class SlackAdapter(BasePlatformAdapter):
         if not session_store:
             return False
         try:
+            source = self._thread_session_source(channel_id, thread_ts, user_id, team_id, chat_type)
             session_key = self._build_thread_session_key(
                 channel_id, thread_ts, user_id, team_id=team_id, chat_type=chat_type)
             if not session_key:
@@ -5837,9 +5827,11 @@ class SlackAdapter(BasePlatformAdapter):
             entry = session_store._entries.get(session_key)
             if entry is None:
                 return False
-            # Explicit suspension starts a fresh conversation on the next turn and
-            # must not suppress thread-history reseeding. Elapsed time is not a boundary.
-            return not entry.suspended
+            # A key the reset policy (daily/idle/suspended) would roll is NOT active:
+            # treating it as such would suppress the first-turn thread-history reseed.
+            # See #55239.
+            should_reset = getattr(type(session_store), "_should_reset", None)
+            return not (callable(should_reset) and should_reset(session_store, entry, source))
         except Exception:
             return False
 
@@ -6455,27 +6447,22 @@ _YAML_LIST_KEYS = (
 
 
 def _apply_yaml_config(yaml_cfg: dict, slack_cfg: dict) -> dict | None:
-    """``apply_yaml_config_fn`` hook: ``slack:`` YAML keys → ``SLACK_*`` env vars (explicit env wins) and
-    ``PlatformConfig.extra`` (extra-first readers; the env write is skipped under a multiplexed
-    secondary profile's scope so its policy never becomes the default profile's).
+    """``apply_yaml_config_fn`` hook: ``slack:`` YAML keys → ``SLACK_*`` env vars (the adapter reads
+    ``os.getenv()``; explicit env wins). Returns None: nothing is seeded into ``extra``.
 
     Implements the ``apply_yaml_config_fn`` contract (#24849). Mirrors the legacy ``slack_cfg`` block that
     used to live in ``gateway/config.py::load_gateway_config()`` before this migration.
     """
-    _set_env = _yaml_env_setter()
-    seeded: dict = {}
     for key, env in _YAML_BOOL_KEYS:
-        if key in slack_cfg:
-            seeded[key] = slack_cfg[key]  # original type: the shared-key loop already seeded bools as bools
-            _set_env(env, str(slack_cfg[key]).lower())
+        if key in slack_cfg and not os.getenv(env):
+            os.environ[env] = str(slack_cfg[key]).lower()
     for key, env, list_types in _YAML_LIST_KEYS:
         val = slack_cfg.get(key)
-        if val is not None:
-            seeded[key] = val
+        if val is not None and not os.getenv(env):
             if list_types and isinstance(val, list_types):
                 val = ",".join(str(v) for v in val)
-            _set_env(env, str(val))
-    return seeded or None
+            os.environ[env] = str(val)
+    return None
 
 
 def _is_connected(config) -> bool:

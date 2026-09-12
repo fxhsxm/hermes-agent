@@ -1,0 +1,232 @@
+{
+  "recall_eval_production": {
+    "summary": {
+      "bank": "fwh-main",
+      "n": 10,
+      "recall@1": 6,
+      "recall@3": 8,
+      "recall@10": 8,
+      "mean_latency_s": 1.02
+    },
+    "query_classes": [
+      "telegram_config",
+      "server_config",
+      "agent_policy",
+      "file_encoding",
+      "embedding_model",
+      "db_port",
+      "reranker_model",
+      "protocol_shape",
+      "tool_choice",
+      "llm_provider"
+    ],
+    "language_mix": {
+      "zh-Hant": 7,
+      "yue": 1,
+      "en": 1,
+      "zh-Hant(mixed)": 1
+    },
+    "note": "2/2 misses had NO ground-truth record in the bank (verified by full-text search), so effective recall@3 for facts present = 8/8"
+  },
+  "coverage": {
+    "session_tags": 126,
+    "sessions_since_0812": 542,
+    "tagged": 126,
+    "excl_sub_total": 307,
+    "excl_sub_tagged": 126,
+    "by_source_tagged": {
+      "cli": 3,
+      "telegram": 75,
+      "desktop": 34,
+      "kanban": 12,
+      "task-0004-loader-test": 2
+    },
+    "by_source_untagged": {
+      "telegram": 102,
+      "subagent": 233,
+      "desktop": 48,
+      "cli": 27,
+      "cron": 2,
+      "kanban": 1,
+      "github-task-watcher": 1,
+      "tool": 2
+    },
+    "buckets_tagged": {
+      "6-20": 19,
+      "21-60": 31,
+      "61+": 73,
+      "1-5": 3
+    },
+    "buckets_untagged": {
+      "21-60": 135,
+      "61+": 136,
+      "6-20": 51,
+      "1-5": 85,
+      "0": 9
+    }
+  },
+  "healthcheck_snapshot": {
+    "generated_at": "2026-09-12T04:52:51+00:00",
+    "bank": "fwh-main",
+    "status": "degraded",
+    "checks": [
+      {
+        "check": "provider_wiring",
+        "level": "fail",
+        "detail": "config.yaml memory.provider='opencode-go', expected 'hindsight'"
+      },
+      {
+        "check": "api_liveness",
+        "level": "ok",
+        "detail": "/health=healthy db=connected api=0.9.0"
+      },
+      {
+        "check": "write_path_probe",
+        "level": "ok",
+        "detail": "dry-run extraction returned 1 facts in 3.7s (nothing persisted)"
+      },
+      {
+        "check": "bank_activity",
+        "level": "fail",
+        "detail": "no memory written for 107.7h (last=2026-09-07T17:10:11.350671+00:00) — the retain path is very likely broken"
+      },
+      {
+        "check": "failed_consolidation",
+        "level": "warn",
+        "detail": "1 consolidation failure(s) recorded"
+      },
+      {
+        "check": "recent_operations",
+        "level": "fail",
+        "detail": "50/50 of the last 50 operations failed (100%)"
+      },
+      {
+        "check": "retrieval",
+        "level": "ok",
+        "detail": "1 recall probe(s) in 1.4s; reranker_engaged=True"
+      },
+      {
+        "check": "coverage",
+        "level": "warn",
+        "detail": "15/60 sessions in the last 7d reached the bank; days with sessions but no memory: ['2026-09-08', '2026-09-09', '2026-09-10', '2026-09-11', '2026-09-12']"
+      },
+      {
+        "check": "builtin_MEMORY.md",
+        "level": "warn",
+        "detail": "2129/2200 chars (97% of the injected budget)"
+      },
+      {
+        "check": "builtin_USER.md",
+        "level": "ok",
+        "detail": "1169/1375 chars (85% of the injected budget)"
+      }
+    ]
+  },
+  "sandbox_e2e": {
+    "bank": "fwh-audit-sandbox",
+    "stages": [
+      {
+        "stage": "S1_create_bank",
+        "http": 200
+      },
+      {
+        "stage": "S2_retain_doc1",
+        "status": 200,
+        "operation_ids": [
+          "18c3aecd-612c-4235-b84a-8baf12fb5aa5"
+        ],
+        "submit_s": 0.0
+      },
+      {
+        "stage": "S2_ops_terminal",
+        "ops": [
+          {
+            "id": "18c3aecd-612c-4235-b84a-8baf12fb5aa5",
+            "status": "completed",
+            "err": ""
+          }
+        ]
+      },
+      {
+        "stage": "S3_retain_doc2",
+        "status": 200,
+        "operation_ids": [
+          "75ce12f8-33f5-4788-802b-eab0967cf04d"
+        ],
+        "submit_s": 0.0
+      },
+      {
+        "stage": "S3_ops_terminal",
+        "ops": [
+          {
+            "id": "75ce12f8-33f5-4788-802b-eab0967cf04d",
+            "status": "completed",
+            "err": ""
+          }
+        ]
+      },
+      {
+        "stage": "S4_recall",
+        "probes": {
+          "en_widget": {
+            "n": 4,
+            "latency_s": 0.7,
+            "top1_final": 1.0441404113731914,
+            "top1_reranker": 0.94921875
+          },
+          "zh_pref": {
+            "n": 6,
+            "latency_s": 0.5,
+            "top1_final": 0.6273436384032336,
+            "top1_reranker": 0.5703125
+          }
+        }
+      },
+      {
+        "stage": "S5_reflect",
+        "status": 200,
+        "latency_s": 49.2,
+        "answer_resolved_newer_fact": true
+      },
+      {
+        "stage": "S6_consolidate_request",
+        "status": 200,
+        "latency_s": 0.0
+      },
+      {
+        "stage": "S7_inventory",
+        "n_memories": 8,
+        "states": {
+          "valid": 8
+        },
+        "stats": {
+          "total_nodes": 8,
+          "total_links": 13,
+          "total_documents": 4,
+          "nodes_by_fact_type": {
+            "observation": 4,
+            "world": 4
+          },
+          "pending_operations": 0,
+          "failed_operations": 0,
+          "operations_by_status": {
+            "completed": 8
+          }
+        },
+        "n_observations": 4
+      }
+    ]
+  },
+  "dry_run_probe": {
+    "pre_fix": {
+      "status": 500,
+      "elapsed_s": 8.5,
+      "error_excerpt": "{\"detail\":\"Fact extraction failed: 1/1 chunks failed. First failures: chunk 0: BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'MissingSessionID', 'message': 'Error from provider (Console Go): Request is missing x-opencode-session and ca"
+    },
+    "post_fix": {
+      "status": 200,
+      "elapsed_s": 5.9,
+      "error_excerpt": null
+    }
+  }
+}

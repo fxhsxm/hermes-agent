@@ -1,0 +1,67 @@
+{
+  "batch": 1,
+  "scope": "2026-09-08..09-12 (outage segment), limit 6 sessions / 40 documents",
+  "started": "2026-09-13T00:51:14+0800",
+  "backup": {
+    "rc": 0,
+    "exists": true,
+    "bytes": 29287817,
+    "tail": [
+      "Backed up 109924 rows across 21 tables",
+      "Backup saved to C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backup-before-batch1.zip"
+    ]
+  },
+  "before": {
+    "dup_item_rate": 0.2297,
+    "items": 357,
+    "median_latency_s": 0.9138,
+    "p95_latency_s": 1.3615,
+    "top1_superseded_strict": 8,
+    "recall@1": null,
+    "recall@3": null,
+    "n": 10
+  },
+  "bank_before": {
+    "total_nodes": 5312,
+    "total_documents": 175,
+    "failed_operations": 332,
+    "last_memory_write_at": "2026-09-12T16:51:11.196914+00:00"
+  },
+  "backfill": {
+    "rc": 0,
+    "tail": [
+      "[00:55:04]   ok   20260909_015108_219bd045 (18 docs)",
+      "[00:55:25]   ok   20260909_054125_fb5d75b8 (1 docs)",
+      "[00:55:44]   ok   20260910_175009_723ce9 (2 docs)",
+      "[00:56:06]   FAIL 20260910_182218_b4e16039: stopped by --max-documents before this chunk",
+      "[00:56:06] execute summary: {'completed': 5, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}",
+      "[00:56:06] state file: C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backfill_state_prod.json"
+    ]
+  },
+  "after": {
+    "dup_item_rate": 0.2271,
+    "items": 361,
+    "median_latency_s": 0.9548,
+    "p95_latency_s": 1.1755,
+    "top1_superseded_strict": 8,
+    "recall@1": null,
+    "recall@3": null,
+    "n": 10
+  },
+  "bank_after": {
+    "total_nodes": 5534,
+    "total_documents": 215,
+    "failed_operations": 332,
+    "last_memory_write_at": "2026-09-12T16:56:11.200323+00:00"
+  },
+  "verdict": {
+    "checks": {
+      "dup_rate_not_worse": true,
+      "stale_proxy_not_worse": true,
+      "recall@3_not_worse": true
+    },
+    "all_ok": true,
+    "action": "continue to the next batch"
+  },
+  "finished": "2026-09-13T00:56:32+0800"
+}

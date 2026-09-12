@@ -1,0 +1,55 @@
+{
+  "finding": "the batch-3 gate failure is general ranking instability, not backfill-specific",
+  "baseline_strict_ids": [
+    "q01-txt-encoding",
+    "q02-hindsight-port",
+    "q03-pg0-port",
+    "q04-reranker",
+    "q05-worker-id",
+    "q07-delegation-policy",
+    "q08-hindsight-llm",
+    "q10-liveness-memory"
+  ],
+  "after_batch3_strict_ids": [
+    "q01-txt-encoding",
+    "q02-hindsight-port",
+    "q03-pg0-port",
+    "q04-reranker",
+    "q05-worker-id",
+    "q06-delivery-dir",
+    "q07-delegation-policy",
+    "q08-hindsight-llm",
+    "q10-liveness-memory"
+  ],
+  "flipped": [
+    "q06-delivery-dir"
+  ],
+  "reproducible": true,
+  "loose_count": 0,
+  "q06_snapshot": {
+    "query": "一般交付檔案應該寫入邊個目錄？",
+    "expected": "HermesOutput",
+    "rank1": {
+      "backfilled": false,
+      "mentioned_at": "2026-08-13T17:34:59Z",
+      "final": 0.631
+    },
+    "rank2": {
+      "backfilled": true,
+      "mentioned_at": "2026-09-10T12:42:32Z",
+      "final": 0.627
+    },
+    "rank3": {
+      "backfilled": false,
+      "mentioned_at": "2026-08-13T17:34:59Z",
+      "final": 0.626
+    },
+    "margin_top1_top3": 0.005
+  },
+  "interpretation": "The rank-1 item was never written by the backfill (it is an old 2026-08-13 kanban path). Ranks 1-3 differ by 0.001-0.005, so this question is a near-tie whose order is decided by noise; any addition (live turns or backfill) can flip it. 8/10 questions were already strict-flagged before any backfill, and loose is 0/10, so the proxy itself over-fires.",
+  "consequences": [
+    "gate criterion too brittle: must ignore near-tie questions (require top1-top2 margin)",
+    "bank has no supersession: old and new facts stay valid and compete on semantic score alone",
+    "no backfill-specific harm proven; the 120 documents are preserved"
+  ]
+}

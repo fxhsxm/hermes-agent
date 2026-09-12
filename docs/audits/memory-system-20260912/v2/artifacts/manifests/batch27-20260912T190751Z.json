@@ -1,0 +1,151 @@
+{
+ "version": 1,
+ "bank": "fwh-main",
+ "run_started_at": "2026-09-12T19:08:10Z",
+ "run_ended_at": "2026-09-12T19:11:42Z",
+ "range": {
+  "from": "2026-09-08",
+  "to": "2026-09-12"
+ },
+ "caps": {
+  "limit": 6,
+  "max_documents": 40,
+  "chunk_chars": 3000,
+  "turns_per_chunk": 6
+ },
+ "summary": {
+  "completed": 2,
+  "failed": 1,
+  "skipped": 0,
+  "documents": 40,
+  "ops_completed": 40,
+  "ops_failed": 0
+ },
+ "sessions": [
+  {
+   "session_id": "20260911_050243_7e17c9e7",
+   "source": "telegram",
+   "status": "completed",
+   "documents": 20,
+   "doc_ids": [
+    "bf-20260911_050243_7e17c9e7-c207-595ffc83",
+    "bf-20260911_050243_7e17c9e7-c208-13233640",
+    "bf-20260911_050243_7e17c9e7-c209-416e6b67",
+    "bf-20260911_050243_7e17c9e7-c210-749663bf",
+    "bf-20260911_050243_7e17c9e7-c211-64559654",
+    "bf-20260911_050243_7e17c9e7-c212-265c2f58",
+    "bf-20260911_050243_7e17c9e7-c213-e67b5895",
+    "bf-20260911_050243_7e17c9e7-c214-381b7cac",
+    "bf-20260911_050243_7e17c9e7-c215-5dd7c26f",
+    "bf-20260911_050243_7e17c9e7-c216-3a0b061d",
+    "bf-20260911_050243_7e17c9e7-c217-480499e0",
+    "bf-20260911_050243_7e17c9e7-c218-5a6b60f8",
+    "bf-20260911_050243_7e17c9e7-c219-6dac7c5b",
+    "bf-20260911_050243_7e17c9e7-c220-905d5bd3",
+    "bf-20260911_050243_7e17c9e7-c221-e8f6ff93",
+    "bf-20260911_050243_7e17c9e7-c222-358828ca",
+    "bf-20260911_050243_7e17c9e7-c223-e7a604a2",
+    "bf-20260911_050243_7e17c9e7-c224-8c900e7b",
+    "bf-20260911_050243_7e17c9e7-c225-1af0937d",
+    "bf-20260911_050243_7e17c9e7-c226-4888c510"
+   ],
+   "turns": 33,
+   "est_total_tokens": 980877,
+   "resumed": true,
+   "chunks_skipped_already_in_bank": 207
+  },
+  {
+   "session_id": "20260911_074154_bed04773",
+   "source": "telegram",
+   "status": "completed",
+   "documents": 19,
+   "doc_ids": [
+    "bf-20260911_074154_bed04773-c040-50dfcd43",
+    "bf-20260911_074154_bed04773-c041-f191ce9c",
+    "bf-20260911_074154_bed04773-c042-870d14bf",
+    "bf-20260911_074154_bed04773-c043-c635ca9a",
+    "bf-20260911_074154_bed04773-c044-773f69eb",
+    "bf-20260911_074154_bed04773-c045-cec9bc4c",
+    "bf-20260911_074154_bed04773-c046-3b6bc8a5",
+    "bf-20260911_074154_bed04773-c047-7a633ad7",
+    "bf-20260911_074154_bed04773-c048-57a2fffd",
+    "bf-20260911_074154_bed04773-c049-e3874c28",
+    "bf-20260911_074154_bed04773-c050-c8d91df6",
+    "bf-20260911_074154_bed04773-c051-9194b661",
+    "bf-20260911_074154_bed04773-c052-7b135d4a",
+    "bf-20260911_074154_bed04773-c053-cf4d2da4",
+    "bf-20260911_074154_bed04773-c054-07d73799",
+    "bf-20260911_074154_bed04773-c055-73bd4986",
+    "bf-20260911_074154_bed04773-c056-3c519dbe",
+    "bf-20260911_074154_bed04773-c057-837258b6",
+    "bf-20260911_074154_bed04773-c058-0e63dee8"
+   ],
+   "turns": 8,
+   "est_total_tokens": 254280,
+   "resumed": true,
+   "chunks_skipped_already_in_bank": 40
+  },
+  {
+   "session_id": "20260912_114629_a77d1329",
+   "source": "telegram",
+   "status": "failed",
+   "documents": 1,
+   "doc_ids": [
+    "bf-20260912_114629_a77d1329-c012-5d7aeba9"
+   ],
+   "errors": [
+    "stopped by --max-documents before this chunk"
+   ],
+   "resumed": true,
+   "chunks_skipped_already_in_bank": 12
+  }
+ ],
+ "document_ids": [
+  "bf-20260911_050243_7e17c9e7-c207-595ffc83",
+  "bf-20260911_050243_7e17c9e7-c208-13233640",
+  "bf-20260911_050243_7e17c9e7-c209-416e6b67",
+  "bf-20260911_050243_7e17c9e7-c210-749663bf",
+  "bf-20260911_050243_7e17c9e7-c211-64559654",
+  "bf-20260911_050243_7e17c9e7-c212-265c2f58",
+  "bf-20260911_050243_7e17c9e7-c213-e67b5895",
+  "bf-20260911_050243_7e17c9e7-c214-381b7cac",
+  "bf-20260911_050243_7e17c9e7-c215-5dd7c26f",
+  "bf-20260911_050243_7e17c9e7-c216-3a0b061d",
+  "bf-20260911_050243_7e17c9e7-c217-480499e0",
+  "bf-20260911_050243_7e17c9e7-c218-5a6b60f8",
+  "bf-20260911_050243_7e17c9e7-c219-6dac7c5b",
+  "bf-20260911_050243_7e17c9e7-c220-905d5bd3",
+  "bf-20260911_050243_7e17c9e7-c221-e8f6ff93",
+  "bf-20260911_050243_7e17c9e7-c222-358828ca",
+  "bf-20260911_050243_7e17c9e7-c223-e7a604a2",
+  "bf-20260911_050243_7e17c9e7-c224-8c900e7b",
+  "bf-20260911_050243_7e17c9e7-c225-1af0937d",
+  "bf-20260911_050243_7e17c9e7-c226-4888c510",
+  "bf-20260911_074154_bed04773-c040-50dfcd43",
+  "bf-20260911_074154_bed04773-c041-f191ce9c",
+  "bf-20260911_074154_bed04773-c042-870d14bf",
+  "bf-20260911_074154_bed04773-c043-c635ca9a",
+  "bf-20260911_074154_bed04773-c044-773f69eb",
+  "bf-20260911_074154_bed04773-c045-cec9bc4c",
+  "bf-20260911_074154_bed04773-c046-3b6bc8a5",
+  "bf-20260911_074154_bed04773-c047-7a633ad7",
+  "bf-20260911_074154_bed04773-c048-57a2fffd",
+  "bf-20260911_074154_bed04773-c049-e3874c28",
+  "bf-20260911_074154_bed04773-c050-c8d91df6",
+  "bf-20260911_074154_bed04773-c051-9194b661",
+  "bf-20260911_074154_bed04773-c052-7b135d4a",
+  "bf-20260911_074154_bed04773-c053-cf4d2da4",
+  "bf-20260911_074154_bed04773-c054-07d73799",
+  "bf-20260911_074154_bed04773-c055-73bd4986",
+  "bf-20260911_074154_bed04773-c056-3c519dbe",
+  "bf-20260911_074154_bed04773-c057-837258b6",
+  "bf-20260911_074154_bed04773-c058-0e63dee8",
+  "bf-20260912_114629_a77d1329-c012-5d7aeba9"
+ ],
+ "document_count": 40,
+ "rollback": {
+  "preferred": "restore the backup zip taken immediately before this run",
+  "precise": "DELETE /v1/default/banks/fwh-main/documents/<document_id> for each id in document_ids",
+  "forbidden": "deleting by the kind:backfill tag would also delete every earlier batch, including the ones that passed their gate"
+ }
+}

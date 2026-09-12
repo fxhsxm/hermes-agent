@@ -34,6 +34,8 @@ export function renderMediaTags(text: string): string {
       (_match, lead: string, value: string, trailer: string) => `${lead}${mediaLink(value)}${trailer}`
     )
     .replace(MEDIA_TAG_RE, (_match, value: string) => mediaLink(value))
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
 }
 
 export function assistantTextPart(text: string, timestamp?: number): ChatMessagePart {

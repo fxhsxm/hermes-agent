@@ -1,0 +1,162 @@
+{
+ "bank": "fwh-audit-sandbox",
+ "started": "2026-09-13T00:40:10+0800",
+ "before": {
+  "duplicate_item_rate": 0.278,
+  "total_items": 259,
+  "dup_pairs": 70,
+  "median_latency_s": 0.5539,
+  "top1_superseded_strict": 5,
+  "n": 6,
+  "raw": {
+   "bank": "fwh-audit-sandbox",
+   "n_questions": 6,
+   "n_answered": 6,
+   "duplication": {
+    "total_duplicate_pairs": 70,
+    "identical_pairs": 65,
+    "fuzzy_pairs": 5,
+    "observation_vs_raw_twin_pairs": 24,
+    "items_in_a_duplicate_pair": 72,
+    "total_items_returned": 259,
+    "overall_duplicate_item_rate": 0.278,
+    "mean_per_question_duplicate_item_rate": 0.2873,
+    "questions_with_any_duplicate": 6,
+    "questions_with_observation_vs_raw_twin": 6
+   },
+   "staleness_proxy": {
+    "questions_top1_superseded_proxy_strict": 5,
+    "questions_top1_superseded_proxy_strict_ids": [
+     "s1-widget",
+     "s2-marker",
+     "s4-ci",
+     "s5-probe",
+     "s6-recent"
+    ],
+    "questions_top1_superseded_proxy_loose": 0,
+    "rate_strict": 0.8333,
+    "rate_loose": 0.0,
+    "questions_top1_is_raw": 3
+   },
+   "latency": {
+    "mean_s": 0.5865,
+    "median_s": 0.5539,
+    "p95_s": 0.8396,
+    "min_s": 0.4728,
+    "max_s": 0.8396,
+    "total_retries": 0
+   },
+   "reranker": {
+    "questions_with_reranker_engaged": 6,
+    "mean_reranker_engagement_fraction": 1.0,
+    "questions_reranker_changed_top1_vs_semantic": 3,
+    "mean_top1_final": 0.8105
+   },
+   "failed_questions": []
+  }
+ },
+ "backfill": {
+  "rc": 0,
+  "tail": [
+   "[00:40:53]   FAIL 20260815_021921_63e795: stopped by --max-documents before this chunk",
+   "[00:40:53] max-documents cap reached; stopping",
+   "[00:40:53] execute summary: {'completed': 0, 'failed': 1, 'skipped': 0, 'documents': 10, 'ops_completed': 10, 'ops_failed': 0}",
+   "[00:40:53] state file: C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backfill_state_sim.json"
+  ]
+ },
+ "after": {
+  "duplicate_item_rate": 0.2281,
+  "total_items": 285,
+  "dup_pairs": 59,
+  "median_latency_s": 0.5978,
+  "top1_superseded_strict": 5,
+  "n": 6,
+  "raw": {
+   "bank": "fwh-audit-sandbox",
+   "n_questions": 6,
+   "n_answered": 6,
+   "duplication": {
+    "total_duplicate_pairs": 59,
+    "identical_pairs": 56,
+    "fuzzy_pairs": 3,
+    "observation_vs_raw_twin_pairs": 23,
+    "items_in_a_duplicate_pair": 65,
+    "total_items_returned": 285,
+    "overall_duplicate_item_rate": 0.2281,
+    "mean_per_question_duplicate_item_rate": 0.2292,
+    "questions_with_any_duplicate": 6,
+    "questions_with_observation_vs_raw_twin": 6
+   },
+   "staleness_proxy": {
+    "questions_top1_superseded_proxy_strict": 5,
+    "questions_top1_superseded_proxy_strict_ids": [
+     "s1-widget",
+     "s2-marker",
+     "s4-ci",
+     "s5-probe",
+     "s6-recent"
+    ],
+    "questions_top1_superseded_proxy_loose": 0,
+    "rate_strict": 0.8333,
+    "rate_loose": 0.0,
+    "questions_top1_is_raw": 3
+   },
+   "latency": {
+    "mean_s": 0.6037,
+    "median_s": 0.5978,
+    "p95_s": 0.7153,
+    "min_s": 0.5194,
+    "max_s": 0.7153,
+    "total_retries": 0
+   },
+   "reranker": {
+    "questions_with_reranker_engaged": 6,
+    "mean_reranker_engagement_fraction": 1.0,
+    "questions_reranker_changed_top1_vs_semantic": 4,
+    "mean_top1_final": 0.8105
+   },
+   "failed_questions": []
+  }
+ },
+ "contradiction_test": {
+  "current_retain_status": "completed",
+  "recall_top5": [
+   {
+    "text": "Sandbox CI colour token is SANDBOX-CURRENT-BLUE-3311",
+    "mentioned_at": "2026-09-13T00:41:08+00:00",
+    "fact_type": null,
+    "final": 1.057
+   },
+   {
+    "text": "The sandbox marker for an audit smoke test is SANDBOX-MARKER-7731.",
+    "mentioned_at": "2026-09-12T04:52:06+00:00",
+    "fact_type": null,
+    "final": 0.526
+   },
+   {
+    "text": "User instructs that the sandbox marker for an audit smoke test is SANDBOX-MARKER-7731. | W",
+    "mentioned_at": "2026-09-12T04:52:06+00:00",
+    "fact_type": null,
+    "final": 0.479
+   },
+   {
+    "text": "助手評估了歷史回填的dry-run，顯示全量回填需要約7.6M tokens（成本過高），因此決定僅做沙盒驗證和極小額的生產證明，其餘留待報告。 | When: 2026-09-1",
+    "mentioned_at": "2026-09-12T11:07:03.088000+00:00",
+    "fact_type": null,
+    "final": 0.404
+   },
+   {
+    "text": "助手評估了歷史回填的dry-run，顯示全量回填需要約7.6M tokens（成本過高），因此決定僅做沙盒驗證和極小額的生產證明，其餘留待報告。",
+    "mentioned_at": "2026-09-12T11:07:03.088000+00:00",
+    "fact_type": null,
+    "final": 0.395
+   }
+  ],
+  "current_token_in_top3": true,
+  "current_token_rank": 1,
+  "reflect_answer": "The sandbox CI colour token is **SANDBOX-CURRENT-BLUE-3311**.",
+  "reflect_picked_current": true
+ },
+ "finished": "2026-09-13T00:41:42+0800",
+ "privacy_note": "the remaining text fields are SYNTHETIC sandbox markers fabricated for the throwaway bank fwh-audit-sandbox (e.g. a fake colour token), not memory content"
+}

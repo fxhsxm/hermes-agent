@@ -1,0 +1,48 @@
+{
+ "version": 1,
+ "bank": "fwh-main",
+ "run_started_at": "2026-09-12T18:15:05Z",
+ "run_ended_at": "2026-09-12T18:15:27Z",
+ "range": {
+  "from": "2026-09-08",
+  "to": "2026-09-12"
+ },
+ "caps": {
+  "limit": 6,
+  "max_documents": 40,
+  "chunk_chars": 3000,
+  "turns_per_chunk": 6
+ },
+ "summary": {
+  "completed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "documents": 2,
+  "ops_completed": 2,
+  "ops_failed": 0
+ },
+ "sessions": [
+  {
+   "session_id": "20260912_111132_acf84ede",
+   "source": "telegram",
+   "status": "completed",
+   "documents": 2,
+   "doc_ids": [
+    "bf-20260912_111132_acf84ede-c000-561b40fb",
+    "bf-20260912_111132_acf84ede-c001-f7326100"
+   ],
+   "turns": 2,
+   "est_total_tokens": 9124
+  }
+ ],
+ "document_ids": [
+  "bf-20260912_111132_acf84ede-c000-561b40fb",
+  "bf-20260912_111132_acf84ede-c001-f7326100"
+ ],
+ "document_count": 2,
+ "rollback": {
+  "preferred": "restore the backup zip taken immediately before this run",
+  "precise": "DELETE /v1/default/banks/fwh-main/documents/<document_id> for each id in document_ids",
+  "forbidden": "deleting by the kind:backfill tag would also delete every earlier batch, including the ones that passed their gate"
+ }
+}

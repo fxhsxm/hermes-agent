@@ -6,6 +6,7 @@ turn counting, tags), and schema completeness.
 """
 
 import json
+import logging
 import os
 import re
 import stat
@@ -33,6 +34,10 @@ from plugins.memory.hindsight import (
     _normalize_retain_tags,
     _resolve_bank_id_template,
     _WRITER_SENTINEL,
+    _build_delegation_digest,
+    _dedupe_recall_results,
+    _DELEGATION_GOAL_MAX_CHARS,
+    _DELEGATION_RESULT_MAX_CHARS,
 )
 from plugins.memory.hindsight.settings import _sanitize_bank_segment
 
@@ -804,11 +809,126 @@ class TestPrefetchServerRetainVisibility:
 
         assert provider._is_retain_op_complete("bank", "op-1") is False
 
+    def test_failed_op_is_terminal_and_warns_with_server_detail(self, provider, caplog):
+        """A failed server-side retain is terminal (nothing left to wait for) but must be
+        REPORTED — silently draining it is how a provider-side write outage drops memory for
+        days with no signal anywhere."""
+        client = _make_mock_client()
+        client.operations = MagicMock()
+        client.operations.get_operation_status = AsyncMock(
+            return_value=SimpleNamespace(status="failed", error_message="Error code: 400 - MissingSessionID")
+        )
+        provider._client = client
+
+        with caplog.at_level(logging.WARNING):
+            assert provider._is_retain_op_complete("bank", "op-1") is True
+
+        warned = [r.getMessage() for r in caplog.records if r.levelno == logging.WARNING]
+        assert any("op-1" in m and "FAILED" in m for m in warned), warned
+        assert any("MissingSessionID" in m for m in warned), warned
+
+    def test_failed_op_warns_once_per_op(self, provider, caplog):
+        """The prefetch poll loop can observe one op repeatedly; the warning must not repeat."""
+        provider._client = self._client_with_ops(["failed"])
+        with caplog.at_level(logging.WARNING):
+            for _ in range(3):
+                provider._is_retain_op_complete("bank", "op-1")
+        failures = [r.getMessage() for r in caplog.records if "FAILED" in r.getMessage()]
+        assert len(failures) == 1, failures
+
+    def test_failed_op_emits_retain_failure_indicator(self, provider, caplog):
+        """The failure must reach the user's status line, not just the log."""
+        seen: list[str] = []
+        provider._status_callback = seen.append
+        provider._client = self._client_with_ops(["failed"])
+        with caplog.at_level(logging.WARNING):
+            provider._is_retain_op_complete("bank", "op-1")
+        assert any("FAILED" in m for m in seen), seen
+
 
 # ---------------------------------------------------------------------------
-# recall_status (deterministic recall indicator) tests
+# Delegation outcome retention (anti-pollution policy)
 # ---------------------------------------------------------------------------
 
+
+class TestDelegationOutcomeRetention:
+    """Children run without a provider session, so nothing they do is retained verbatim.
+    Only the parent-side OUTCOME is kept, and it is built from the hook's two strings, so
+    reasoning / tool chatter / abandoned hypotheses cannot reach memory at all."""
+
+    def test_digest_keeps_outcome_and_named_artifacts(self):
+        digest = _build_delegation_digest(
+            "Refactor the parser",
+            "Done. Rewrote it and the suite is green. Report at C:/out/report.md and https://example.com/pr/7",
+            child_session_id="child-1",
+        )
+        assert digest.startswith("Delegation outcome")
+        assert "Goal: Refactor the parser" in digest
+        assert "Result: Done." in digest
+        assert "C:/out/report.md" in digest and "https://example.com/pr/7" in digest
+        assert "Child session: child-1" in digest
+
+    def test_digest_truncates_long_goal_and_summary(self):
+        digest = _build_delegation_digest("g" * 5000, "s" * 9000)
+        assert len(digest) < _DELEGATION_GOAL_MAX_CHARS + _DELEGATION_RESULT_MAX_CHARS + 200
+        assert _DELEGATION_GOAL_MAX_CHARS * "g" in digest
+        assert _DELEGATION_RESULT_MAX_CHARS * "s" in digest
+
+    def test_digest_is_empty_without_content(self):
+        assert _build_delegation_digest("", "") == ""
+        assert _build_delegation_digest("   ", "\n\t") == ""
+
+    def test_on_delegation_retains_one_tagged_digest(self, provider):
+        provider._client = _make_mock_client()
+        provider.on_delegation("Audit the bank", "Finished: 3 risks found, report at C:/out/r.md",
+                               child_session_id="child-9")
+        provider._retain_queue.join()
+
+        kwargs = provider._client.aretain_batch.await_args.kwargs
+        item = kwargs["items"][0]
+        assert item["content"].startswith("Delegation outcome")
+        assert "kind:delegation-outcome" in item["tags"]
+        assert "child:child-9" in item["tags"]
+        assert any(t.startswith("session:") for t in item["tags"])
+        assert "child-9" in kwargs["document_id"]
+
+    def test_on_delegation_is_idempotent_per_outcome(self, provider):
+        provider._client = _make_mock_client()
+        provider.on_delegation("Same task", "Same result", child_session_id="child-9")
+        provider._retain_queue.join()
+        provider.on_delegation("Same task", "Same result", child_session_id="child-9")
+        provider._retain_queue.join()
+        assert provider._client.aretain_batch.await_count == 1, "a repeated outcome must not be retained twice"
+
+    def test_on_delegation_skipped_when_auto_retain_off(self, provider):
+        provider._client = _make_mock_client()
+        provider._auto_retain = False
+        provider.on_delegation("Task", "Result", child_session_id="child-1")
+        provider._retain_queue.join()
+        provider._client.aretain_batch.assert_not_awaited()
+
+
+# ---------------------------------------------------------------------------
+# Recall de-duplication (fact + its observation twin)
+# ---------------------------------------------------------------------------
+
+
+class TestRecallDedupe:
+    def test_duplicate_texts_collapse_keeping_the_higher_rank(self):
+        items = [SimpleNamespace(text="Fact one."), SimpleNamespace(text="fact  one "),
+                 SimpleNamespace(text="Fact two.")]
+        kept, dropped = _dedupe_recall_results(items)
+        assert dropped == 1
+        assert [k.text for k in kept] == ["Fact one.", "Fact two."]
+
+    def test_distinct_texts_are_untouched(self):
+        items = [SimpleNamespace(text=a) for a in ("alpha", "beta", "gamma")]
+        kept, dropped = _dedupe_recall_results(items)
+        assert dropped == 0 and len(kept) == 3
+
+    def test_empty_input(self):
+        kept, dropped = _dedupe_recall_results([])
+        assert kept == [] and dropped == 0
 
 class TestRecallStatus:
     def test_none_before_any_prefetch(self, provider):

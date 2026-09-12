@@ -1,0 +1,53 @@
+{
+  "artifact": "production backfill execute evidence",
+  "generated_at": "2026-09-12T22:44:25+08:00",
+  "why": "the 2026-09-07..09-12 write outage (and the 18:30-18:59 venv-repair window) left top-level sessions with no memory; this capped run restores a sample and proves the pipeline against the live bank",
+  "command": "python scripts/memory_backfill.py --from 2026-09-07 --to 2026-09-12 --top-level-only --order newest --limit 3 --max-documents 12 --execute --i-accept-production-writes",
+  "bank": "fwh-main",
+  "caps": {
+    "limit_sessions": 3,
+    "max_documents": 12,
+    "order": "newest"
+  },
+  "result": {
+    "documents_submitted": 12,
+    "ops_completed": 12,
+    "ops_failed": 0,
+    "sessions_reached": 1,
+    "note": "the --max-documents 12 cap was consumed by the newest uncovered session (20260912_114629_a77d1329, 12 chunks); the pipeline marks a cap-stopped session 'failed' so it stays resumable, and no document was lost"
+  },
+  "sessions_completed": [
+    {
+      "session": "20260912_114629_a77d1329",
+      "documents": 12,
+      "status": "failed-by-cap (all 12 documents retained; remaining chunks resume on the next run)"
+    }
+  ],
+  "sessions_pending_resume": [],
+  "verification": {
+    "memories_with_kind_backfill_tag": 69,
+    "distinct_backfill_documents": 12,
+    "bank_totals_before_run": {
+      "total_nodes": 5075,
+      "total_documents": 161
+    },
+    "bank_totals_at_verification": {
+      "total_nodes": 5195,
+      "total_documents": 173
+    },
+    "ops_window": {
+      "n": 100,
+      "completed": 42,
+      "failed": 58
+    },
+    "backfill_document_id_pattern": "bf-<session>-cNNN-<hash> (unique per chunk; tagged kind:backfill for rollback)"
+  },
+  "rollback": "delete the documents tagged kind:backfill (or restore the pre-run backup zip); the state file resumes instead of re-submitting",
+  "deferred": {
+    "uncovered_sessions_in_range": 88,
+    "estimated_documents": 1713,
+    "estimated_tokens": 7606330,
+    "reason": "cost decision left to the user; pipeline is resumable"
+  },
+  "state_file": "v2/backfill_state.json (resumable; completed sessions are skipped on re-run)"
+}

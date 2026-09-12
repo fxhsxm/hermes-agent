@@ -1,0 +1,15 @@
+{
+ "note": "sizes and sha256 only - memory file contents are deliberately NOT committed to this public repo",
+ "files": {
+  "MEMORY.md": {
+   "bytes": 2692,
+   "chars": 1986,
+   "sha256": "99b700e0c383d10129dd1e74d503a8e1454534f11bfb39186853fd1bba6d19a9"
+  },
+  "USER.md": {
+   "bytes": 2572,
+   "chars": 1155,
+   "sha256": "193a44eb725f612b902db055f31ab389ef995bb5949c26d6e283c30b28877e60"
+  }
+ }
+}

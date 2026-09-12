@@ -196,14 +196,8 @@ def test_call_tool_handler_rebuilds_configured_server_transport(
         handler = _make_tool_handler("resumed", "health", 10.0)
         parsed = json.loads(handler({}))
 
-        if expected_route == "stdio":
-            # A stdio pipe closing after dispatch is an ambiguous mid-call death: the transport
-            # is rebuilt for future calls, but the call itself is not replayed (#106440).
-            assert parsed["outcome_uncertain"] is True, parsed
-            assert call_count["n"] == 1
-        else:
-            assert parsed == {"result": "reconnected"}
-            assert call_count["n"] == 2
+        assert parsed == {"result": "reconnected"}
+        assert call_count["n"] == 2
         assert routes == [expected_route, expected_route]
         assert configs == [transport_config, transport_config]
         assert len(sessions) == 2

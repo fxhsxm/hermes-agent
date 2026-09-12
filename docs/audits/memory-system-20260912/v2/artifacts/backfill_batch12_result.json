@@ -1,0 +1,78 @@
+{
+ "batch": 12,
+ "tool": "memory_backfill_batch",
+ "scope": {
+  "from": "2026-09-08",
+  "to": "2026-09-12",
+  "limit": 6,
+  "max_documents": 40,
+  "order": "oldest",
+  "top_level_only": true
+ },
+ "execute": true,
+ "started": "2026-09-13T02:19:34",
+ "min_margin": 0.05,
+ "dup_tolerance": 0.02,
+ "bank_before": {
+  "total_nodes": 7351,
+  "total_documents": 560,
+  "failed_operations": 332,
+  "pending_operations": 0,
+  "last_memory_write_at": "2026-09-12T18:19:02.686990+00:00"
+ },
+ "backup": {
+  "path": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backups\\fwh-main-20260912T181934Z.zip",
+  "rc": 0,
+  "bytes": 43401812,
+  "ok": true
+ },
+ "before": {
+  "recall@1": 0.5,
+  "recall@3": 0.75,
+  "recall@10": 0.875,
+  "recall_without_backfill@3": 0.625,
+  "dup_item_rate": 0.2406,
+  "decided_ids": [],
+  "unstable_ids": [
+   "q01-txt-encoding",
+   "q02-hindsight-port",
+   "q03-pg0-port",
+   "q04-reranker",
+   "q05-worker-id",
+   "q06-delivery-dir",
+   "q07-delegation-policy",
+   "q08-hindsight-llm",
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "staleness_proxy_strict": 8,
+  "n": 10,
+  "n_answered": 10,
+  "margins": {
+   "q01-txt-encoding": 0.0484,
+   "q02-hindsight-port": 0.0086,
+   "q03-pg0-port": 0.0432,
+   "q04-reranker": 0.0166,
+   "q05-worker-id": 0.0063,
+   "q06-delivery-dir": 0.0041,
+   "q07-delegation-policy": 0.0157,
+   "q08-hindsight-llm": 0.0469,
+   "q09-liveness-user-pref": 0.0194,
+   "q10-liveness-memory": 0.0296
+  }
+ },
+ "backfill": {
+  "rc": 0,
+  "manifest": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\manifests\\batch12-20260912T181934Z.json",
+  "report": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backfill_batch12_report.json",
+  "manifest_sessions": 0,
+  "manifest_documents": 0,
+  "manifest_statuses": {},
+  "ops_completed": 0,
+  "ops_failed": 0,
+  "doc_ids": []
+ },
+ "note": "segment exhausted: 0 uncovered sessions left in range - nothing to backfill, nothing written",
+ "finished": "2026-09-13T02:19:51",
+ "duration_s": 17.6
+}

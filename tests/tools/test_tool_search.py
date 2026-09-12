@@ -247,7 +247,7 @@ class TestThresholdGate:
 
 
 # ---------------------------------------------------------------------------
-# Retrieval (BM25, rarest-token admission)
+# Retrieval (BM25 + substring fallback)
 # ---------------------------------------------------------------------------
 
 

@@ -1,0 +1,18 @@
+[
+ {
+  "at": "2026-09-12T21:48:18+00:00",
+  "pending_consolidation": 622,
+  "pending_operations": 0,
+  "failed_consolidation": 1,
+  "total_documents": 1167,
+  "last_consolidated_at": "2026-09-12T21:45:58.742384+00:00"
+ },
+ {
+  "at": "2026-09-12T21:51:49+00:00",
+  "pending_consolidation": 588,
+  "pending_operations": 0,
+  "failed_consolidation": 1,
+  "total_documents": 1167,
+  "last_consolidated_at": "2026-09-12T21:51:36.444881+00:00"
+ }
+]

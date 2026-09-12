@@ -1,0 +1,67 @@
+{
+  "batch": 1,
+  "scope": "2026-09-08..09-12 (outage segment), limit 6 sessions / 40 documents",
+  "started": "2026-09-13T01:05:07+0800",
+  "backup": {
+    "rc": 0,
+    "exists": true,
+    "bytes": 32463390,
+    "tail": [
+      "Backed up 121177 rows across 21 tables",
+      "Backup saved to C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backup-before-batch1.zip"
+    ]
+  },
+  "before": {
+    "dup_item_rate": 0.2162,
+    "items": 370,
+    "median_latency_s": 0.7157,
+    "p95_latency_s": 1.0228,
+    "top1_superseded_strict": 8,
+    "recall@1": null,
+    "recall@3": null,
+    "n": 10
+  },
+  "bank_before": {
+    "total_nodes": 5799,
+    "total_documents": 255,
+    "failed_operations": 332,
+    "last_memory_write_at": "2026-09-12T17:04:34.576235+00:00"
+  },
+  "backfill": {
+    "rc": 0,
+    "tail": [
+      "[01:05:22] EXECUTE: bank=fwh-main sessions=6 max_documents=40",
+      "[01:05:46]   ok   20260910_195206_0d8cdceb (8 docs)",
+      "[01:07:54]   FAIL 20260910_195429_302d77d7: stopped by --max-documents before this chunk",
+      "[01:07:54] max-documents cap reached; stopping",
+      "[01:07:54] execute summary: {'completed': 1, 'failed': 1, 'skipped': 0, 'documents': 40, 'ops_completed': 40, 'ops_failed': 0}",
+      "[01:07:54] state file: C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backfill_state_prod.json"
+    ]
+  },
+  "after": {
+    "dup_item_rate": 0.2174,
+    "items": 368,
+    "median_latency_s": 0.77,
+    "p95_latency_s": 0.9094,
+    "top1_superseded_strict": 9,
+    "recall@1": null,
+    "recall@3": null,
+    "n": 10
+  },
+  "bank_after": {
+    "total_nodes": 5998,
+    "total_documents": 295,
+    "failed_operations": 332,
+    "last_memory_write_at": "2026-09-12T17:08:06.567245+00:00"
+  },
+  "verdict": {
+    "checks": {
+      "dup_rate_not_worse": true,
+      "stale_proxy_not_worse": false,
+      "recall@3_not_worse": true
+    },
+    "all_ok": false,
+    "action": "STOP: measure regressed, roll back by kind:backfill tag"
+  },
+  "finished": "2026-09-13T01:08:18+0800"
+}

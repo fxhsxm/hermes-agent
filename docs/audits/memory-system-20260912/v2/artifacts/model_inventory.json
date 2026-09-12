@@ -1,0 +1,68 @@
+{
+  "source": "start-hindsight.ps1 (live env) + hindsight_api/config.py defaults",
+  "roles": {
+    "retain_extraction": "LLM",
+    "consolidation": "LLM",
+    "reflect": "LLM",
+    "recall": "embeddings + keyword + entity graph + reranker (NO LLM)"
+  },
+  "in_use": {
+    "llm": {
+      "provider": "opencode-go",
+      "model": "mimo-v2.5"
+    },
+    "embeddings": {
+      "provider": "openai-compatible -> Voyage",
+      "model": "voyage-4-large",
+      "dims": 1024,
+      "multilingual": true
+    },
+    "reranker": {
+      "provider": "litellm-sdk",
+      "model": "voyage/rerank-2.5",
+      "multilingual": true
+    }
+  },
+  "available_llm_providers": [
+    "anthropic",
+    "claude_code",
+    "codex",
+    "fireworks",
+    "gemini",
+    "github_copilot",
+    "litellm",
+    "litellm_router",
+    "llamacpp (local)",
+    "nous",
+    "openai_compatible",
+    "openai_responses",
+    "xai_oauth",
+    "none/mock"
+  ],
+  "bundled_defaults": {
+    "embeddings_local": "BAAI/bge-small-en-v1.5",
+    "embeddings_onnx": "intfloat/multilingual-e5-small",
+    "reranker_local": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "reranker_flashrank": "ms-marco-MiniLM-L-12-v2"
+  },
+  "hosted_options_seen": {
+    "embeddings": [
+      "text-embedding-3-small",
+      "gemini-embedding-001",
+      "cohere/embed-english-v3.0",
+      "perplexity/pplx-embed-v1-0.6b",
+      "zembed-1"
+    ],
+    "reranker": [
+      "cohere/rerank-v3.5",
+      "cohere/rerank-english-v3.0",
+      "BAAI/bge-reranker-v2-m3",
+      "qwen3-rerank",
+      "semantic-ranker-default-004",
+      "zerank-2",
+      "voyage/rerank-2.5"
+    ]
+  },
+  "assessment": "The live choice (voyage-4-large + voyage/rerank-2.5) is top-tier and multilingual, so the near-tie ordering problem is NOT a weak-model problem. Hindsight DEFAULTS are English-centric/small (bge-small-en-v1.5, ms-marco-MiniLM, cohere/*-english-v3.0) and would be markedly worse for Chinese content; this deployment avoids them. Model side can still help indirectly via extraction quality (mimo-v2.5 + no retain_mission => vague, low-discrimination facts).",
+  "note": "two hindsight_api.main processes were seen (venv PID + uv PID) - likely pg0 embedded Postgres child, to be confirmed (no double API listener assumed)."
+}

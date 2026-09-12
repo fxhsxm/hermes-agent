@@ -1,0 +1,797 @@
+{
+ "bank": "fwh-main",
+ "items_scanned": 11675,
+ "questions": 48,
+ "n_with_expect": 48,
+ "n_covered": 35,
+ "n_uncovered": 1,
+ "uncovered_ids": [
+  "env-launcher-flags"
+ ],
+ "no_ground_truth_ids": [],
+ "core_uncovered_ids": [],
+ "builtin_files": [
+  "MEMORY.md",
+  "USER.md"
+ ],
+ "builtin_uncovered_ids": [],
+ "builtin_detail": [
+  {
+   "id": "up-language",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "found_in": {
+    "書面語": [
+     "USER.md"
+    ]
+   },
+   "covered": true,
+   "note": "answer is in the injected memory store (USER.md)"
+  },
+  {
+   "id": "up-cookies-rule",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "found_in": {
+    "強殺瀏覽器": [
+     "USER.md"
+    ]
+   },
+   "covered": true,
+   "note": "answer is in the injected memory store (USER.md)"
+  },
+  {
+   "id": "up-provider-fallback",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "found_in": {
+    "固定 provider": [
+     "USER.md"
+    ]
+   },
+   "covered": true,
+   "note": "answer is in the injected memory store (USER.md)"
+  },
+  {
+   "id": "up-subagent-report",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "found_in": {
+    "子代理交付只回傳": [
+     "USER.md"
+    ]
+   },
+   "covered": true,
+   "note": "answer is in the injected memory store (USER.md)"
+  },
+  {
+   "id": "up-scope-lock",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "found_in": {
+    "STOP 即停止": [
+     "USER.md"
+    ]
+   },
+   "covered": true,
+   "note": "answer is in the injected memory store (USER.md)"
+  },
+  {
+   "id": "up-context-hygiene",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "found_in": {
+    "搬去獨立": [
+     "USER.md"
+    ]
+   },
+   "covered": true,
+   "note": "answer is in the injected memory store (USER.md)"
+  },
+  {
+   "id": "proj-stop-rule",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "found_in": {
+    "STOP 即停止": [
+     "USER.md"
+    ]
+   },
+   "covered": true,
+   "note": "answer is in the injected memory store (USER.md)"
+  }
+ ],
+ "gap_ids": [
+  "proj-reflect-rule"
+ ],
+ "require_min_items": 1,
+ "low_spec_max_items": 20,
+ "low_specificity_ids": [
+  "up-delivery-dir",
+  "env-embedding",
+  "env-llm-provider",
+  "env-hindsight-version",
+  "env-provider-config",
+  "env-delegation-iterations",
+  "env-delegation-stall",
+  "env-github-task-source",
+  "env-cron-script-lang",
+  "env-loopback",
+  "proj-write-header",
+  "proj-fail-closed"
+ ],
+ "by_tier": {
+  "builtin": {
+   "n": 14,
+   "covered": 7,
+   "low_specificity": 0
+  },
+  "environment": {
+   "n": 23,
+   "covered": 22,
+   "low_specificity": 12
+  },
+  "core": {
+   "n": 13,
+   "covered": 13,
+   "low_specificity": 0
+  },
+  "gap": {
+   "n": 1,
+   "covered": 0,
+   "low_specificity": 0
+  },
+  "liveness": {
+   "n": 4,
+   "covered": 0,
+   "low_specificity": 0
+  }
+ },
+ "method": "every memory item's text is folded (NFKC, casefold, punctuation/symbol/space removed) and matched any-of against the question's expect tokens - the same match the harness uses for a hit; a question with zero containing items is a guaranteed miss and measures coverage, not retrieval. Specificity is measured per expected token; because the match is any-of, the MOST common token decides the false-hit risk, so `max_token_items` classifies the question and `low_specificity_ids` must be excluded from the gate verdict.",
+ "detail": [
+  {
+   "id": "up-language",
+   "category": "user_pref",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=builtin: not a bank question, so bank coverage is not applicable here"
+  },
+  {
+   "id": "up-delivery-dir",
+   "category": "user_pref",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 92,
+   "low_specificity": true,
+   "containing_items": 92,
+   "first_item_index": 205,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 92 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "up-txt-encoding",
+   "category": "user_pref",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 2,
+   "low_specificity": false,
+   "containing_items": 2,
+   "first_item_index": 11506,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "up-asr-model",
+   "category": "user_pref",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 9,
+   "low_specificity": false,
+   "containing_items": 9,
+   "first_item_index": 8629,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "up-cookies-rule",
+   "category": "user_pref",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=builtin: not a bank question, so bank coverage is not applicable here"
+  },
+  {
+   "id": "up-delete-rollback",
+   "category": "user_pref",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 2,
+   "low_specificity": false,
+   "containing_items": 2,
+   "first_item_index": 92,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "up-provider-fallback",
+   "category": "user_pref",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=builtin: not a bank question, so bank coverage is not applicable here"
+  },
+  {
+   "id": "up-ocr-rule",
+   "category": "user_pref",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 5,
+   "low_specificity": false,
+   "containing_items": 5,
+   "first_item_index": 11153,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "up-subagent-report",
+   "category": "user_pref",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=builtin: not a bank question, so bank coverage is not applicable here"
+  },
+  {
+   "id": "up-scope-lock",
+   "category": "user_pref",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=builtin: not a bank question, so bank coverage is not applicable here"
+  },
+  {
+   "id": "up-context-hygiene",
+   "category": "user_pref",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=builtin: not a bank question, so bank coverage is not applicable here"
+  },
+  {
+   "id": "up-risk-query",
+   "category": "user_pref",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 12,
+   "low_specificity": false,
+   "containing_items": 12,
+   "first_item_index": 49,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "env-hindsight-port",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 1,
+   "low_specificity": false,
+   "containing_items": 1,
+   "first_item_index": 10505,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "env-pg0-port",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 5,
+   "low_specificity": false,
+   "containing_items": 5,
+   "first_item_index": 46,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "env-bank",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 18,
+   "low_specificity": false,
+   "containing_items": 18,
+   "first_item_index": 234,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "env-hindsight-venv",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 3,
+   "low_specificity": false,
+   "containing_items": 3,
+   "first_item_index": 60,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "env-embedding",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 70,
+   "low_specificity": true,
+   "containing_items": 70,
+   "first_item_index": 115,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 70 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "env-reranker",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 8,
+   "low_specificity": false,
+   "containing_items": 8,
+   "first_item_index": 115,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "env-llm-provider",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 183,
+   "low_specificity": true,
+   "containing_items": 183,
+   "first_item_index": 73,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 183 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "env-hindsight-version",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 29,
+   "low_specificity": true,
+   "containing_items": 29,
+   "first_item_index": 58,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 29 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "env-provider-config",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 102,
+   "low_specificity": true,
+   "containing_items": 102,
+   "first_item_index": 226,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 102 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "env-telegram-topic",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 2,
+   "low_specificity": false,
+   "containing_items": 2,
+   "first_item_index": 6342,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "env-delegation-iterations",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 33,
+   "low_specificity": true,
+   "containing_items": 33,
+   "first_item_index": 364,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 33 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "env-delegation-stall",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 24,
+   "low_specificity": true,
+   "containing_items": 24,
+   "first_item_index": 313,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 24 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "env-github-task-source",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 244,
+   "low_specificity": true,
+   "containing_items": 244,
+   "first_item_index": 669,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 244 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "env-cron-script-lang",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 82,
+   "low_specificity": true,
+   "containing_items": 82,
+   "first_item_index": 58,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 82 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "env-launcher-flags",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 0,
+   "low_specificity": false,
+   "containing_items": 0,
+   "first_item_index": null,
+   "covered": false,
+   "note": "COVERAGE GAP: the expected value is nowhere in the bank, so this question cannot measure retrieval"
+  },
+  {
+   "id": "env-loopback",
+   "category": "environment",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 149,
+   "low_specificity": true,
+   "containing_items": 149,
+   "first_item_index": 46,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 149 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "proj-write-header",
+   "category": "project_decision",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 22,
+   "low_specificity": true,
+   "containing_items": 22,
+   "first_item_index": 69,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 22 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "proj-upgrade-rollback",
+   "category": "project_decision",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 2,
+   "low_specificity": false,
+   "containing_items": 2,
+   "first_item_index": 94,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "proj-backfill-rollback",
+   "category": "project_decision",
+   "tier": "core",
+   "expect": [
+    "[redacted 2 token(s)]"
+   ],
+   "max_token_items": 4,
+   "low_specificity": false,
+   "containing_items": 4,
+   "first_item_index": 64,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "proj-gate-criterion",
+   "category": "project_decision",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 7,
+   "low_specificity": false,
+   "containing_items": 7,
+   "first_item_index": 21,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "proj-stale-proxy",
+   "category": "project_decision",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 12,
+   "low_specificity": false,
+   "containing_items": 12,
+   "first_item_index": 24,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "proj-coverage-check",
+   "category": "project_decision",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 18,
+   "low_specificity": false,
+   "containing_items": 18,
+   "first_item_index": 17,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "proj-resume-partial",
+   "category": "project_decision",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 3,
+   "low_specificity": false,
+   "containing_items": 3,
+   "first_item_index": 42,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "proj-fail-closed",
+   "category": "project_decision",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 70,
+   "low_specificity": true,
+   "containing_items": 70,
+   "first_item_index": 17,
+   "covered": true,
+   "note": "LOW SPECIFICITY: the most common expected token appears in 70 items, so nearly any response scores a hit - exclude it from the verdict (keep it as coverage evidence)"
+  },
+  {
+   "id": "proj-attribution",
+   "category": "project_decision",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 9,
+   "low_specificity": false,
+   "containing_items": 9,
+   "first_item_index": 14,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "proj-sandbox-bank",
+   "category": "project_decision",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 2,
+   "low_specificity": false,
+   "containing_items": 2,
+   "first_item_index": 267,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "proj-reflect-rule",
+   "category": "project_decision",
+   "tier": "gap",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=gap: not a bank question, so bank coverage is not applicable here"
+  },
+  {
+   "id": "proj-memory-layers",
+   "category": "project_decision",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 10,
+   "low_specificity": false,
+   "containing_items": 10,
+   "first_item_index": 229,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "proj-lane-git",
+   "category": "project_decision",
+   "tier": "core",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 3,
+   "low_specificity": false,
+   "containing_items": 3,
+   "first_item_index": 4685,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "proj-stop-rule",
+   "category": "project_decision",
+   "tier": "builtin",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=builtin: not a bank question, so bank coverage is not applicable here"
+  },
+  {
+   "id": "mon-cron-cadence",
+   "category": "monitoring",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 9,
+   "low_specificity": false,
+   "containing_items": 9,
+   "first_item_index": 615,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "mon-health-checks",
+   "category": "monitoring",
+   "tier": "environment",
+   "expect": [
+    "[redacted 1 token(s)]"
+   ],
+   "max_token_items": 19,
+   "low_specificity": false,
+   "containing_items": 19,
+   "first_item_index": 47,
+   "covered": true,
+   "note": "answer is retained somewhere in the bank, and the expected token is discriminating enough to detect a rank change"
+  },
+  {
+   "id": "live-pref-summary",
+   "category": "liveness",
+   "tier": "liveness",
+   "expect": [],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=liveness: not a bank question, so bank coverage is not applicable here"
+  },
+  {
+   "id": "live-open-items",
+   "category": "liveness",
+   "tier": "liveness",
+   "expect": [],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=liveness: not a bank question, so bank coverage is not applicable here"
+  },
+  {
+   "id": "live-top-risk",
+   "category": "liveness",
+   "tier": "liveness",
+   "expect": [],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=liveness: not a bank question, so bank coverage is not applicable here"
+  },
+  {
+   "id": "live-write-path",
+   "category": "liveness",
+   "tier": "liveness",
+   "expect": [],
+   "containing_items": null,
+   "covered": null,
+   "note": "tier=liveness: not a bank question, so bank coverage is not applicable here"
+  }
+ ],
+ "expect_redacted": true,
+ "privacy_note": "expected tokens redacted; counts (containing_items, max_token_items) are kept as the coverage evidence. Use --keep-expect for a local run."
+}

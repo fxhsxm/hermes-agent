@@ -1,0 +1,32 @@
+{
+ "version": 1,
+ "bank": "fwh-main",
+ "run_started_at": "2026-09-12T19:14:29Z",
+ "run_ended_at": "2026-09-12T19:14:29Z",
+ "range": {
+  "from": "2026-09-08",
+  "to": "2026-09-12"
+ },
+ "caps": {
+  "limit": 6,
+  "max_documents": 40,
+  "chunk_chars": 3000,
+  "turns_per_chunk": 6
+ },
+ "summary": {
+  "completed": 0,
+  "failed": 0,
+  "skipped": 0,
+  "documents": 0,
+  "ops_completed": 0,
+  "ops_failed": 0
+ },
+ "sessions": [],
+ "document_ids": [],
+ "document_count": 0,
+ "rollback": {
+  "preferred": "restore the backup zip taken immediately before this run",
+  "precise": "DELETE /v1/default/banks/fwh-main/documents/<document_id> for each id in document_ids",
+  "forbidden": "deleting by the kind:backfill tag would also delete every earlier batch, including the ones that passed their gate"
+ }
+}

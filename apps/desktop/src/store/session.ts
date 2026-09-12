@@ -1,7 +1,6 @@
 import type { ConnectionState } from '@hermes/shared'
 import { atom, computed } from 'nanostores'
 
-import { setApiRequestLocalMode } from '@/api/client'
 import { lastVisibleMessageIsUser } from '@/app/chat/thread-loading'
 import type { ContextSuggestion } from '@/app/types'
 import type { HermesConnection } from '@/global'
@@ -1177,15 +1176,6 @@ export const setConnection = (next: Updater<HermesConnection | null>) => {
   // keeps the current scope.
   rescopeConnectionScopedStores($connection.get())
   syncCronModelImpactConnection($connection.get())
-
-  // Null descriptor = reconnect blip; keep the last resolved mode (same
-  // contract as rescopeConnectionScopedStores above).
-  const mode = $connection.get()?.mode
-
-  if (mode) {
-    setApiRequestLocalMode(mode === 'local')
-  }
-
   rescopeComposerSelection(composerScopeForConnection($connection.get()))
 }
 

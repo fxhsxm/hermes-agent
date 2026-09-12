@@ -32,8 +32,7 @@ except ImportError:
     HTTPX_AVAILABLE = False
 
 from gateway.config import Platform, PlatformConfig
-from gateway.platforms.base import BasePlatformAdapter, SendResult
-from gateway.platforms.event import MessageEvent, MessageType
+from gateway.platforms.base import BasePlatformAdapter, MessageEvent, MessageType, SendResult
 from plugins.platforms.wecom.wecom_crypto import WXBizMsgCrypt, WeComCryptoError
 
 logger = logging.getLogger(__name__)

@@ -350,17 +350,14 @@ class TestNoDowngradeUnderConcurrentOpeners:
         finally:
             check.close()
 
-    def test_probe_unreadable_touches_nothing(self, tmp_path, monkeypatch, caplog):
-        """Non-vulnerable runtime, probe blocked ("database is locked"): the WAL path
-        must not emit the set-pragma (here it would raise "locking protocol"); it
-        warns once and reports the inherited mode instead."""
-        import logging
-
+    def test_nfs_fallback_reraises_when_mode_unreadable(self, tmp_path, monkeypatch):
+        """The filesystem-incompat fallback must not downgrade when the on-disk
+        mode cannot be verified (possible concurrent openers)."""
         monkeypatch.setattr(
             hermes_state_wal, "is_sqlite_wal_reset_vulnerable",
             lambda version_info=None: False,
         )
-        hermes_state_wal._wal_probe_unknown_paths.clear()
+        hermes_state_wal._wal_fallback_warned_paths.clear()
 
         class _LockedProbeConnection(sqlite3.Connection):
             def execute(self, sql, *args, **kwargs):  # type: ignore[override]
@@ -375,15 +372,8 @@ class TestNoDowngradeUnderConcurrentOpeners:
             str(tmp_path / "nfs.db"), factory=_LockedProbeConnection
         )
         try:
-            with caplog.at_level(logging.WARNING, logger="hermes_state_wal"):
-                result = apply_wal_with_fallback(conn, db_label="nfs.db")
-            # The set-pragma never ran (it would have raised "locking
-            # protocol" above); the configured WAL mode is assumed instead.
-            assert result == "wal"
-            assert any(
-                "could not verify the on-disk journal mode" in r.getMessage()
-                for r in caplog.records
-            )
+            with pytest.raises(sqlite3.OperationalError, match="locking protocol"):
+                apply_wal_with_fallback(conn, db_label="nfs.db")
         finally:
             conn.close()
 

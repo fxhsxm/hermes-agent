@@ -26,8 +26,7 @@ from urllib.parse import unquote
 
 from gateway.platforms._shared import get_scoped_secret as _get_scoped_secret
 from gateway.config import Platform, PlatformConfig
-from gateway.platforms.base import BasePlatformAdapter, SendResult, cache_image_from_url
-from gateway.platforms.event import MessageEvent, MessageType
+from gateway.platforms.base import BasePlatformAdapter, MessageEvent, MessageType, SendResult, cache_image_from_url
 
 logger = logging.getLogger(__name__)
 

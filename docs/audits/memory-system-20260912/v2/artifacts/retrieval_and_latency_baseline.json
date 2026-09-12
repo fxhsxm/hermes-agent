@@ -1,0 +1,88 @@
+{
+  "harness": "scripts/measure_retrieval_quality.py",
+  "bank": "fwh-main",
+  "question_set": "docs/audits/memory-system-20260912/v2/retrieval_questions.json",
+  "aggregate": {
+    "bank": "fwh-main",
+    "n_questions": 10,
+    "n_answered": 10,
+    "duplication": {
+      "total_duplicate_pairs": 38,
+      "identical_pairs": 15,
+      "fuzzy_pairs": 23,
+      "observation_vs_raw_twin_pairs": 38,
+      "items_in_a_duplicate_pair": 76,
+      "total_items_returned": 361,
+      "overall_duplicate_item_rate": 0.2105,
+      "mean_per_question_duplicate_item_rate": 0.2132,
+      "questions_with_any_duplicate": 10,
+      "questions_with_observation_vs_raw_twin": 10
+    },
+    "staleness_proxy": {
+      "questions_top1_superseded_proxy_strict": 8,
+      "questions_top1_superseded_proxy_strict_ids": [
+        "q01-txt-encoding",
+        "q02-hindsight-port",
+        "q03-pg0-port",
+        "q04-reranker",
+        "q05-worker-id",
+        "q07-delegation-policy",
+        "q08-hindsight-llm",
+        "q10-liveness-memory"
+      ],
+      "questions_top1_superseded_proxy_loose": 0,
+      "rate_strict": 0.8,
+      "rate_loose": 0.0,
+      "questions_top1_is_raw": 5
+    },
+    "latency": {
+      "mean_s": 0.9533,
+      "median_s": 0.9367,
+      "p95_s": 1.5383,
+      "min_s": 0.705,
+      "max_s": 1.5383,
+      "total_retries": 0
+    },
+    "reranker": {
+      "questions_with_reranker_engaged": 10,
+      "mean_reranker_engagement_fraction": 1.0,
+      "questions_reranker_changed_top1_vs_semantic": 6,
+      "mean_top1_final": 0.7217
+    },
+    "failed_questions": []
+  },
+  "write_path_latency_probes": {
+    "runs": [
+      {
+        "status": 200,
+        "facts": 1,
+        "seconds": 51.9
+      },
+      {
+        "status": 200,
+        "facts": 1,
+        "seconds": 169.7
+      },
+      {
+        "status": 200,
+        "facts": 1,
+        "seconds": 118.0
+      }
+    ],
+    "mean_s": 113.2,
+    "min_s": 51.9,
+    "max_s": 169.7,
+    "note": "non-persisting dry-run extraction; async in production, recall latency is unaffected"
+  },
+  "sandbox_controlled_experiment": {
+    "source": "v1 sandbox E2E (artifacts/evidence.json -> sandbox_e2e)",
+    "finding": "after a contradicting update, plain recall ranked the stale value above the new one (both state=valid) while reflect resolved it to the newer value using mentioned_at",
+    "recall_top1_scores": {
+      "stale_final": 1.044,
+      "stale_reranker": 0.949,
+      "newer_final": 0.962
+    },
+    "reflect_resolved_newer": true,
+    "reflect_latency_s": 49.2
+  }
+}

@@ -1,0 +1,58 @@
+{
+ "version": 1,
+ "bank": "fwh-main",
+ "run_started_at": "2026-09-12T19:12:32Z",
+ "run_ended_at": "2026-09-12T19:13:38Z",
+ "range": {
+  "from": "2026-09-08",
+  "to": "2026-09-12"
+ },
+ "caps": {
+  "limit": 6,
+  "max_documents": 40,
+  "chunk_chars": 3000,
+  "turns_per_chunk": 6
+ },
+ "summary": {
+  "completed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "documents": 6,
+  "ops_completed": 6,
+  "ops_failed": 0
+ },
+ "sessions": [
+  {
+   "session_id": "20260912_114629_a77d1329",
+   "source": "telegram",
+   "status": "completed",
+   "documents": 6,
+   "doc_ids": [
+    "bf-20260912_114629_a77d1329-c013-33fe5841",
+    "bf-20260912_114629_a77d1329-c014-b20053dd",
+    "bf-20260912_114629_a77d1329-c015-ad33b2d0",
+    "bf-20260912_114629_a77d1329-c016-999eb8ab",
+    "bf-20260912_114629_a77d1329-c017-5e9f2eb7",
+    "bf-20260912_114629_a77d1329-c018-18637c9b"
+   ],
+   "turns": 3,
+   "est_total_tokens": 82270,
+   "resumed": true,
+   "chunks_skipped_already_in_bank": 13
+  }
+ ],
+ "document_ids": [
+  "bf-20260912_114629_a77d1329-c013-33fe5841",
+  "bf-20260912_114629_a77d1329-c014-b20053dd",
+  "bf-20260912_114629_a77d1329-c015-ad33b2d0",
+  "bf-20260912_114629_a77d1329-c016-999eb8ab",
+  "bf-20260912_114629_a77d1329-c017-5e9f2eb7",
+  "bf-20260912_114629_a77d1329-c018-18637c9b"
+ ],
+ "document_count": 6,
+ "rollback": {
+  "preferred": "restore the backup zip taken immediately before this run",
+  "precise": "DELETE /v1/default/banks/fwh-main/documents/<document_id> for each id in document_ids",
+  "forbidden": "deleting by the kind:backfill tag would also delete every earlier batch, including the ones that passed their gate"
+ }
+}

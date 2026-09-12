@@ -1,0 +1,153 @@
+{
+  "generated_at": "2026-09-12T21:37:45+00:00",
+  "status": "warnings",
+  "checks": [
+    {
+      "check": "provider_wiring",
+      "level": "ok",
+      "detail": "provider=hindsight mode=local_external bank=fwh-main"
+    },
+    {
+      "check": "api_liveness",
+      "level": "ok",
+      "detail": "/health=healthy db=connected api=0.9.2",
+      "api_version": "0.9.2"
+    },
+    {
+      "check": "write_path_probe",
+      "level": "skip",
+      "detail": "probe disabled (--no-probe-write)"
+    },
+    {
+      "check": "bank_activity",
+      "level": "ok",
+      "detail": "last write 0.0h ago, last consolidation 0.0h ago"
+    },
+    {
+      "check": "failed_consolidation",
+      "level": "warn",
+      "detail": "1 consolidation failure(s) recorded"
+    },
+    {
+      "check": "recent_operations",
+      "level": "ok",
+      "detail": "0/50 of the last 50 operations failed (0%) [window 2026-09-12T19:10 .. 2026-09-12T21:33]",
+      "failed": 0,
+      "window": 50,
+      "window_from": "2026-09-12T19:10:14.555705+00:00",
+      "window_to": "2026-09-12T21:33:05.185438+00:00",
+      "error_classes": {}
+    },
+    {
+      "check": "pending_consolidation",
+      "level": "ok",
+      "detail": "730 pending, down from 738 (draining) [trend=draining; history=v2\\pending_consolidation_history.json, 3 samples]",
+      "pending": 730,
+      "previous": 738,
+      "trend": "draining",
+      "samples": 3,
+      "window_max": 738,
+      "history": "v2\\pending_consolidation_history.json",
+      "history_written": true,
+      "failed_consolidation": 1,
+      "pending_operations": 0
+    },
+    {
+      "check": "retrieval",
+      "level": "ok",
+      "detail": "1 recall probe(s) in 1.4s; reranker_engaged=True",
+      "reranker_engaged": true,
+      "probes": [
+        {
+          "id": "smoke",
+          "n": 67,
+          "hit_rank": null,
+          "latency_s": 1.36,
+          "reranker_top3": [
+            0.789,
+            0.781,
+            0.746
+          ]
+        }
+      ]
+    },
+    {
+      "check": "coverage",
+      "level": "ok",
+      "detail": "53/63 sessions in the last 7d reached the bank",
+      "per_day": [
+        {
+          "day": "2026-09-05",
+          "sessions": 7,
+          "in_bank": 7,
+          "coverage": 1.0
+        },
+        {
+          "day": "2026-09-06",
+          "sessions": 8,
+          "in_bank": 7,
+          "coverage": 0.875
+        },
+        {
+          "day": "2026-09-07",
+          "sessions": 4,
+          "in_bank": 1,
+          "coverage": 0.25
+        },
+        {
+          "day": "2026-09-08",
+          "sessions": 3,
+          "in_bank": 2,
+          "coverage": 0.667
+        },
+        {
+          "day": "2026-09-09",
+          "sessions": 3,
+          "in_bank": 2,
+          "coverage": 0.667
+        },
+        {
+          "day": "2026-09-10",
+          "sessions": 10,
+          "in_bank": 9,
+          "coverage": 0.9
+        },
+        {
+          "day": "2026-09-11",
+          "sessions": 17,
+          "in_bank": 16,
+          "coverage": 0.941
+        },
+        {
+          "day": "2026-09-12",
+          "sessions": 8,
+          "in_bank": 8,
+          "coverage": 1.0
+        },
+        {
+          "day": "2026-09-13",
+          "sessions": 3,
+          "in_bank": 1,
+          "coverage": 0.333
+        }
+      ],
+      "silent_days": []
+    },
+    {
+      "check": "builtin_MEMORY.md",
+      "level": "ok",
+      "detail": "1561/2200 chars (71% of the injected budget)",
+      "chars": 1561,
+      "limit": 2200
+    },
+    {
+      "check": "builtin_USER.md",
+      "level": "ok",
+      "detail": "1101/1375 chars (80% of the injected budget)",
+      "chars": 1101,
+      "limit": 1375
+    }
+  ],
+  "bank": "fwh-main",
+  "api_url": "http://127.0.0.1:8888"
+}

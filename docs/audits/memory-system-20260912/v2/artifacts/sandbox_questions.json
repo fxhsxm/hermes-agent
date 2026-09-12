@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "id": "s1-widget",
+      "lang": "en",
+      "query": "audit sandbox widget code",
+      "expect": [
+        "WIDGET"
+      ]
+    },
+    {
+      "id": "s2-marker",
+      "lang": "en",
+      "query": "sandbox marker audit smoke test",
+      "expect": [
+        "SANDBOX-MARKER-7731"
+      ]
+    },
+    {
+      "id": "s3-pref",
+      "lang": "zh-Hant",
+      "query": "用戶偏好語言 摘要 繁體",
+      "expect": []
+    },
+    {
+      "id": "s4-ci",
+      "lang": "en",
+      "query": "sandbox CI colour value",
+      "expect": []
+    },
+    {
+      "id": "s5-probe",
+      "lang": "en",
+      "query": "memory health probe MEMHEALTH",
+      "expect": []
+    },
+    {
+      "id": "s6-recent",
+      "lang": "zh-Hant",
+      "query": "最近做過嘅測試同結果",
+      "expect": []
+    }
+  ]
+}

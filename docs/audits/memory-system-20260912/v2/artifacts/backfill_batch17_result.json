@@ -1,0 +1,198 @@
+{
+ "batch": 17,
+ "tool": "memory_backfill_batch",
+ "scope": {
+  "from": "2026-09-08",
+  "to": "2026-09-12",
+  "limit": 6,
+  "max_documents": 40,
+  "order": "oldest",
+  "top_level_only": true
+ },
+ "execute": true,
+ "started": "2026-09-13T02:36:25",
+ "min_margin": 0.05,
+ "dup_tolerance": 0.02,
+ "bank_before": {
+  "total_nodes": 8425,
+  "total_documents": 720,
+  "failed_operations": 332,
+  "pending_operations": 0,
+  "last_memory_write_at": "2026-09-12T18:35:59.370329+00:00"
+ },
+ "backup": {
+  "path": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backups\\fwh-main-20260912T183625Z.zip",
+  "rc": 0,
+  "bytes": 50567048,
+  "ok": true
+ },
+ "before": {
+  "recall@1": 0.625,
+  "recall@3": 0.75,
+  "recall@10": 0.875,
+  "recall_without_backfill@3": 0.625,
+  "dup_item_rate": 0.2113,
+  "decided_ids": [],
+  "unstable_ids": [
+   "q01-txt-encoding",
+   "q02-hindsight-port",
+   "q03-pg0-port",
+   "q04-reranker",
+   "q05-worker-id",
+   "q06-delivery-dir",
+   "q07-delegation-policy",
+   "q08-hindsight-llm",
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "staleness_proxy_strict": 8,
+  "n": 10,
+  "n_answered": 10,
+  "margins": {
+   "q01-txt-encoding": 0.0484,
+   "q02-hindsight-port": 0.0086,
+   "q03-pg0-port": 0.0432,
+   "q04-reranker": 0.0166,
+   "q05-worker-id": 0.0063,
+   "q06-delivery-dir": 0.0041,
+   "q07-delegation-policy": 0.0259,
+   "q08-hindsight-llm": 0.0469,
+   "q09-liveness-user-pref": 0.0151,
+   "q10-liveness-memory": 0.0296
+  }
+ },
+ "backfill": {
+  "rc": 0,
+  "manifest": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\manifests\\batch17-20260912T183625Z.json",
+  "report": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backfill_batch17_report.json",
+  "manifest_sessions": 1,
+  "manifest_documents": 40,
+  "manifest_statuses": {
+   "failed": 1
+  },
+  "ops_completed": 40,
+  "ops_failed": 0,
+  "doc_ids": [
+   "bf-20260910_205955_fdcab8f7-c034-97893516",
+   "bf-20260910_205955_fdcab8f7-c035-35f27364",
+   "bf-20260910_205955_fdcab8f7-c036-ec5d11ea",
+   "bf-20260910_205955_fdcab8f7-c037-97893516",
+   "bf-20260910_205955_fdcab8f7-c038-35f27364",
+   "bf-20260910_205955_fdcab8f7-c039-ec5d11ea",
+   "bf-20260910_205955_fdcab8f7-c040-8b2e3a99",
+   "bf-20260910_205955_fdcab8f7-c041-3286a677",
+   "bf-20260910_205955_fdcab8f7-c042-33f64a75",
+   "bf-20260910_205955_fdcab8f7-c043-94f44836",
+   "bf-20260910_205955_fdcab8f7-c044-be328b66",
+   "bf-20260910_205955_fdcab8f7-c045-09d646f1",
+   "bf-20260910_205955_fdcab8f7-c046-fa88a2cb",
+   "bf-20260910_205955_fdcab8f7-c047-decba20a",
+   "bf-20260910_205955_fdcab8f7-c048-ed3604ac",
+   "bf-20260910_205955_fdcab8f7-c049-172a4dbc",
+   "bf-20260910_205955_fdcab8f7-c050-1c79332a",
+   "bf-20260910_205955_fdcab8f7-c051-bb54ebed",
+   "bf-20260910_205955_fdcab8f7-c052-691738b3",
+   "bf-20260910_205955_fdcab8f7-c053-21b18be9",
+   "bf-20260910_205955_fdcab8f7-c054-492024a6",
+   "bf-20260910_205955_fdcab8f7-c055-5c642ada",
+   "bf-20260910_205955_fdcab8f7-c056-5f0adda1",
+   "bf-20260910_205955_fdcab8f7-c057-f2c24953",
+   "bf-20260910_205955_fdcab8f7-c058-c6f8f6b5",
+   "bf-20260910_205955_fdcab8f7-c059-1bf055f6",
+   "bf-20260910_205955_fdcab8f7-c060-29d05bc8",
+   "bf-20260910_205955_fdcab8f7-c061-210cc39c",
+   "bf-20260910_205955_fdcab8f7-c062-210cc39c",
+   "bf-20260910_205955_fdcab8f7-c063-210cc39c",
+   "bf-20260910_205955_fdcab8f7-c064-2e497ee4",
+   "bf-20260910_205955_fdcab8f7-c065-b7072e00",
+   "bf-20260910_205955_fdcab8f7-c066-d1750839",
+   "bf-20260910_205955_fdcab8f7-c067-7b62106c",
+   "bf-20260910_205955_fdcab8f7-c068-f4d8525e",
+   "bf-20260910_205955_fdcab8f7-c069-d8698f1d",
+   "bf-20260910_205955_fdcab8f7-c070-fecd0ea9",
+   "bf-20260910_205955_fdcab8f7-c071-32062dc5",
+   "bf-20260910_205955_fdcab8f7-c072-62129ca9",
+   "bf-20260910_205955_fdcab8f7-c073-8cd61c51"
+  ]
+ },
+ "after": {
+  "recall@1": 0.625,
+  "recall@3": 0.75,
+  "recall@10": 0.875,
+  "recall_without_backfill@3": 0.625,
+  "dup_item_rate": 0.2145,
+  "decided_ids": [
+   "q06-delivery-dir"
+  ],
+  "unstable_ids": [
+   "q01-txt-encoding",
+   "q02-hindsight-port",
+   "q03-pg0-port",
+   "q04-reranker",
+   "q05-worker-id",
+   "q07-delegation-policy",
+   "q08-hindsight-llm",
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "staleness_proxy_strict": 7,
+  "n": 10,
+  "n_answered": 10,
+  "margins": {
+   "q01-txt-encoding": 0.0484,
+   "q02-hindsight-port": 0.0086,
+   "q03-pg0-port": 0.0432,
+   "q04-reranker": 0.0166,
+   "q05-worker-id": 0.0063,
+   "q06-delivery-dir": 0.0861,
+   "q07-delegation-policy": 0.0259,
+   "q08-hindsight-llm": 0.0469,
+   "q09-liveness-user-pref": 0.0151,
+   "q10-liveness-memory": 0.0296
+  }
+ },
+ "bank_after": {
+  "total_nodes": 8599,
+  "total_documents": 760,
+  "failed_operations": 332,
+  "pending_operations": 1,
+  "last_memory_write_at": "2026-09-12T18:38:40.187752+00:00"
+ },
+ "gate": {
+  "rc": 0,
+  "checks": {
+   "recall@3_not_worse": true,
+   "no_answer_lost": true,
+   "no_decided_rank_regression": true,
+   "all_questions_answered": true,
+   "dup_within_tolerance": true
+  },
+  "all_ok": true,
+  "regressions": [],
+  "unstable_flips": [
+   "q06-delivery-dir"
+  ],
+  "flipped": [
+   "q06-delivery-dir"
+  ],
+  "improved": [],
+  "counts": {
+   "SAME": 6,
+   "SAME_ABSENT": 1,
+   "UNSTABLE_FLIP_DOWN": 1,
+   "no_ground_truth": 2
+  },
+  "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.",
+  "file": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\batch17_compare.json"
+ },
+ "write_check": {
+  "manifest_documents": 40,
+  "bank_before_documents": 720,
+  "bank_after_documents": 760,
+  "delta": 40,
+  "ops_failed": 0,
+  "ok": true
+ },
+ "finished": "2026-09-13T02:39:12",
+ "duration_s": 167.6
+}

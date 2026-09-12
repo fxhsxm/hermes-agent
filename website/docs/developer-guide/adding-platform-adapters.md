@@ -93,8 +93,9 @@ be granted its own outbound tools.
 
 ```python
 import os
-from gateway.platforms.base import BasePlatformAdapter, SendResult
-from gateway.platforms.event import MessageEvent, MessageType
+from gateway.platforms.base import (
+    BasePlatformAdapter, SendResult, MessageEvent, MessageType,
+)
 from gateway.config import Platform, PlatformConfig
 
 
@@ -573,8 +574,9 @@ Create `plugins/platforms/newplat/adapter.py`:
 
 ```python
 from gateway.config import Platform, PlatformConfig
-from gateway.platforms.base import BasePlatformAdapter, SendResult
-from gateway.platforms.event import MessageEvent, MessageType
+from gateway.platforms.base import (
+    BasePlatformAdapter, MessageEvent, MessageType, SendResult,
+)
 
 def check_newplat_requirements() -> bool:
     """Return True if dependencies are available."""

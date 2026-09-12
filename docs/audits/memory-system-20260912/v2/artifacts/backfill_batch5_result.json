@@ -1,0 +1,183 @@
+{
+ "batch": 5,
+ "tool": "memory_backfill_batch",
+ "scope": {
+  "from": "2026-09-08",
+  "to": "2026-09-12",
+  "limit": 6,
+  "max_documents": 40,
+  "order": "oldest",
+  "top_level_only": true
+ },
+ "execute": true,
+ "started": "2026-09-13T01:54:21",
+ "min_margin": 0.05,
+ "dup_tolerance": 0.02,
+ "bank_before": {
+  "total_nodes": 6263,
+  "total_documents": 335,
+  "failed_operations": 332,
+  "pending_operations": 1,
+  "last_memory_write_at": "2026-09-12T17:54:10.105795+00:00"
+ },
+ "backup": {
+  "path": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backups\\fwh-main-20260912T175421Z.zip",
+  "rc": 0,
+  "bytes": 36064297,
+  "ok": true
+ },
+ "before": {
+  "recall@1": 0.5,
+  "recall@3": 0.75,
+  "recall@10": 0.875,
+  "recall_without_backfill@3": 0.625,
+  "dup_item_rate": 0.2324,
+  "decided_ids": [],
+  "unstable_ids": [
+   "q01-txt-encoding",
+   "q02-hindsight-port",
+   "q03-pg0-port",
+   "q04-reranker",
+   "q05-worker-id",
+   "q06-delivery-dir",
+   "q07-delegation-policy",
+   "q08-hindsight-llm",
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "staleness_proxy_strict": 8,
+  "n": 10,
+  "n_answered": 10,
+  "margins": {
+   "q01-txt-encoding": 0.0484,
+   "q02-hindsight-port": 0.0086,
+   "q03-pg0-port": 0.0433,
+   "q04-reranker": 0.0166,
+   "q05-worker-id": 0.0063,
+   "q06-delivery-dir": 0.004,
+   "q07-delegation-policy": 0.0157,
+   "q08-hindsight-llm": 0.0469,
+   "q09-liveness-user-pref": 0.0469,
+   "q10-liveness-memory": 0.0296
+  }
+ },
+ "backfill": {
+  "rc": 0,
+  "manifest": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\manifests\\batch5-20260912T175421Z.json",
+  "report": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\backfill_batch5_report.json",
+  "manifest_sessions": 6,
+  "manifest_documents": 31,
+  "manifest_statuses": {
+   "completed": 6
+  },
+  "ops_completed": 31,
+  "ops_failed": 0,
+  "doc_ids": [
+   "bf-20260910_233340_2228fa-c000-52b20ccb",
+   "bf-20260910_235950_d806eb-c000-1e1e855e",
+   "bf-20260911_000733_5c29faa0-c000-bd79174d",
+   "bf-20260911_000733_e58d76-c000-b95825ab",
+   "bf-20260911_013002_8933ab54-c000-edf2e7f9",
+   "bf-20260911_013002_8933ab54-c001-398d6154",
+   "bf-20260911_013002_8933ab54-c002-8880bebf",
+   "bf-20260911_013002_8933ab54-c003-bc1a793f",
+   "bf-20260911_013002_8933ab54-c004-7c5e3774",
+   "bf-20260911_025618_1c983a9f-c000-5d2966a4",
+   "bf-20260911_025618_1c983a9f-c001-e11c67ce",
+   "bf-20260911_025618_1c983a9f-c002-5d2966a4",
+   "bf-20260911_025618_1c983a9f-c003-e11c67ce",
+   "bf-20260911_025618_1c983a9f-c004-3bd13066",
+   "bf-20260911_025618_1c983a9f-c005-8add52f0",
+   "bf-20260911_025618_1c983a9f-c006-7849f0cc",
+   "bf-20260911_025618_1c983a9f-c007-4fbb0538",
+   "bf-20260911_025618_1c983a9f-c008-e59acd25",
+   "bf-20260911_025618_1c983a9f-c009-203360f5",
+   "bf-20260911_025618_1c983a9f-c010-306cb711",
+   "bf-20260911_025618_1c983a9f-c011-6825dd69",
+   "bf-20260911_025618_1c983a9f-c012-136fa082",
+   "bf-20260911_025618_1c983a9f-c013-51743724",
+   "bf-20260911_025618_1c983a9f-c014-b6b58ceb",
+   "bf-20260911_025618_1c983a9f-c015-df3c501e",
+   "bf-20260911_025618_1c983a9f-c016-d00a068c",
+   "bf-20260911_025618_1c983a9f-c017-cd9e3cad",
+   "bf-20260911_025618_1c983a9f-c018-80493d7b",
+   "bf-20260911_025618_1c983a9f-c019-79734c6c",
+   "bf-20260911_025618_1c983a9f-c020-bb1ebf36",
+   "bf-20260911_025618_1c983a9f-c021-c059620e"
+  ]
+ },
+ "after": {
+  "recall@1": 0.5,
+  "recall@3": 0.75,
+  "recall@10": 0.875,
+  "recall_without_backfill@3": 0.625,
+  "dup_item_rate": 0.2334,
+  "decided_ids": [],
+  "unstable_ids": [
+   "q01-txt-encoding",
+   "q02-hindsight-port",
+   "q03-pg0-port",
+   "q04-reranker",
+   "q05-worker-id",
+   "q06-delivery-dir",
+   "q07-delegation-policy",
+   "q08-hindsight-llm",
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "staleness_proxy_strict": 8,
+  "n": 10,
+  "n_answered": 10,
+  "margins": {
+   "q01-txt-encoding": 0.0484,
+   "q02-hindsight-port": 0.0086,
+   "q03-pg0-port": 0.0433,
+   "q04-reranker": 0.0166,
+   "q05-worker-id": 0.0063,
+   "q06-delivery-dir": 0.004,
+   "q07-delegation-policy": 0.0157,
+   "q08-hindsight-llm": 0.0469,
+   "q09-liveness-user-pref": 0.0469,
+   "q10-liveness-memory": 0.0296
+  }
+ },
+ "bank_after": {
+  "total_nodes": 6451,
+  "total_documents": 366,
+  "failed_operations": 332,
+  "pending_operations": 1,
+  "last_memory_write_at": "2026-09-12T17:57:49.525357+00:00"
+ },
+ "gate": {
+  "rc": 0,
+  "checks": {
+   "recall@3_not_worse": true,
+   "no_answer_lost": true,
+   "no_decided_rank_regression": true,
+   "all_questions_answered": true,
+   "dup_within_tolerance": true
+  },
+  "all_ok": true,
+  "regressions": [],
+  "unstable_flips": [],
+  "flipped": [],
+  "improved": [],
+  "counts": {
+   "SAME": 7,
+   "SAME_ABSENT": 1,
+   "no_ground_truth": 2
+  },
+  "action": "CONTINUE: no real regression. Unstable flips are excluded by design; re-check them on the next batch to confirm they are noise.",
+  "file": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\batch5_compare.json"
+ },
+ "write_check": {
+  "manifest_documents": 31,
+  "bank_before_documents": 335,
+  "bank_after_documents": 366,
+  "delta": 31,
+  "ops_failed": 0,
+  "ok": true
+ },
+ "finished": "2026-09-13T01:58:06",
+ "duration_s": 224.2
+}

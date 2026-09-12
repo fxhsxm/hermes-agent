@@ -1,0 +1,576 @@
+{
+ "tool": "compare_retrieval_runs",
+ "version": "1.0",
+ "min_margin": 0.05,
+ "dup_tolerance": 0.02,
+ "harness_versions": {
+  "before": "1.0",
+  "after": "1.1"
+ },
+ "before_file": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\prod_verify_noise2.json",
+ "after_file": "C:\\Users\\Fwhne\\Documents\\HermesOutput\\hermes-memory-audit-20260912\\v2\\baseline_v3.json",
+ "before": {
+  "tag": "noise-check-2",
+  "harness_version": "1.0",
+  "min_margin": null,
+  "n_questions": 10,
+  "n_answered": 10,
+  "recall@1": null,
+  "recall@3": null,
+  "recall@10": null,
+  "recall_n_scored": null,
+  "dup_item_rate": 0.2204,
+  "dup_total_items": 372,
+  "decided_ids": null,
+  "unstable_ids": null,
+  "no_ground_truth_ids": [
+   "q01-txt-encoding",
+   "q02-hindsight-port",
+   "q03-pg0-port",
+   "q04-reranker",
+   "q05-worker-id",
+   "q06-delivery-dir",
+   "q07-delegation-policy",
+   "q08-hindsight-llm",
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "failed_questions": [],
+  "staleness_proxy_strict": 9,
+  "recall_without_backfill": null,
+  "backfill_effect": null,
+  "limitations": [
+   "no recall block (harness < 1.1, or a question set without an expect/expected key): recall was never measured in this run"
+  ],
+  "per_question": {
+   "q01-txt-encoding": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 35,
+    "margin_top1_top2": null,
+    "class": null,
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": null
+   },
+   "q02-hindsight-port": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 44,
+    "margin_top1_top2": null,
+    "class": null,
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": null
+   },
+   "q03-pg0-port": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 41,
+    "margin_top1_top2": null,
+    "class": null,
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": null
+   },
+   "q04-reranker": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 41,
+    "margin_top1_top2": null,
+    "class": null,
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": null
+   },
+   "q05-worker-id": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 33,
+    "margin_top1_top2": null,
+    "class": null,
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": null
+   },
+   "q06-delivery-dir": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 35,
+    "margin_top1_top2": null,
+    "class": null,
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": null
+   },
+   "q07-delegation-policy": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 31,
+    "margin_top1_top2": null,
+    "class": null,
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": null
+   },
+   "q08-hindsight-llm": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 43,
+    "margin_top1_top2": null,
+    "class": null,
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": null
+   },
+   "q09-liveness-user-pref": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 42,
+    "margin_top1_top2": null,
+    "class": null,
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": null
+   },
+   "q10-liveness-memory": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 27,
+    "margin_top1_top2": null,
+    "class": null,
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": null
+   }
+  }
+ },
+ "after": {
+  "tag": "baseline-v3-corrected-thresholds",
+  "harness_version": "1.1",
+  "min_margin": 0.05,
+  "n_questions": 10,
+  "n_answered": 10,
+  "recall@1": 0.5,
+  "recall@3": 0.625,
+  "recall@10": 0.875,
+  "recall_n_scored": 8,
+  "dup_item_rate": 0.2439,
+  "dup_total_items": 369,
+  "decided_ids": [
+   "q07-delegation-policy"
+  ],
+  "unstable_ids": [
+   "q01-txt-encoding",
+   "q02-hindsight-port",
+   "q03-pg0-port",
+   "q04-reranker",
+   "q05-worker-id",
+   "q06-delivery-dir",
+   "q08-hindsight-llm",
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "no_ground_truth_ids": [
+   "q09-liveness-user-pref",
+   "q10-liveness-memory"
+  ],
+  "failed_questions": [],
+  "staleness_proxy_strict": 8,
+  "recall_without_backfill": {
+   "n_scored": 8,
+   "recall@1": {
+    "hits": 4,
+    "n": 8,
+    "rate": 0.5
+   },
+   "recall@3": {
+    "hits": 5,
+    "n": 8,
+    "rate": 0.625
+   },
+   "recall@10": {
+    "hits": 6,
+    "n": 8,
+    "rate": 0.75
+   },
+   "method": "identical responses, backfill-sourced items removed and the remaining items re-ranked; isolates the backfill's effect on answer rank without deleting any document"
+  },
+  "backfill_effect": {
+   "n_questions_with_backfill_items": 6,
+   "questions_where_answer_rank_shifted": [
+    "q06-delivery-dir",
+    "q07-delegation-policy"
+   ],
+   "questions_top1_is_backfilled": [],
+   "total_backfilled_items_in_responses": 29,
+   "detail": {
+    "q01-txt-encoding": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 2
+    },
+    "q02-hindsight-port": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 3
+    },
+    "q03-pg0-port": {
+     "rank": 2,
+     "rank_without_backfill": 2,
+     "backfilled_items_in_response": 0
+    },
+    "q04-reranker": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 0
+    },
+    "q05-worker-id": {
+     "rank": null,
+     "rank_without_backfill": null,
+     "backfilled_items_in_response": 4
+    },
+    "q06-delivery-dir": {
+     "rank": 8,
+     "rank_without_backfill": 7,
+     "backfilled_items_in_response": 4
+    },
+    "q07-delegation-policy": {
+     "rank": 6,
+     "rank_without_backfill": null,
+     "backfilled_items_in_response": 12
+    },
+    "q08-hindsight-llm": {
+     "rank": 1,
+     "rank_without_backfill": 1,
+     "backfilled_items_in_response": 0
+    }
+   }
+  },
+  "limitations": [],
+  "per_question": {
+   "q01-txt-encoding": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 35,
+    "margin_top1_top2": 0.0484,
+    "class": "unstable",
+    "answer_gap": 0.0484,
+    "answer_class": "unstable",
+    "top1_id": "8cad8944-ae92-45ce-99be-ade6cfc3ce7d"
+   },
+   "q02-hindsight-port": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 44,
+    "margin_top1_top2": 0.0086,
+    "class": "unstable",
+    "answer_gap": 0.0086,
+    "answer_class": "unstable",
+    "top1_id": "9e4ab624-ef81-4d1d-b8fb-0585680fc84c"
+   },
+   "q03-pg0-port": {
+    "rank": 2,
+    "present": true,
+    "hit@1": false,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 41,
+    "margin_top1_top2": 0.0433,
+    "class": "unstable",
+    "answer_gap": 0.0086,
+    "answer_class": "unstable",
+    "top1_id": "33ea0688-c00f-473d-a052-b1d4c154a641"
+   },
+   "q04-reranker": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 38,
+    "margin_top1_top2": 0.0166,
+    "class": "unstable",
+    "answer_gap": 0.0166,
+    "answer_class": "unstable",
+    "top1_id": "ea39aa73-9a0a-4109-be44-e15850002fbe"
+   },
+   "q05-worker-id": {
+    "rank": null,
+    "present": false,
+    "hit@1": false,
+    "hit@3": false,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 33,
+    "margin_top1_top2": 0.0063,
+    "class": "unstable",
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": "1576f576-ff8f-4298-a300-efff333c6b03"
+   },
+   "q06-delivery-dir": {
+    "rank": 8,
+    "present": true,
+    "hit@1": false,
+    "hit@3": false,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 36,
+    "margin_top1_top2": 0.004,
+    "class": "unstable",
+    "answer_gap": 0.0113,
+    "answer_class": "unstable",
+    "top1_id": "f5ced405-a8eb-4a98-9e75-50993bf7c3f9"
+   },
+   "q07-delegation-policy": {
+    "rank": 6,
+    "present": true,
+    "hit@1": false,
+    "hit@3": false,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 32,
+    "margin_top1_top2": 0.0677,
+    "class": "decided",
+    "answer_gap": 0.014,
+    "answer_class": "unstable",
+    "top1_id": "2fb7a3cc-68e0-4de7-9d30-17ed193c582c"
+   },
+   "q08-hindsight-llm": {
+    "rank": 1,
+    "present": true,
+    "hit@1": true,
+    "hit@3": true,
+    "has_expect": true,
+    "ok": true,
+    "n_results": 43,
+    "margin_top1_top2": 0.0469,
+    "class": "unstable",
+    "answer_gap": 0.0469,
+    "answer_class": "unstable",
+    "top1_id": "ea39aa73-9a0a-4109-be44-e15850002fbe"
+   },
+   "q09-liveness-user-pref": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 39,
+    "margin_top1_top2": 0.047,
+    "class": "unstable",
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": "6c51507f-7f98-4e00-a641-b0e3bf3d1ce9"
+   },
+   "q10-liveness-memory": {
+    "rank": null,
+    "present": null,
+    "hit@1": null,
+    "hit@3": null,
+    "has_expect": false,
+    "ok": true,
+    "n_results": 28,
+    "margin_top1_top2": 0.0296,
+    "class": "unstable",
+    "answer_gap": null,
+    "answer_class": null,
+    "top1_id": "fef3206d-892b-4857-b1f0-f94a231b48ce"
+   }
+  }
+ },
+ "per_question": [
+  {
+   "id": "q01-txt-encoding",
+   "rank_before": null,
+   "rank_after": 1,
+   "delta": null,
+   "class_before": null,
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": 0.0484,
+   "decided": false,
+   "verdict": "unknown",
+   "note": "not comparable"
+  },
+  {
+   "id": "q02-hindsight-port",
+   "rank_before": null,
+   "rank_after": 1,
+   "delta": null,
+   "class_before": null,
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": 0.0086,
+   "decided": false,
+   "verdict": "unknown",
+   "note": "not comparable"
+  },
+  {
+   "id": "q03-pg0-port",
+   "rank_before": null,
+   "rank_after": 2,
+   "delta": null,
+   "class_before": null,
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": 0.0086,
+   "decided": false,
+   "verdict": "unknown",
+   "note": "not comparable"
+  },
+  {
+   "id": "q04-reranker",
+   "rank_before": null,
+   "rank_after": 1,
+   "delta": null,
+   "class_before": null,
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": 0.0166,
+   "decided": false,
+   "verdict": "unknown",
+   "note": "not comparable"
+  },
+  {
+   "id": "q05-worker-id",
+   "rank_before": null,
+   "rank_after": null,
+   "delta": null,
+   "class_before": null,
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": null,
+   "decided": false,
+   "verdict": "unknown",
+   "note": "not comparable"
+  },
+  {
+   "id": "q06-delivery-dir",
+   "rank_before": null,
+   "rank_after": 8,
+   "delta": null,
+   "class_before": null,
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": 0.0113,
+   "decided": false,
+   "verdict": "unknown",
+   "note": "not comparable"
+  },
+  {
+   "id": "q07-delegation-policy",
+   "rank_before": null,
+   "rank_after": 6,
+   "delta": null,
+   "class_before": null,
+   "class_after": "decided",
+   "answer_gap_before": null,
+   "answer_gap_after": 0.014,
+   "decided": false,
+   "verdict": "unknown",
+   "note": "not comparable"
+  },
+  {
+   "id": "q08-hindsight-llm",
+   "rank_before": null,
+   "rank_after": 1,
+   "delta": null,
+   "class_before": null,
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": 0.0469,
+   "decided": false,
+   "verdict": "unknown",
+   "note": "not comparable"
+  },
+  {
+   "id": "q09-liveness-user-pref",
+   "rank_before": null,
+   "rank_after": null,
+   "delta": null,
+   "class_before": null,
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": null,
+   "decided": false,
+   "verdict": "unknown",
+   "note": "not comparable"
+  },
+  {
+   "id": "q10-liveness-memory",
+   "rank_before": null,
+   "rank_after": null,
+   "delta": null,
+   "class_before": null,
+   "class_after": "unstable",
+   "answer_gap_before": null,
+   "answer_gap_after": null,
+   "decided": false,
+   "verdict": "unknown",
+   "note": "not comparable"
+  }
+ ],
+ "flipped": [],
+ "regressions": [],
+ "unstable_flips": [],
+ "improved": [],
+ "counts": {
+  "unknown": 10
+ },
+ "checks": {},
+ "all_ok": false,
+ "action": "NOT COMPARABLE: one run has no recall measurement (see limitations) - re-measure both sides with harness >= 1.1 before judging"
+}
