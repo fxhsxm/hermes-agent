@@ -1045,3 +1045,76 @@ def test_completed_cap_never_evicts_a_stalling_delegation():
     stalled_evt = _drain_for(stalling_id, timeout=5.0)
     assert stalled_evt is not None, "the stalled terminal event must not be dropped"
     assert stalled_evt["status"] == "stalled"
+
+
+def test_unschedulable_dispatch_still_rejects_when_its_own_cleanup_write_fails(monkeypatch, caplog):
+    """A rejection is the ONLY path to the caller's inline fallback — it must not be pre-empted by cleanup.
+
+    Both rejection paths pop the in-memory record and then DELETE the durable row, and that DELETE re-opens
+    state.db (connect -> schema -> durability barriers), i.e. the same thing that just failed. When it broke
+    too, the exception escaped `dispatch_async_delegation`: the caller got an error instead of a rejection, so
+    the batch never ran inline, and the children `_build_children` had already built (and `_dispatch_background`
+    had already detached from the parent's interrupt list) were neither run nor closed. The cleanup is now
+    best-effort in both paths.
+    """
+    caplog.set_level(logging.WARNING, logger="tools.async_delegation")
+
+    # ── path 1: durable registration failed, and the compensating DELETE failed with it ──────────────
+    def persist_that_fails(record):  # noqa: ARG001 — signature mirrors the real hook
+        raise RuntimeError("database is locked")
+
+    def connect_that_fails():
+        raise RuntimeError("database is locked")
+
+    monkeypatch.setattr(ad, "_persist_dispatch", persist_that_fails)
+    monkeypatch.setattr(ad, "_connect", connect_that_fails)
+
+    res = ad.dispatch_async_delegation(
+        goal="never registered", context=None, toolsets=None, role="leaf", model="m",
+        session_key="", runner=lambda: {"status": "completed", "summary": "x"}, max_async_children=1,
+    )
+
+    assert res["status"] == "rejected", "a broken cleanup must not turn the rejection into an exception"
+    assert res["reason"] == "not_scheduled"
+    assert ad.active_count() == 0, "an unschedulable dispatch must not keep a capacity slot"
+    assert any("could not be removed" in r.getMessage() for r in caplog.records), (
+        "a cleanup write that failed as well must still be diagnosable"
+    )
+
+    # ── path 2: pool submit failed, and the compensating DELETE failed with it ───────────────────────
+    monkeypatch.undo()
+    real_connect = ad._connect
+    connects = {"n": 0}
+
+    def connect_failing_from_cleanup_onward():
+        connects["n"] += 1
+        # persisting the row and the retention prune still work; the cleanup DELETE does not
+        if connects["n"] > 2:
+            raise RuntimeError("database is locked")
+        return real_connect()
+
+    class _DeadPool:
+        def submit(self, *a, **k):  # a shut-down executor
+            raise RuntimeError("cannot schedule new futures after shutdown")
+
+    monkeypatch.setattr(ad, "_get_executor", lambda _n: _DeadPool())
+    monkeypatch.setattr(ad, "_connect", connect_failing_from_cleanup_onward)
+    caplog.clear()
+
+    res2 = ad.dispatch_async_delegation(
+        goal="never scheduled", context=None, toolsets=None, role="leaf", model="m",
+        session_key="", runner=lambda: {"status": "completed", "summary": "x"}, max_async_children=1,
+    )
+
+    assert res2["status"] == "rejected", "a broken cleanup must not turn the rejection into an exception"
+    assert res2["reason"] == "not_scheduled"
+    assert ad.active_count() == 0, "the capacity slot must be released even when the row outlives the call"
+
+    # The freed slot is real: the same cap accepts and delivers the next dispatch.
+    monkeypatch.undo()
+    ok = ad.dispatch_async_delegation(
+        goal="after the failures", context=None, toolsets=None, role="leaf", model="m",
+        session_key="", runner=lambda: {"status": "completed", "summary": "x"}, max_async_children=1,
+    )
+    assert ok["status"] == "dispatched"
+    assert _drain_for(ok["delegation_id"], timeout=5.0) is not None

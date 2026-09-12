@@ -208,6 +208,24 @@ def _prune_durable_records() -> None:
                    )""", (pending_count - _MAX_DURABLE_PENDING,))
 
 
+def _discard_durable_dispatch(delegation_id: str, label: str) -> None:
+    """Best-effort removal of the durable row of a dispatch that was never scheduled.
+
+    The compensating write re-enters ``_connect`` -> ``_initialize_schema`` -> ``apply_durability_barriers``,
+    i.e. the same state.db path that just failed (locked past the busy timeout, full disk, failed barrier),
+    so it can fail too. It must never escape, exactly like `_persist_dispatch`: the caller still needs the
+    rejection so it runs the batch inline, otherwise the already-built children are neither run nor closed.
+    A row left behind is inert — it owns no capacity slot and no in-memory record — and is reclaimed by the
+    next process start's abandoned-delegation recovery, which reports it as outcome unknown.
+    """
+    try:
+        with _DB_LOCK, _transaction() as conn:
+            conn.execute("DELETE FROM async_delegations WHERE delegation_id=?", (delegation_id,))
+    except Exception as exc:  # noqa: BLE001 — cleanup is best-effort, never fatal
+        logger.warning("Async delegation%s %s: durable row could not be removed after a failed dispatch "
+                       "(it holds capacity for nobody and ages out): %s", label, delegation_id, exc)
+
+
 def _persist_completion(event: Dict[str, Any], result: Dict[str, Any]) -> None:
     now = time.time()
     with _DB_LOCK, _transaction() as conn:
@@ -541,8 +559,7 @@ def _dispatch(
     except Exception as exc:  # noqa: BLE001 — state.db lock/disk/durability failure
         with _records_lock:
             _records.pop(delegation_id, None)
-        with _DB_LOCK, _transaction() as conn:
-            conn.execute("DELETE FROM async_delegations WHERE delegation_id=?", (delegation_id,))
+        _discard_durable_dispatch(delegation_id, label)
         logger.warning("Async delegation%s %s could not be persisted; not scheduled: %s",
                        label, delegation_id, exc, exc_info=True)
         return {"status": "rejected", "reason": "not_scheduled",
@@ -564,11 +581,10 @@ def _dispatch(
     try:
         # Propagate the dispatching profile so the detached child resolves get_hermes_home() correctly.
         executor.submit(propagate_context_to_thread(_worker))
-    except Exception as exc:  # pragma: no cover — pool submit failure is rare
+    except Exception as exc:  # pool submit failure is rare, but it must not strand the caller's children
         with _records_lock:
             _records.pop(delegation_id, None)
-        with _DB_LOCK, _transaction() as conn:
-            conn.execute("DELETE FROM async_delegations WHERE delegation_id=?", (delegation_id,))
+        _discard_durable_dispatch(delegation_id, label)
         logger.warning("Async delegation%s %s could not be scheduled on the pool: %s",
                        label, delegation_id, exc, exc_info=True)
         return {"status": "rejected", "reason": "not_scheduled",
