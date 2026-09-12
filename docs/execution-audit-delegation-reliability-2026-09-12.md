@@ -66,9 +66,11 @@ Session B — this session (`20260912_111132_acf84ede`), a fresh context that ve
 
 ## 4. Executors and tools
 
-* **Main agent** (both sessions): `terminal`, `read_file`, `search_files`, `write_file`, `patch`,
-  `execute_code`, `delegate_task`, `process_manage`, `skill_view` — no browser, no OCR, no network
-  fetch beyond `git`/`gh`.
+* **Main agent, session A** (`20260912_103316_46f77a05`): `terminal` 246, `read_file` 48, `patch` 30,
+  `write_file` 18, `tool_call` 8, `process_manage` 8, `delegate_task` 2 — no browser, no OCR, no
+  network fetch beyond `git`/`gh`.
+* **Main agent, this session** (`20260912_111132_acf84ede`, counts at 11:18): `terminal` 76,
+  `read_file` 22, `patch` 20, `execute_code` 17, `write_file` 6, `search_files` 6, `skill_view` 2.
 * **Lanes (children)**: read-only against the audited repo; briefs forbade git mutations. Aggregate
   tool usage across the 5 children: `terminal` 121, `read_file` 81, `search_files` 27,
   `write_file` 8 (their own report files only), `delegate_task` 7 (which produced the 11 grandchild
