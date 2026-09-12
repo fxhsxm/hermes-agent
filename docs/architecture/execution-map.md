@@ -354,7 +354,8 @@ Detect by symptom, then follow the path. Every row is anchored.
 ## 6. Documentation vs runtime
 
 The documentation audit that accompanied this map found defects in the developer-facing docs:
-five are fixed in this commit, one high-severity fix is prepared but unapplied (its target is a
+eleven are fixed in this commit (resolving paths, dead symbols, an off-by-2× toolset count and two
+wrong loop-budget defaults), one high-severity fix is prepared but unapplied (its target is a
 protected `AGENTS.md`), and the rest are recorded. Everything with both anchors lives in
 `doc-runtime-deltas.md`. The two findings worth knowing before reading further:
 

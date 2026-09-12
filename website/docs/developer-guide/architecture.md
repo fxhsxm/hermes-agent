@@ -40,7 +40,7 @@ for documentation that had drifted from the runtime).
 │  │ Compression  │  │ 3 API Modes  │  │ Tool Registry│               │
 │  │ & Caching    │  │ chat_compl.  │  │ (registry.py)│               │
 │  │              │  │ codex_resp.  │  │ 70+ tools    │               │
-│  │              │  │ anthropic    │  │ 28 toolsets  │               │
+│  │              │  │ anthropic    │  │ 59 toolsets  │               │
 │  └──────────────┘  └──────────────┘  └──────────────┘               │
 └─────────┴─────────────────┴─────────────────┴───────────────────────┘
            │                                    │
@@ -139,7 +139,7 @@ hermes-agent/
 ├── skills/                   # Bundled skills (always available)
 ├── optional-skills/          # Official optional skills (install explicitly)
 ├── website/                  # Docusaurus documentation site
-└── tests/                    # Pytest suite (~25,000 tests across ~1,250 files)
+└── tests/                    # Pytest suite (~39.6k tests across ~3.75k files)
 ```
 
 ## Data Flow
@@ -147,9 +147,9 @@ hermes-agent/
 ### CLI Session
 
 ```text
-User input → HermesCLI.process_input()
+User input → HermesCLI.run()
   → AIAgent.run_conversation()
-    → prompt_builder.build_system_prompt()
+    → system_prompt.build_system_prompt()
     → runtime_provider.resolve_runtime_provider()
     → API call (chat_completions / codex_responses / anthropic_messages)
     → tool_calls? → model_tools.handle_function_call() → loop
@@ -159,7 +159,7 @@ User input → HermesCLI.process_input()
 ### Gateway Message
 
 ```text
-Platform event → Adapter.on_message() → MessageEvent
+Platform event → Adapter.handle_message() → MessageEvent
   → GatewayRunner._handle_message()
     → authorize user
     → resolve session key
@@ -220,7 +220,7 @@ A shared runtime resolver used by CLI, gateway, cron, ACP, and auxiliary calls. 
 
 ### Tool System
 
-Central tool registry (`tools/registry.py`) with 70+ registered tools across ~28 toolsets. Each tool file self-registers at import time. The registry handles schema collection, dispatch, availability checking, and error wrapping. Terminal tools support 7 backends (local, Docker, SSH, Daytona, Modal, Singularity, Vercel Sandbox).
+Central tool registry (`tools/registry.py`) with 70+ registered tools across 59 toolsets (33 of them available in a default install). Each tool file self-registers at import time. The registry handles schema collection, dispatch, availability checking, and error wrapping. Terminal tools support 7 backends (local, Docker, SSH, Daytona, Modal, Singularity, Vercel Sandbox).
 
 → [Tools Runtime](./tools-runtime.md)
 

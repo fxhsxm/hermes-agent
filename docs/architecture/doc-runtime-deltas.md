@@ -22,6 +22,12 @@ this document's remit); `follow-up` = a real defect that deserves its own change
 | D4 | `website/docs/reference/tools-reference.md:79` | tool scoped to "(`gateway/platforms/feishu_comment.py`)" | File lives at `plugins/platforms/feishu/feishu_comment.py`. | low |
 | D5 | `docs/chronos-managed-cron-contract.md:149` | "`plugins/cron/chronos/verify.py`" | File lives at `plugins/cron_providers/chronos/verify.py`; `plugins/cron/` does not exist. | medium — contract doc names a path that cannot be opened |
 | D6 | `website/docs/developer-guide/architecture.md:8` | Top-level architecture page did not reference any runtime-verified end-to-end map | Added a pointer to `docs/architecture/execution-map.md` (and the delta log) from the page a developer already reads first. | low |
+| D9 | `website/docs/developer-guide/architecture.md:43` and `:223` | "28 toolsets" / "~28 toolsets" | `len(TOOLSETS) == 59` (`toolsets.py:69`); 33 are available in a default install (`model_tools.get_available_toolsets()` on this host). Both occurrences corrected to 59, with the available count noted. | high — off by more than 2× in the tool-system description |
+| D10 | `website/docs/developer-guide/architecture.md:142` | "~25,000 tests across ~1,250 files" | measured 39,629 `def test_` across 3,754 files; corrected. | low |
+| D11 | `website/docs/developer-guide/architecture.md:150` | `HermesCLI.process_input()` in the CLI data-flow diagram | no `process_input` exists anywhere in non-test code; the REPL entry is `HermesCLI.run()` (`cli.py:3856`); corrected. | medium |
+| D12 | `website/docs/developer-guide/architecture.md:152` | `prompt_builder.build_system_prompt()` | the function is `agent/system_prompt.py:638`; `agent/prompt_builder.py` only names it in a docstring; corrected. | medium |
+| D13 | `website/docs/developer-guide/architecture.md:162` | `Adapter.on_message()` in the gateway data-flow diagram | no such method on the adapter chain; the inbound funnel is `handle_message()` (`gateway/platforms/base.py:3523`); corrected. | medium |
+| D14 | `website/docs/developer-guide/agent-loop.md:184-185` | loop default "500 iterations"; subagent cap "default 50" | `agent.max_turns` defaults to `None` (`hermes_cli/config_defaults.py:52`) → unbounded; subagent default is `DEFAULT_MAX_ITERATIONS = 250` (`tools/delegate_tool.py:68`); both corrected. | high — an agent sizing its own loop budget reads these first |
 
 ## 2. Recorded, not fixed
 
@@ -31,11 +37,12 @@ this document's remit); `follow-up` = a real defect that deserves its own change
 | D7 | root `AGENTS.md` ("Development Environment") | "`scripts/run_tests.sh` probes `.venv`, then `venv`, then `$HOME/.hermes/hermes-agent/venv` (worktrees sharing the main checkout's venv)" | Accurate about the script — `scripts/run_tests.sh:54` really does probe those three paths literally. But the third probe hardcodes `$HOME/.hermes`, while every other path in the tree is profile-aware (`get_hermes_home()`); on Windows installs, `HERMES_HOME` is `%LOCALAPPDATA%\hermes`, so the worktree-venv probe misses and only the `HERMES_PYTHON` escape hatch works (observed on this host). Device tooling, not runtime behaviour. | low (dev UX) |
 | D8 | root `AGENTS.md` ("Project Structure") | sibling-family counts: `hermes_state.py (21)`, `gateway/run.py (15)`, `tools/mcp_tool.py (15)`, `hermes_cli/kanban.py (14)`, `hermes_cli/web_server.py (13 + 24 routers)`, `hermes_cli/auth.py (12)`, `tools/browser_tool.py (11)`, `cli.py (12 hermes_cli/cli_*_mixin.py)` | Measured: 21 ✓, 15 ✓, 15 ✓, 14 ✓, `hermes_cli/web_server_*.py` **14** (claimed 13), `hermes_cli/web_routers/*.py` **23** (claimed 24), `hermes_cli/auth_*.py` 12 ✓, `tools/browser_tool_*.py` 11 ✓, `hermes_cli/cli_*_mixin.py` **14** (claimed 12) | low (cosmetic; the doc itself warns these counts "shift constantly") |
 
-## 3. Stale test found while verifying (recorded as follow-up)
+## 3. Stale tests found while verifying (recorded as follow-up)
 
 | # | Anchor | Claim | Runtime truth | Severity |
 |---|---|---|---|---|
 | T1 | `tests/test_hermes_state.py:936` | asserts that the `fields=("context",)` search path issues a query containing the literal `"WITH TARGET AS ("` | `grep -rn "WITH TARGET AS" hermes_state*.py` matches **nothing** at this baseline — the SQL shape was replaced, so the trace-callback counter stays 0 and the assertion fails. The functional assertions in the same test (a `context` value is returned) pass, so behaviour is intact and only the SQL-text assertion is stale. Reproduced deterministically and standalone (`1 failed, 260 deselected in 0.74s`). Not fixed here: the repo's own test policy calls this shape of assertion a change-detector, so the right fix is a maintainer decision, not a drive-by edit. | low (test-only) |
+| T2 | `tests/website/test_generate_llms_txt.py:132` (and 3 sibling tests in the same file) | the llms.txt index built by `website/scripts/generate-llms-txt.py` must link `user-guide/bot-mode` (and the other curated pages) | 4 tests in this file fail at the pinned baseline. A/B control: the same 4 tests fail identically in a pristine checkout whose `website/` tree is unmodified, so this is a pre-existing baseline failure and **not** an effect of the documentation edits in this commit. Cause not investigated — out of scope for this map. | low (test-only) |
 
 ## 4. Valid confirmations (coverage evidence)
 
@@ -92,7 +99,35 @@ wrong fact or dead symbol; **L** = cosmetic/omission.
 | batch runner writes `batch_001_output.jsonl` (`trajectory-format.md:19`) | code writes `batch_{batch_num}.jsonl` and merges into `trajectories.jsonl` (`batch_runner.py:304`, `:696`) | L |
 | "the next-up slot is **overwritten** on repeat sends (burst collapse)" (`session-lifecycle.md:456-458`) | overwriting was the bug; the merge semantics now live at `gateway/platforms/base.py:3613` | M |
 
-### 6.4 Claims that verified correct (coverage)
+### 6.4 Cross-checked against the dedicated documentation audit
+
+A separate lane audited 18 developer-facing documents and self-reported 612 concrete claims
+checked with 138 deltas (19 high / 71 medium / 48 low). Those totals are a **lane self-report**,
+not a Main-verified count, and the full per-claim table is deliberately not copied into this
+durable document. What follows is the subset Main independently re-checked against the tree;
+each row was confirmed by running the grep/measure it names.
+
+| Claim | Runtime truth (Main-verified) | Sev |
+|---|---|---|
+| `website/docs/developer-guide/architecture.md:216` — "28 toolsets" | `len(TOOLSETS) == 59` (`toolsets.py:69`) | H |
+| `gateway/AGENTS.md:14` — "Each adapter picks a base toolset (Telegram → `messaging`)" | `messaging` is **not** a toolset (`TOOLSETS` has no such key), it appears nowhere in `gateway/` or `plugins/`, and the real mechanism is the `platform_toolsets` config map (`gateway/run_turn.py:2076`, `agent/agent_init.py:1932`). A reader who copies the name into config gets no effect. | H |
+| `website/docs/developer-guide/architecture.md:143` — `HermesCLI.process_input()` | no `process_input` definition anywhere in non-test code | M |
+| `website/docs/developer-guide/architecture.md:145` — `prompt_builder.build_system_prompt()` | the function is `agent/system_prompt.py:638`; `agent/prompt_builder.py` mentions the name only in a docstring | M |
+| `website/docs/developer-guide/agent-loop.md:152-160` and `tools-runtime.md:167` — inline-intercepted tool set | `INLINE_TOOL_EXECUTORS` (`agent/inline_tool_executors.py:153`) has **13** keys; the `todo` row is the tool `todo_list` (legacy alias only) | H |
+| `website/docs/developer-guide/agent-loop.md:184` — "Default: 500 iterations" | `agent.max_turns` defaults to `None` (`hermes_cli/config_defaults.py:52`) → unbounded | H |
+| `website/docs/developer-guide/agent-loop.md:185` — subagent cap "default 50" | `DEFAULT_MAX_ITERATIONS = 250` (`tools/delegate_tool.py:68`) | M |
+| `website/docs/developer-guide/architecture.md:135` — test count | measured 39,629 `def test_` across 3,754 files; the "~39k / ~3.7k" shape is right, so this row is cosmetic only | L |
+
+Disposition of the above: the toolset count, the dead CLI/prompt/adapter symbols and the two
+`agent-loop.md` numbers were subsequently **fixed** in this commit (see D9–D14 in §1). The
+`gateway/AGENTS.md` base-toolset claim is **not** fixed — it lives in a protected `AGENTS.md`
+(see §6). Accuracy note on this lane: its first row quoted the test count from
+`website/docs/developer-guide/architecture.md` as "~39k"; the file actually said "~25,000 tests
+across ~1,250 files" (`website/docs/developer-guide/architecture.md:142`). Main's spot-check caught it, which is why every row above was
+re-verified against the file before being trusted, and why the lane's 138-delta total is
+reported as a self-report rather than as a verified count.
+
+### 6.5 Claims that verified correct (coverage)
 
 `gateway/AGENTS.md` "TWO message guards" as a *concept* (both guards exist, at
 `gateway/platforms/base.py:3523` and `gateway/run_inbound.py:1176`); `builtin_hooks/` empty;
