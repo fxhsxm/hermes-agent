@@ -37,12 +37,34 @@ failed durability barrier all raise. The exception then escaped `_dispatch` out 
 Fix: `_persist_dispatch` is wrapped; on failure the record is unregistered, the durable row
 deleted, the reason logged at WARNING, and `{"status": "rejected", "reason": "not_scheduled"}`
 returned so the caller runs the batch inline
-(`tools/async_delegation.py:538-550`). The pool-submit failure path now reports the same
-`reason` and also logs (`tools/async_delegation.py:570-576`).
+(`tools/async_delegation.py:554-565`). The pool-submit failure path now reports the same
+`reason` and also logs (`tools/async_delegation.py:583-590`).
 
 Test: `tests/tools/test_async_delegation.py::test_persist_failure_rejects_instead_of_leaking_a_capacity_slot`
 (asserts `active_count() == 0`, no durable row, a WARNING record, and that the freed slot really
 accepts the next dispatch *and* delivers it).
+
+### 1b — The compensation re-entered the very path that had just failed
+
+The rejection is what hands the batch to the inline fallback, so it must be unconditional. But
+both rejection paths then DELETEd the durable row, and that DELETE re-opens state.db
+(`_connect` → `_initialize_schema` → `apply_durability_barriers`) — the same lock/disk/barrier
+failure that triggered the rejection. When the cleanup raised too, the exception escaped
+`dispatch_async_delegation` and took the rejection with it: the caller got an error instead of
+`{"status": "rejected"}`, so the batch never ran inline and the children — already built and
+already detached from the parent's interrupt list (`_dispatch_background`) — were neither run nor
+closed. Reproduced with fault injection (`evidence/probe_compensation_failure.py` in the audit
+workspace: persist failure + unavailable DB ⇒ `***RAISED OUT OF THE DISPATCH***`,
+`active_count=0`; the same on the pool-submit arm).
+
+Fix: `_discard_durable_dispatch` (`tools/async_delegation.py:211-227`) makes the cleanup
+best-effort and diagnosable (WARNING naming the delegation), and both arms use it
+(`tools/async_delegation.py:562`, `:587`). A row that survives owns no capacity slot and no
+in-memory record; the next process start's `recover_abandoned_delegations` classifies it as
+outcome unknown and the retention prune reclaims it.
+
+Test: `tests/tools/test_async_delegation.py::test_unschedulable_dispatch_still_rejects_when_its_own_cleanup_write_fails`
+(both arms, red before this change with `RuntimeError: database is locked` escaping the call).
 
 ## 2 — The retention cap evicted LIVE records, so stalled delegations vanished without a result
 
@@ -64,9 +86,9 @@ Consequences, all silent:
 * the freed slot let a later dispatch exceed `max_concurrent_children`.
 
 Fix: the predicate is now `status not in _LIVE_STATES`
-(`tools/async_delegation.py:456-467`), and `_finalize` distinguishes "already finalized"
+(`tools/async_delegation.py:474-485`), and `_finalize` distinguishes "already finalized"
 (a legitimate no-op) from "record gone" (a dropped terminal event, now logged at WARNING)
-(`tools/async_delegation.py:647-656`).
+(`tools/async_delegation.py:656-670`).
 
 Test: `tests/tools/test_async_delegation.py::test_completed_cap_never_evicts_a_stalling_delegation`.
 
