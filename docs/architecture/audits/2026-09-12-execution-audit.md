@@ -64,8 +64,9 @@ A unit is a user turn: from the user message row to the next user message row.
   inside their parent lane's duration unless the parent recorded them in `async_delegations`.
 
 The final-commit field above names the commit the audit was taken *against*
-(`27f392e6f8`, the documentation state it audits). The commit that adds this file is the
-branch tip; it contains no source change.
+(`27f392e6f8`, the documentation state it audits). Because this file is committed after that
+state, the branch tip additionally contains this audit plus two documentation-only follow-up
+commits; none of them touch source files.
 
 ---
 
@@ -105,14 +106,15 @@ session, because the table keys on the *owner* session. Lane completion spread: 
 | Document anchors | `docs/architecture/tools/verify_anchors.py` at commit `27f392e6f8` | **247 anchors, 0 failures** (34 bare path mentions reported informationally: prose, `HERMES_HOME` runtime paths, placeholders, and stale paths quoted on purpose) |
 | Lane artifacts (L1–L5) | independent anchor re-check of the raw artifacts, resolving shorthand basenames | 1,242 anchors: 1,185 resolved to a unique file:line, 57 basename-shorthand (all `base.py` ones inside `gateway/platforms/base.py`'s range), **0 out-of-range, 0 missing files** |
 | Lane artifact (L6) | same, on the documentation-audit artifact | 346 anchors: 273 resolved, 72 shorthand, **2 out-of-range**, 1 shorthand that resolves nowhere |
-| Spot checks by the executing agent | read the line + grep for the symbol, 14 items drawn from lane claims | all 14 confirmed as written; lane claims were treated as claims, not facts |
+| Spot checks by the executing agent | read the line + grep for the symbol, 16 items drawn from lane claims | 15 confirmed as written; 1 **rejected** — a lane reported `tools-runtime.md`'s dangerous-pattern list as a high-severity safety gap, but `tools/approval_detection.py:198` does define 36 patterns including `SQL DROP` / `SQL DELETE without WHERE` / `SQL TRUNCATE` (the lane's literal-string grep missed the regex spelling). Lane claims were treated as claims, not facts |
 | Targeted test run (planes) | `scripts/run_tests.sh` over 10 files covering ingress/loop/tools/state/delivery | 422 passed, 1 failed — `tests/test_hermes_state.py::TestFTS5Search::test_search_projection_skips_context_enrichment_queries`, reproduced standalone (0.74 s) and explained: the test asserts SQL text (`WITH TARGET AS (`) that no longer exists in the state code |
 | Website docs tests | `scripts/run_tests.sh tests/website/` before and after the doc edits, plus an A/B run in a pristine checkout | 4 failures, identical in all three runs → pre-existing baseline failures, not caused by these edits |
 | Live runtime cross-check | `gateway_state.json` (`code_sha`), read-only `state.db` queries | the running gateway was the pinned commit; schema version, session-key format, message/tool rows, prompt storage and lease rows all matched the source reading (see the map's Appendix A) |
 
-Two known-imperfect things are stated rather than hidden: (1) one lane row misquoted a
-documented test count (caught by spot-check and corrected before use), and (2) four tests fail
-at this baseline for reasons outside the scope of this work — both are recorded in
+Three known-imperfect things are stated rather than hidden: (1) one lane row misquoted a
+documented test count, (2) one lane high-severity finding did not survive re-verification
+(recorded in §6.6 of the delta log so the mistake is not repeated), and (3) four tests fail at
+this baseline for reasons outside the scope of this work — all recorded in
 `docs/architecture/doc-runtime-deltas.md`.
 
 ## A4. What the audit does not contain

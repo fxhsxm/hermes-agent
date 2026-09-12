@@ -86,7 +86,13 @@ wrong fact or dead symbol; **L** = cosmetic/omission.
 | interception table key `todo`, tools "called from `agent/conversation_loop.py`" (`agent-loop.md:152-156`) | the tool is `todo_list` (legacy alias accepted at `model_tools.py:550-555`) | L |
 | "On 401/403, attempt credential refresh" (`agent-loop.md:195`) | 401 only: `agent/turn_recovery.py:302-303` | M |
 
-### 6.3 `website/docs/developer-guide/session-storage.md`, `trajectory-format.md`, `docs/session-lifecycle.md`, `docs/state-db-recovery.md`
+### 6.3 `website/docs/developer-guide/tools-runtime.md` (tool plane)
+
+| Stated in the doc | Runtime truth | Sev |
+|---|---|---|
+| "After core tool discovery, MCP tools and plugin tools are also discovered" presented as part of the import pipeline (`tools-runtime.md:66-69`) | MCP discovery is **deliberately not run at import** — `model_tools.py:147-158` documents its removal (a blocking `future.result(timeout=120)` inside the event loop froze platform heartbeats, #16856) and each entry point (`gateway/run.py`, `cli.py`, `tui_gateway/`, `acp_adapter/`) runs it at startup instead | M |
+
+### 6.4 `website/docs/developer-guide/session-storage.md`, `trajectory-format.md`, `docs/session-lifecycle.md`, `docs/state-db-recovery.md`
 
 | Stated in the doc | Runtime truth | Sev |
 |---|---|---|
@@ -99,7 +105,7 @@ wrong fact or dead symbol; **L** = cosmetic/omission.
 | batch runner writes `batch_001_output.jsonl` (`trajectory-format.md:19`) | code writes `batch_{batch_num}.jsonl` and merges into `trajectories.jsonl` (`batch_runner.py:304`, `:696`) | L |
 | "the next-up slot is **overwritten** on repeat sends (burst collapse)" (`session-lifecycle.md:456-458`) | overwriting was the bug; the merge semantics now live at `gateway/platforms/base.py:3613` | M |
 
-### 6.4 Cross-checked against the dedicated documentation audit
+### 6.5 Cross-checked against the dedicated documentation audit
 
 A separate lane audited 18 developer-facing documents and self-reported 612 concrete claims
 checked with 138 deltas (19 high / 71 medium / 48 low). Those totals are a **lane self-report**,
@@ -127,7 +133,11 @@ across ~1,250 files" (`website/docs/developer-guide/architecture.md:142`). Main'
 re-verified against the file before being trusted, and why the lane's 138-delta total is
 reported as a self-report rather than as a verified count.
 
-### 6.5 Claims that verified correct (coverage)
+### 6.6 Claims that verified correct (coverage)
+
+| Checked claim | Verification |
+|---|---|
+| `website/docs/developer-guide/tools-runtime.md:189-192` — `DANGEROUS_PATTERNS` covers recursive deletes, filesystem formatting, SQL destructive operations and system-config overwrites | Confirmed: `tools/approval_detection.py:198` defines 36 `(regex, description)` entries, including `SQL DROP`, `SQL DELETE without WHERE`, `SQL TRUNCATE`, `rm` recursion variants, `mkfs`/`format.com`/`Format-Volume`/`diskpart`, and the Windows/PowerShell delete families. **Caution for future audits:** a literal-string grep for `"DROP TABLE"` returns nothing here because the regexes spell the verbs separately (e.g. `drop\s+table`) — a lane reported this section as a high-severity safety gap on exactly that evidence, and the report was wrong. |
 
 `gateway/AGENTS.md` "TWO message guards" as a *concept* (both guards exist, at
 `gateway/platforms/base.py:3523` and `gateway/run_inbound.py:1176`); `builtin_hooks/` empty;
