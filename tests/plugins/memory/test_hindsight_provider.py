@@ -229,6 +229,13 @@ def test_normalize_retain_tags_accepts_csv_and_dedupes():
     ]
 
 
+def test_normalize_observation_scopes_keeps_shared_and_drops_unknown_keywords():
+    # "shared" is a real server-side scope (0.9.2); a keyword the server would
+    # reject must still normalize to None rather than being sent verbatim.
+    assert _normalize_observation_scopes("shared") == "shared"
+    assert _normalize_observation_scopes("not_a_scope") is None
+
+
 # ---------------------------------------------------------------------------
 # Schema tests
 # ---------------------------------------------------------------------------
@@ -251,6 +258,16 @@ class TestSchemas:
     def test_context_mode_returns_no_tools(self, provider_with_config):
         p = provider_with_config(memory_mode="context")
         assert p.get_tool_schemas() == []
+
+    def test_recall_and_reflect_descriptions_carry_the_routing_rule(self):
+        # The model picks between the two tools from these strings alone: recall is
+        # relevance-ranked, reflect owns "the latest claim wins" for current-state
+        # questions, and nothing routes between them automatically.
+        recall, reflect = RECALL_SCHEMA["description"], REFLECT_SCHEMA["description"]
+        assert "hindsight_reflect" in recall
+        assert "mentioned_at" in reflect
+        assert "CURRENT" in reflect and "最新" in reflect
+        assert "router" in recall and "router" in reflect
 
 
 # ---------------------------------------------------------------------------
@@ -288,6 +305,19 @@ class TestConfig:
     def test_observation_scopes_keyword_config(self, provider_with_config):
         p = provider_with_config(observation_scopes="per_tag")
         assert p._observation_scopes == "per_tag"
+
+    def test_observation_scopes_shared_config(self, provider_with_config):
+        # Dormant availability: an explicit user value must reach the retain call.
+        p = provider_with_config(observation_scopes="shared")
+        assert p._observation_scopes == "shared"
+
+    def test_prefer_observations_defaults_off(self, provider):
+        assert provider._prefer_observations is False
+
+    def test_prefer_observations_accepts_bool_and_string_forms(self, provider_with_config):
+        assert provider_with_config(prefer_observations=True)._prefer_observations is True
+        assert provider_with_config(prefer_observations="true")._prefer_observations is True
+        assert provider_with_config(prefer_observations="false")._prefer_observations is False
 
 
     def test_custom_config_values(self, provider_with_config):
@@ -551,6 +581,68 @@ class TestToolHandlers:
         assert provider._client is second_client
         first_client.arecall.assert_called_once()
         second_client.arecall.assert_called_once()
+
+
+# ---------------------------------------------------------------------------
+# prefer_observations tests
+# ---------------------------------------------------------------------------
+
+
+def _signed_recall_client(*, accepts_prefer_observations: bool):
+    """Fake client whose ``arecall`` carries an explicit parameter list, like the real
+    one — feature detection reads that signature. Returns (client, calls); each call
+    records what the client actually received, with ``None`` meaning "not passed"."""
+    calls: list[dict] = []
+
+    if accepts_prefer_observations:
+        class _Client:
+            async def arecall(self, bank_id, query, types=None, max_tokens=4096, budget="mid",
+                              prefer_observations=None):
+                calls.append({"query": query, "types": types, "prefer_observations": prefer_observations})
+                return SimpleNamespace(results=[SimpleNamespace(text="Recalled memory")])
+    else:
+        class _Client:
+            async def arecall(self, bank_id, query, types=None, max_tokens=4096, budget="mid"):
+                calls.append({"query": query, "types": types})
+                return SimpleNamespace(results=[SimpleNamespace(text="Recalled memory")])
+
+    return _Client(), calls
+
+
+class TestPreferObservations:
+    """The opt-in kwarg reaches a client only when that client's recall accepts it."""
+
+    def test_kwarg_reaches_a_client_that_accepts_it(self, provider_with_config):
+        p = provider_with_config(prefer_observations=True, recall_types=["observation", "world"])
+        p._client, calls = _signed_recall_client(accepts_prefer_observations=True)
+
+        result = json.loads(p.handle_tool_call("hindsight_recall", {"query": "current job"}))
+
+        assert "Recalled memory" in result["result"]
+        assert calls == [{"query": "current job", "types": ["observation", "world"],
+                          "prefer_observations": True}]
+
+    def test_client_without_the_parameter_still_recalls(self, provider_with_config):
+        # The installed floor (hindsight-client 0.6.1) has no prefer_observations;
+        # passing it anyway would raise TypeError on every recall.
+        p = provider_with_config(prefer_observations=True, recall_types=["observation", "world"])
+        p._client, calls = _signed_recall_client(accepts_prefer_observations=False)
+
+        result = json.loads(p.handle_tool_call("hindsight_recall", {"query": "current job"}))
+
+        assert "error" not in result
+        assert "Recalled memory" in result["result"]
+        assert calls == [{"query": "current job", "types": ["observation", "world"]}]
+
+    def test_disabled_setting_never_sends_the_kwarg(self, provider_with_config):
+        # Default off: an accepting client must still see no prefer_observations.
+        p = provider_with_config(recall_types=["observation", "world"])
+        p._client, calls = _signed_recall_client(accepts_prefer_observations=True)
+
+        p.handle_tool_call("hindsight_recall", {"query": "current job"})
+
+        assert calls == [{"query": "current job", "types": ["observation", "world"],
+                          "prefer_observations": None}]
 
 
 # ---------------------------------------------------------------------------
@@ -1450,6 +1542,11 @@ class TestConfigSchema:
             "recall_prompt_preamble",
         }
         assert expected_keys.issubset(keys), f"Missing: {expected_keys - keys}"
+
+    def test_prefer_observations_is_declared_off_by_default(self, provider):
+        # A new setting must be discoverable and inert unless the user opts in.
+        field = next(f for f in provider.get_config_schema() if f["key"] == "prefer_observations")
+        assert field["default"] is False
 
 
 # ---------------------------------------------------------------------------

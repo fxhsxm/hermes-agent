@@ -76,6 +76,7 @@ Config file: `~/.hermes/hindsight/config.json`
 | `recall_tags` | — | Tags to filter when searching memories |
 | `recall_tags_match` | `any` | Tag matching mode: `any` / `all` / `any_strict` / `all_strict` |
 | `recall_types` | `observation` | Fact types surfaced by recall (both auto-recall and the `hindsight_recall` tool). Comma-separated string or JSON list. **Default narrowed to `observation` only** (see "Behavior change" below). Set to `observation,world,experience` to also include raw facts. |
+| `prefer_observations` | `false` | Opt-in: ask the server to drop raw facts already covered by a returned observation and backfill the freed slots. Only has an effect when `recall_types` includes a raw type (`world` / `experience`) — observation-only recall is unchanged. Requires a Hindsight client whose recall accepts the parameter (0.9.2 server-side); on an older client the setting is logged and ignored, never an error. |
 | `auto_recall` | `true` | Automatically recall memories before each turn |
 | `recall_sync` | `false` | Recall synchronously against the *current* message each turn (higher relevance, adds recall latency). Default off: recall runs in the background and is injected on the next turn. |
 | `recall_indicator` | `true` | Show a `👁️ Hindsight — recalled N memories` status line when auto-recall injects memory. Turn off for customer-facing agents. |
