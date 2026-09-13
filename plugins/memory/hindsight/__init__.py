@@ -14,6 +14,7 @@ import asyncio
 import atexit
 import contextlib
 import contextvars
+import inspect
 import json
 import logging
 import os
@@ -42,7 +43,7 @@ from .settings import (
     _DEFAULT_API_URL, _DEFAULT_IDLE_TIMEOUT, _DEFAULT_LOCAL_URL, _DEFAULT_RETAIN_SOURCE,
     _DEFAULT_TIMEOUT, _HINDSIGHT_GLYPH, _MIN_CLIENT_VERSION, _MIN_VERSION_FOR_UPDATE_MODE_APPEND,
     _PROVIDER_DEFAULT_MODELS, _VALID_BUDGETS, _daemon_llm_provider,
-    _normalize_observation_scopes, _normalize_retain_tags, _parse_int_setting,
+    _normalize_observation_scopes, _normalize_retain_tags, _parse_bool_setting, _parse_int_setting,
     _resolve_bank_id_template,
 )
 
@@ -281,7 +282,13 @@ RECALL_SCHEMA = {
     "name": "hindsight_recall",
     "description": (
         "Search long-term memory. Returns memories ranked by relevance using "
-        "semantic search, keyword matching, entity graph traversal, and reranking."
+        "semantic search, keyword matching, entity graph traversal, and reranking. "
+        "Use for 'what did I say / what is stored about X': results are relevance-ranked, "
+        "so an older but closer match can legitimately outrank a newer one. "
+        "For 'what should I do / what is the current state' use hindsight_reflect instead — "
+        "it owns the rule that among conflicting claims the latest mentioned_at wins, so "
+        "CURRENT / LATEST / FINAL / 而家 / 最新 / 最終 questions belong to reflect. "
+        "There is no automatic router between these two tools; pick deliberately."
     ),
     "parameters": {"type": "object", "required": ["query"],
                    "properties": {"query": {"type": "string", "description": "What to search for."}}},
@@ -291,7 +298,12 @@ REFLECT_SCHEMA = {
     "name": "hindsight_reflect",
     "description": (
         "Synthesize a reasoned answer from long-term memories. Unlike recall, "
-        "this reasons across all stored memories to produce a coherent response."
+        "this reasons across all stored memories to produce a coherent response. "
+        "Use for 'what should I do / what is the current state' — CURRENT / LATEST / FINAL / "
+        "而家 / 最新 / 最終 questions belong here, because reflect owns the rule that among "
+        "conflicting claims the latest mentioned_at wins, whereas recall is relevance-ranked "
+        "and may return an older closer match. "
+        "There is no automatic router between these two tools; pick deliberately."
     ),
     "parameters": {"type": "object", "required": ["query"],
                    "properties": {"query": {"type": "string", "description": "The question to reflect on."}}},
@@ -416,6 +428,10 @@ class HindsightMemoryProvider(MemoryProvider):
         self._prefetch_lock = threading.Lock()
         self._prefetch_thread = None
         self._last_recall_returned, self._last_recall_count = False, 0
+        # prefer_observations support is a property of the installed client's own
+        # arecall signature, so it is feature-detected and cached per client.
+        self._prefer_observations_client = None
+        self._prefer_observations_supported = False
         self._apply_recall_settings({})
 
     @property
@@ -495,6 +511,7 @@ class HindsightMemoryProvider(MemoryProvider):
             {"key": "recall_tags", "description": "Tags to filter when searching memories (comma-separated)", "default": ""},
             {"key": "recall_tags_match", "description": "Tag matching mode for recall", "default": "any", "choices": ["any", "all", "any_strict", "all_strict"]},
             {"key": "recall_types", "description": "Fact types to surface on recall — applies to both auto-recall and the hindsight_recall tool (comma-separated or list). Defaults to observation-only — observations are Hindsight's consolidated, deduplicated, evidence-grounded knowledge layer; raw world/experience facts are the supporting evidence observations already summarize. Set to e.g. 'observation,world,experience' to also include raw facts.", "default": "observation"},
+            {"key": "prefer_observations", "description": "Ask the server to drop raw facts already covered by a returned observation and backfill the freed recall slots. Has no effect unless recall_types includes a raw type (world/experience) alongside observation — observation-only recall is unchanged. Requires a Hindsight client whose recall accepts the parameter; on an older client the setting is silently ignored.", "default": False},
             {"key": "auto_recall", "description": "Automatically recall memories before each turn", "default": True},
             {"key": "recall_sync", "description": "Recall synchronously against the current message before each turn (higher relevance, adds recall latency to the turn). Default off: recall runs in the background and is injected on the next turn.", "default": False},
             {"key": "recall_indicator", "description": "Show a '👁️ Hindsight — recalled N memories' status line when auto-recall injects memory (turn off for customer-facing agents)", "default": True},
@@ -875,6 +892,8 @@ class HindsightMemoryProvider(MemoryProvider):
             self._recall_types = [t.strip() for t in configured_types.split(",") if t.strip()]
         else:
             self._recall_types = list([] if configured_types is None else configured_types) or ["observation"]
+        # Opt-in, default off: only meaningful when a raw type is requested too.
+        self._prefer_observations = _parse_bool_setting(cfg.get("prefer_observations"), False)
         self._recall_prompt_preamble = cfg.get("recall_prompt_preamble", "")
         self._recall_indicator = bool(cfg.get("recall_indicator", True))
 
@@ -947,8 +966,35 @@ class HindsightMemoryProvider(MemoryProvider):
             kwargs.update(tags=self._recall_tags, tags_match=self._recall_tags_match)
         if self._recall_types:
             kwargs["types"] = self._recall_types
-        resp = self._run_hindsight_operation(lambda client: client.arecall(**kwargs))
+        resp = self._run_hindsight_operation(
+            lambda client: client.arecall(**self._with_prefer_observations(client, kwargs))
+        )
         return resp.results or []
+
+    def _with_prefer_observations(self, client, kwargs: dict) -> dict:
+        """Add ``prefer_observations`` only when the user opted in AND *client*'s own
+        recall accepts it. The parameter is newer than the pinned client floor, so
+        passing it unconditionally would raise TypeError on every recall."""
+        if not self._prefer_observations or not self._accepts_prefer_observations(client):
+            return kwargs
+        return {**kwargs, "prefer_observations": True}
+
+    def _accepts_prefer_observations(self, client) -> bool:
+        """Feature-detect the setting against the installed client, cached per client
+        object (the local_embedded reconnect swaps the client, which invalidates it)."""
+        if self._prefer_observations_client is not client:
+            self._prefer_observations_client = client
+            try:
+                supported = "prefer_observations" in inspect.signature(client.arecall).parameters
+            except (TypeError, ValueError):
+                # Unintelligible signature (C-implemented or wrapped callable) -> unsupported.
+                supported = False
+            self._prefer_observations_supported = supported
+            if not supported:
+                logger.debug("Hindsight client %s does not accept prefer_observations; "
+                             "the prefer_observations setting is ignored for recall",
+                             type(client).__name__)
+        return self._prefer_observations_supported
 
     def _reflect(self, query: str) -> str | None:
         resp = self._run_hindsight_operation(

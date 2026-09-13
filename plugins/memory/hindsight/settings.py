@@ -41,7 +41,11 @@ _PROVIDER_DEFAULT_MODELS = {
 }
 # The embedded daemon speaks OpenAI wire format for these providers.
 _OPENAI_WIRE_PROVIDERS = {"openai_compatible", "openrouter"}
-_OBSERVATION_SCOPE_KEYWORDS = {"per_tag", "combined", "all_combinations"}
+# Hindsight 0.9.2 consolidates observations across tag sets under "shared", merging
+# one evolving state change into a single observation instead of leaving a stale
+# competing sibling. Only the allowlist gates it: an omitted keyword silently
+# normalizes to None, so without this an explicit user config value is dropped.
+_OBSERVATION_SCOPE_KEYWORDS = {"per_tag", "combined", "all_combinations", "shared"}
 
 
 def _parse_int_setting(value: Any, default: int) -> int:
@@ -53,6 +57,23 @@ def _parse_int_setting(value: Any, default: int) -> int:
     except (TypeError, ValueError):
         logger.warning("Invalid integer Hindsight setting %r; using default %s", value, default)
         return default
+
+
+def _parse_bool_setting(value: Any, default: bool = False) -> bool:
+    """Parse a boolean config value. JSON booleans arrive as bool, but a value
+    hand-edited or exported as the string ``"true"``/``"false"`` must not read as
+    truthy — ``bool("false")`` is True."""
+    if value is None or value == "":
+        return default
+    if isinstance(value, str):
+        text = value.strip().lower()
+        if text in {"true", "1", "yes", "on"}:
+            return True
+        if text in {"false", "0", "no", "off"}:
+            return False
+        logger.warning("Invalid boolean Hindsight setting %r; using default %s", value, default)
+        return default
+    return bool(value)
 
 
 def _daemon_llm_provider(provider: str) -> str:
